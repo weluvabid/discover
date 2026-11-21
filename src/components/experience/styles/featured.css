@@ -46,7 +46,7 @@
   background: #0b1018c9;
   padding: 6px 9px;
   color: #d9e6ff;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
   backdrop-filter: blur(8px);
@@ -91,7 +91,7 @@
   background: #111827b8;
   padding: 4px 7px;
   color: #d4dbea;
-  font-size: 9px;
+  font-size: 11px;
 }
 .featured-copy h1 {
   margin: 0;
@@ -107,7 +107,7 @@
   gap: 5px;
   margin: 9px 0 0;
   color: #d3dbe8;
-  font-size: 11px;
+  font-size: 12px;
 }
 .featured-creator svg {
   color: #60a5fa;
@@ -116,7 +116,7 @@
   max-width: 390px;
   margin: 11px 0 0;
   color: #b8c3d1;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 .featured-stats {
@@ -126,7 +126,7 @@
   gap: 14px;
   margin-top: 15px;
   color: #d6deea;
-  font-size: 10px;
+  font-size: 12px;
 }
 .featured-stats > span {
   display: inline-flex;
@@ -138,7 +138,7 @@
 }
 .featured-stats small {
   color: #9aa6b8;
-  font-size: 9px;
+  font-size: 11px;
 }
 .featured-stats .positive-stat {
   color: #34d399;
@@ -161,7 +161,7 @@
   padding: 0 16px;
   color: white;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   box-shadow: 0 5px 15px #2563eb2b;
   transition:

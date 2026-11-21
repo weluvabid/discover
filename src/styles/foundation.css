@@ -5,6 +5,7 @@
   font-weight: 400;
   font-display: swap;
 }
+
 @font-face {
   font-family: 'Atkinson Hyperlegible';
   src: url('../assets/fonts/atkinson-hyperlegible-bold.otf') format('opentype');
@@ -13,104 +14,14 @@
   font-display: swap;
 }
 
-:root {
-  font-family:
-    'Atkinson Hyperlegible',
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
-  color: #f8fafc;
-  background: #0b0d11;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-optical-sizing: auto;
-  font-variant-numeric: tabular-nums;
-  --canvas: #0b0d11;
-  --surface: #11151c;
-  --surface-raised: #151a23;
-  --surface-hover: #1b2230;
-  --stroke: #252c38;
-  --stroke-soft: #1c222d;
-  --text: #f8fafc;
-  --muted: #9aa6b8;
-  --dim: #68778c;
-  --blue: #2563eb;
-  --blue-bright: #3b82f6;
-  --cyan: #38bdf8;
-  --green: #10b981;
-}
-
-* {
-  box-sizing: border-box;
-}
-html {
-  min-width: 320px;
-  scroll-behavior: smooth;
-  background: var(--canvas);
-}
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-  background: var(--canvas);
-}
-button,
-input {
-  font: inherit;
-}
-button {
-  color: inherit;
-}
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-  outline: 2px solid #60a5fa;
-  outline-offset: 3px;
-}
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-a {
-  color: inherit;
-  text-decoration: none;
-}
-::selection {
-  color: white;
-  background: #2563eb;
-}
-
-/* ReUI / shadcn semantic theme tokens. These map to the existing palette;
-   typography and component sizing remain owned by the selected registry style. */
-:root {
-  --background: #0b0d11;
-  --foreground: #f8fafc;
-  --card: #11151c;
-  --card-foreground: #f8fafc;
-  --popover: #151a23;
-  --popover-foreground: #f8fafc;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #1b2230;
-  --secondary-foreground: #f8fafc;
-  --muted: #151a23;
-  --muted-foreground: #9aa6b8;
-  --accent: #1b2230;
-  --accent-foreground: #f8fafc;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #252c38;
-  --input: #252c38;
-  --ring: #3b82f6;
-  --radius: 0.75rem;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: 'Atkinson Hyperlegible', 'Arial', 'Helvetica Neue', sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono:
+    ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'DejaVu Sans Mono',
+    monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -130,8 +41,188 @@ a {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+:root {
+  color-scheme: light;
+  --font-sans: 'Atkinson Hyperlegible', 'Arial', 'Helvetica Neue', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace;
+  --background: #fafaf8;
+  --foreground: #20201e;
+  --card: #ffffff;
+  --card-foreground: #20201e;
+  --popover: #ffffff;
+  --popover-foreground: #20201e;
+  --primary: #242424;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f0ec;
+  --secondary-foreground: #20201e;
+  --muted: #f1f0ec;
+  --muted-foreground: #6f6d67;
+  --accent: #f1f0ec;
+  --accent-foreground: #20201e;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #ffffff;
+  --border: #e8e7e1;
+  --input: #e8e7e1;
+  --ring: #737373;
+  --selection-background: #090906;
+  --selection-foreground: #e8e7e3;
+  --radius: 0.625rem;
+  --chart-1: #737373;
+  --chart-2: #a3a3a3;
+  --chart-3: #525252;
+  --chart-4: #d4d4d4;
+  --chart-5: #8a8a8a;
+  --sidebar: #f1f0ec;
+  --sidebar-foreground: #20201e;
+  --sidebar-primary: #242424;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eae9e3;
+  --sidebar-accent-foreground: #20201e;
+  --sidebar-border: #e8e7e1;
+  --sidebar-ring: #737373;
+  --shadow-2xs: 0 1px 3px 0 oklch(0 0 0 / 0.04);
+  --shadow-xs: 0 1px 3px 0 oklch(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.08);
+  --shadow: 0 1px 3px 0 oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.08);
+  --shadow-md: 0 1px 3px 0 oklch(0 0 0 / 0.1), 0 2px 4px -1px oklch(0 0 0 / 0.1);
+  --shadow-lg: 0 1px 3px 0 oklch(0 0 0 / 0.1), 0 4px 6px -1px oklch(0 0 0 / 0.1);
+  --shadow-xl: 0 1px 3px 0 oklch(0 0 0 / 0.1), 0 8px 10px -1px oklch(0 0 0 / 0.1);
+  --shadow-2xl: 0 1px 3px 0 oklch(0 0 0 / 0.2);
+
+  /* Discover product tokens layered over Iris's neutral foundation. */
+  --roblox-blue: #0866ff;
+  --canvas: var(--background);
+  --surface: var(--card);
+  --surface-raised: var(--popover);
+  --surface-hover: var(--accent);
+  --stroke: var(--border);
+  --stroke-soft: color-mix(in srgb, var(--border) 72%, transparent);
+  --text: var(--foreground);
+  --dim: color-mix(in srgb, var(--muted-foreground) 72%, transparent);
+  --blue: var(--roblox-blue);
+  --blue-bright: var(--roblox-blue);
+  --cyan: var(--muted-foreground);
+  --green: var(--muted-foreground);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #090906;
+  --foreground: #e8e7e3;
+  --card: #11110d;
+  --card-foreground: #e8e7e3;
+  --popover: #11110d;
+  --popover-foreground: #e8e7e3;
+  --primary: #e8e7e3;
+  --primary-foreground: #090906;
+  --secondary: #191914;
+  --secondary-foreground: #e8e7e3;
+  --muted: #191914;
+  --muted-foreground: #99978f;
+  --accent: #191914;
+  --accent-foreground: #e8e7e3;
+  --border: #27271f;
+  --destructive-foreground: #ffffff;
+  --input: #27271f;
+  --ring: #a3a3a3;
+  --selection-background: #fafaf8;
+  --selection-foreground: #20201e;
+  --sidebar: #11110d;
+  --sidebar-foreground: #e8e7e3;
+  --sidebar-primary: #e8e7e3;
+  --sidebar-primary-foreground: #090906;
+  --sidebar-accent: #191914;
+  --sidebar-accent-foreground: #e8e7e3;
+  --sidebar-border: #27271f;
+  --sidebar-ring: #a3a3a3;
+}
+
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  color: var(--selection-foreground);
+  background: var(--selection-background);
 }

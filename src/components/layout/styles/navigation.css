@@ -9,7 +9,7 @@
   padding: 0 9px;
   color: #aab5c5;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   text-align: left;
 }
 .genre-link:hover,
@@ -18,7 +18,7 @@
 }
 .genre-link small {
   color: #64748b;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 /* Discovery controls: in-context ranking playground */
@@ -34,7 +34,7 @@
   padding: 0 10px;
   color: #9cc4ff;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
 }

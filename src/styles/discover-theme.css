@@ -1,0 +1,550 @@
+/* Discover product styling layered over the neutral Iris theme foundation. */
+
+/* Neutral navigation and selection states. */
+.nav-item,
+.genre-link,
+.mobile-nav-item,
+.discovery-controls-trigger,
+.search-count,
+.featured-creator,
+.featured-creator svg,
+.card-creator,
+.gem-info p,
+.page-intro .eyebrow,
+.controls-heading .eyebrow,
+.controls-reset,
+.dialog-creator {
+  color: var(--muted-foreground);
+}
+
+.nav-item:hover,
+.nav-item.is-active,
+.genre-link:hover,
+.genre-link.is-selected,
+.mobile-nav-item:hover,
+.mobile-nav-item.is-active {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.nav-item.is-active::before {
+  background: var(--muted-foreground);
+}
+
+.brand-mark {
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.brand-copy strong span,
+.genre-link:hover,
+.genre-link.is-selected {
+  color: var(--foreground);
+}
+
+/* Shared neutral surfaces. */
+.sidebar,
+.topbar,
+.search-field,
+.icon-button,
+.notification-popover,
+.featured-card,
+.featured-copy,
+.experience-card,
+.experience-dialog,
+.filter-sheet,
+.controls-dialog,
+.ranking-popover,
+.mobile-nav {
+  background-color: var(--card);
+}
+
+.sidebar,
+.topbar,
+.search-field,
+.icon-button,
+.featured-card,
+.featured-copy,
+.experience-card,
+.filter-sheet,
+.controls-dialog,
+.ranking-popover,
+.mobile-nav {
+  border-color: var(--border);
+}
+
+.search-field:focus-within,
+.icon-button:hover,
+.icon-button.is-active,
+.discovery-controls-trigger:hover,
+.discovery-controls-trigger.has-custom-ranking {
+  border-color: var(--border);
+  background: var(--accent);
+  box-shadow: none;
+  color: var(--foreground);
+}
+
+.search-field input,
+.search-field input::placeholder,
+.search-field kbd,
+.nav-label,
+.genre-nav small,
+.notification-popover span {
+  color: var(--muted-foreground);
+}
+
+.discovery-controls-trigger,
+.discovery-controls-trigger:hover,
+.discovery-controls-trigger.has-custom-ranking {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+.discovery-controls-trigger i,
+.avatar-button i,
+.notification-button i {
+  background: var(--muted-foreground);
+}
+
+/* Neutralize blue and green decoration in badges and metadata. */
+.featured-label,
+.featured-rating,
+.genre-tags span,
+.dialog-tags span,
+.trend-badge,
+.rating,
+.positive-rating,
+.gem-rating,
+.card-trend,
+.trend-indicator,
+.sentiment-badge {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  box-shadow: none;
+}
+
+.featured-label i,
+.active-count i,
+.featured-stats > span:first-child i {
+  background: var(--muted-foreground);
+  box-shadow: none;
+}
+
+.featured-stats .positive-stat,
+.featured-rating,
+.rating,
+.positive-rating,
+.gem-rating {
+  color: var(--muted-foreground);
+}
+
+.featured-stats strong,
+.featured-copy h1,
+.card-title,
+.section-title-wrap h2,
+.page-intro h1 {
+  color: var(--foreground);
+}
+
+/* Neutral controls; Roblox launch actions are the sole saturated blue. */
+.genre-chip.is-selected,
+.genre-tab[data-state='active'],
+.controls-preset.is-active,
+.controls-strategy.is-active {
+  border-color: var(--border);
+  background: var(--accent);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.filter-apply,
+.card-play-button,
+.featured-save,
+.bookmark-button,
+.icon-button,
+.controls-reset {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.filter-apply:hover,
+.card-play-button:hover,
+.featured-save:hover,
+.bookmark-button:hover,
+.icon-button:hover,
+.controls-reset:hover {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.featured-actions .primary-button,
+.dialog-play.primary-button,
+.roblox-action,
+[data-action='roblox'] {
+  border-color: var(--roblox-blue);
+  background: var(--roblox-blue);
+  color: #fff;
+  box-shadow: none;
+}
+
+.featured-actions .primary-button:hover,
+.dialog-play.primary-button:hover,
+.roblox-action:hover,
+[data-action='roblox']:hover {
+  border-color: #0759df;
+  background: #0759df;
+  color: #fff;
+}
+
+.featured-save.is-bookmarked,
+.bookmark-button.is-bookmarked {
+  color: var(--foreground);
+}
+
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline-color: var(--ring);
+}
+
+/* Keep experience artwork in its original colour. */
+.featured-art img,
+.experience-art img,
+.card-art img,
+.gem-art img {
+  filter: none;
+}
+
+/* Remaining legacy selectors mapped onto Iris semantic tokens. */
+.nav-item,
+.genre-link,
+.mobile-nav-item,
+.genre-nav > span:not(.nav-label),
+.genre-nav small,
+.brand-copy strong span,
+.brand-copy small,
+.nav-label,
+.search-count,
+.search-field,
+.search-field input::placeholder,
+.search-field kbd,
+.notification-popover span,
+.featured-creator,
+.featured-description,
+.featured-stats,
+.featured-stats small,
+.featured-copy .dialog-note,
+.card-creator,
+.card-meta,
+.gem-info p,
+.gem-reason,
+.section-note,
+.discovery-footnote,
+.controls-description,
+.controls-section-label,
+.controls-reset,
+.dialog-creator,
+.dialog-note {
+  color: var(--muted-foreground);
+}
+
+.sidebar,
+.topbar,
+.mobile-nav,
+.search-field,
+.icon-button,
+.notification-popover,
+.featured-card,
+.featured-copy,
+.experience-card,
+.experience-dialog,
+.filter-sheet,
+.controls-dialog,
+.ranking-popover {
+  background-color: var(--card);
+  border-color: var(--border);
+}
+
+.nav-item:hover,
+.nav-item.is-active,
+.genre-link:hover,
+.genre-link.is-selected,
+.mobile-nav-item:hover,
+.mobile-nav-item.is-active,
+.icon-button:hover,
+.icon-button.is-active,
+.discovery-controls-trigger,
+.discovery-controls-trigger:hover,
+.discovery-controls-trigger.has-custom-ranking {
+  background: var(--accent);
+  color: var(--foreground);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.nav-item.is-active::before,
+.notification-button i,
+.avatar-button i,
+.discovery-controls-trigger i,
+.featured-label i,
+.active-count i,
+.featured-stats > span:first-child i {
+  background: var(--muted-foreground);
+  box-shadow: none;
+}
+
+.featured-rating,
+.featured-label,
+.genre-tags span,
+.dialog-tags span,
+.rating,
+.positive-stat,
+.trend-badge,
+.recommendation-reason,
+.gem-rating,
+.controls-status,
+.controls-preset.is-active,
+.controls-strategy.is-active {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  box-shadow: none;
+}
+
+/* The Roblox launch CTA is intentionally the only blue control. */
+.featured-actions .primary-button,
+.dialog-play.primary-button,
+.roblox-action,
+[data-action='roblox'] {
+  border-color: var(--roblox-blue);
+  background: var(--roblox-blue);
+  color: #fff;
+}
+
+.featured-actions .primary-button:hover,
+.dialog-play.primary-button:hover,
+.roblox-action:hover,
+[data-action='roblox']:hover {
+  border-color: #0759df;
+  background: #0759df;
+  color: #fff;
+}
+
+.filter-apply,
+.card-play-button,
+.featured-save,
+.bookmark-button,
+.controls-preset,
+.controls-strategy,
+.controls-reset {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.filter-apply:hover,
+.card-play-button:hover,
+.featured-save:hover,
+.bookmark-button:hover,
+.controls-preset:hover,
+.controls-strategy:hover,
+.controls-reset:hover {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.featured-save.is-bookmarked,
+.bookmark-button.is-bookmarked {
+  color: var(--foreground);
+}
+
+.search-field:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 1px var(--ring);
+}
+
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline-color: var(--ring);
+}
+
+.section-accent,
+.section-icon,
+.text-action,
+.text-action:hover,
+.page-eyebrow,
+.explore-sort-indicator,
+.controls-eyebrow,
+.strategy-option i,
+.weight-total strong,
+.trend-pill,
+.card-trend,
+.recommendation-reason svg {
+  color: var(--muted-foreground);
+}
+
+.section-accent {
+  background: var(--muted-foreground);
+  box-shadow: none;
+}
+
+.explore-filter-bar .genre-chip,
+.explore-filter-bar .genre-chip:hover,
+.explore-filter-bar .genre-chip.is-selected,
+.strategy-option,
+.strategy-option:hover,
+.strategy-option.is-selected,
+.weight-total {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.strategy-option span,
+.weight-total strong {
+  color: var(--muted-foreground);
+}
+
+.strategy-option i {
+  background: var(--muted-foreground);
+}
+
+.text-action:hover {
+  color: var(--foreground);
+}
+
+
+/* Final discovery refinements: Iris surfaces, horizontal genre chips, readable scores. */
+.ranked-experience-row {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+.ranked-experience-row:hover {
+  border-color: var(--ring);
+  background: var(--accent);
+}
+
+.ranked-position,
+.ranked-experience-copy strong {
+  color: var(--foreground);
+}
+
+.ranked-position span,
+.ranked-experience-copy span,
+.ranked-bookmark {
+  color: var(--muted-foreground);
+}
+
+.ranked-bookmark:hover,
+.ranked-bookmark.is-bookmarked {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.ranked-experience-copy:focus-visible,
+.ranked-artwork:focus-visible,
+.ranked-bookmark:focus-visible {
+  outline-color: var(--ring);
+}
+
+.ranked-artwork {
+  border-color: var(--border);
+  background: var(--secondary);
+}
+
+.ranking-score strong,
+.ranked-experience-row .ranking-score strong {
+  color: var(--foreground);
+}
+
+.ranking-score span {
+  color: var(--muted-foreground);
+}
+
+/* Tabs are the accessible single-select primitive; their triggers are presented as chips. */
+.explore-filter-bar {
+  align-items: center;
+  gap: 16px;
+  border-bottom-color: var(--border);
+}
+
+.genre-tabs {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.genre-filters[data-slot='tabs-list'] {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  height: auto;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 7px;
+  overflow-x: auto;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 0 3px;
+  scrollbar-width: none;
+}
+
+.genre-filters[data-slot='tabs-list']::-webkit-scrollbar {
+  display: none;
+}
+
+.genre-filters [data-slot='tabs-trigger'] {
+  min-height: 32px;
+  height: auto;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--secondary);
+  padding: 0 11px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  box-shadow: none;
+}
+
+.genre-filters [data-slot='tabs-trigger']:hover {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.genre-filters [data-slot='tabs-trigger'][data-active] {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.explore-sort-indicator {
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 760px) {
+  .explore-filter-bar {
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .genre-tabs {
+    width: 100%;
+  }
+
+  .genre-filters[data-slot='tabs-list'] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .explore-sort-indicator {
+    display: none;
+  }
+}

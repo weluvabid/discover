@@ -23,7 +23,7 @@
     font-size: 14px;
   }
   .controls-heading p {
-    font-size: 9px;
+    font-size: 11px;
   }
   .draft-status {
     display: none;
@@ -65,10 +65,10 @@
     padding: 8px;
   }
   .strategy-option strong {
-    font-size: 10px;
+    font-size: 12px;
   }
   .strategy-option span {
-    font-size: 8px;
+    font-size: 10px;
   }
   .signals-heading {
     margin: 0 0 10px;
@@ -80,20 +80,20 @@
     padding: 10px 11px 8px;
   }
   .signal-label strong {
-    font-size: 10px;
+    font-size: 12px;
   }
   .signal-label small {
-    font-size: 8px;
+    font-size: 10px;
   }
   .signal-card-heading output {
-    font-size: 9px;
+    font-size: 11px;
   }
   .signal-range {
     margin-top: 10px;
   }
   .controls-note {
     margin-top: 11px;
-    font-size: 8px;
+    font-size: 10px;
   }
   .controls-footer {
     display: block;
@@ -103,7 +103,7 @@
   .controls-footer p {
     justify-content: center;
     margin-bottom: 8px;
-    font-size: 8px;
+    font-size: 10px;
   }
   .controls-footer-actions {
     display: grid;
@@ -116,7 +116,7 @@
     min-width: 0;
     min-height: 38px;
     padding: 0 7px;
-    font-size: 8px;
+    font-size: 10px;
   }
   .reset-controls svg {
     display: none;

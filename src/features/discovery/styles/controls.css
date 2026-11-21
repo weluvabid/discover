@@ -75,7 +75,7 @@
 .controls-dialog-description {
   margin: 3px 0 0;
   color: #9ba8ba;
-  font-size: 11px;
+  font-size: 12px;
 }
 .draft-status {
   display: inline-flex;
@@ -86,7 +86,7 @@
   background: #062c25;
   padding: 4px 7px;
   color: #5ee3b4;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 .draft-status i {
@@ -141,7 +141,7 @@
 }
 .controls-eyebrow {
   color: #a8b3c4;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
 }
@@ -150,11 +150,11 @@
   display: block;
   margin-top: 4px;
   color: #8794a8;
-  font-size: 10px;
+  font-size: 12px;
 }
 .baseline-label {
   color: #8794a8;
-  font-size: 9px;
+  font-size: 11px;
 }
 .strategy-grid {
   display: grid;
@@ -184,11 +184,11 @@
   box-shadow: inset 0 0 0 1px #2563eb33;
 }
 .strategy-option strong {
-  font-size: 11px;
+  font-size: 12px;
 }
 .strategy-option span {
   color: #95a2b5;
-  font-size: 9px;
+  font-size: 11px;
 }
 .strategy-option i {
   position: absolute;
@@ -208,7 +208,7 @@
   background: #121a27;
   padding: 5px 8px;
   color: #93a5bd;
-  font-size: 9px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .weight-total strong {
@@ -248,11 +248,11 @@
   gap: 4px;
 }
 .signal-label strong {
-  font-size: 11px;
+  font-size: 12px;
 }
 .signal-label small {
   color: #8e9bad;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.4;
 }
 .signal-card-heading output {
@@ -261,7 +261,7 @@
   background: #13233a;
   padding: 4px 6px;
   color: #75b2ff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 .signal-range {
@@ -294,7 +294,7 @@
   gap: 7px;
   margin-top: 13px;
   color: #8291a7;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.5;
 }
 .controls-note svg {
@@ -317,7 +317,7 @@
   gap: 7px;
   margin: 0;
   color: #99a6b8;
-  font-size: 9px;
+  font-size: 11px;
 }
 .controls-footer p svg {
   flex: 0 0 auto;
@@ -342,7 +342,7 @@
   padding: 0 12px;
   color: #c1ccdc;
   cursor: pointer;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -381,4 +381,100 @@
 .controls-workspace-single .controls-config-panel {
   height: auto;
   overflow: visible;
+}
+
+/* Iris-aligned neutral controls; Roblox blue is not used in ranking configuration. */
+.discovery-controls {
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.controls-header,
+.controls-config-panel,
+.controls-footer {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+.controls-icon,
+.draft-status,
+.signal-card,
+.weight-total,
+.signal-card-heading output,
+.reset-controls,
+.discard-controls,
+.apply-controls,
+.controls-close {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.draft-status i,
+.strategy-option i {
+  background: var(--muted-foreground);
+}
+
+.controls-heading p,
+.controls-dialog-description,
+.controls-panel-heading small,
+.signals-heading small,
+.baseline-label,
+.strategy-option span,
+.signal-label small,
+.controls-note,
+.controls-footer p,
+.reset-controls {
+  color: var(--muted-foreground);
+}
+
+.strategy-option,
+.strategy-option:hover,
+.strategy-option.is-selected,
+.signal-card,
+.signal-switch,
+.signal-switch[data-checked],
+.signal-card-heading output,
+.weight-total {
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+
+.signal-range [data-slot='slider-track'] {
+  background: var(--border);
+}
+
+.signal-range [data-slot='slider-range'],
+.signal-range [data-slot='slider-thumb'] {
+  background: var(--muted-foreground);
+}
+
+.signal-range [data-slot='slider-thumb'] {
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent);
+}
+
+.controls-note svg,
+.controls-footer p svg,
+.weight-total strong {
+  color: var(--muted-foreground);
+}
+
+.controls-close:hover,
+.reset-controls:hover,
+.discard-controls:hover {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.apply-controls,
+.apply-controls:hover {
+  border-color: var(--border);
+  background: var(--primary);
+  color: var(--primary-foreground);
 }

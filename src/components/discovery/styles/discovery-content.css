@@ -39,7 +39,7 @@
   width: 100%;
   margin: -1px 0 0;
   color: #8f9bad;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 .section-icon {
@@ -57,7 +57,7 @@
   background: transparent;
   color: #60a5fa;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -130,7 +130,7 @@
   display: grid;
   place-items: center;
   color: #64748b;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.2em;
 }
@@ -147,7 +147,7 @@
   background: #052e25d9;
   padding: 4px 6px;
   color: #6ee7b7;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   backdrop-filter: blur(6px);
 }
@@ -167,7 +167,7 @@
   display: inline-block;
   margin: 0 0 5px;
   color: #34d399;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.08em;
 }
@@ -188,7 +188,7 @@
   padding: 0;
   color: #f3f6fb;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: -0.015em;
   text-align: left;
@@ -219,7 +219,7 @@
   overflow: hidden;
   margin: 5px 0 0;
   color: #8794a7;
-  font-size: 9px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -234,7 +234,7 @@
   overflow: hidden;
   margin-top: 7px;
   color: #78a9f8;
-  font-size: 8px;
+  font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -254,7 +254,7 @@
   align-items: center;
   gap: 5px;
   color: #aeb9c9;
-  font-size: 9px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .active-count i {
@@ -267,7 +267,7 @@
   align-items: center;
   gap: 3px;
   color: #34d399;
-  font-size: 9px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .card-play-button {
@@ -284,7 +284,7 @@
   background: #171d27;
   color: #d8e0eb;
   cursor: pointer;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   transition:
     background 0.15s ease,
@@ -332,7 +332,7 @@
   background: #111923;
   padding: 5px 8px;
   color: #91a4c2;
-  font-size: 9px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .hidden-gem-list {
@@ -381,7 +381,7 @@
   padding: 0;
   color: #e7edf6;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-align: left;
   text-overflow: ellipsis;
@@ -391,7 +391,7 @@
   overflow: hidden;
   margin: 0;
   color: #8b99ad;
-  font-size: 9px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -404,7 +404,7 @@
   gap: 4px;
   overflow: hidden;
   color: #60a5fa;
-  font-size: 9px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -420,7 +420,7 @@
 }
 .gem-rating span {
   color: #8391a5;
-  font-size: 8px;
+  font-size: 10px;
 }
 .gem-players {
   display: grid;
@@ -430,7 +430,7 @@
 }
 .gem-players small {
   color: #8290a5;
-  font-size: 8px;
+  font-size: 10px;
 }
 .gem-players strong {
   color: #e7edf6;
@@ -438,7 +438,7 @@
 }
 .gem-players strong span {
   color: #8492a6;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
 }
 .gem-play {
@@ -468,7 +468,7 @@
   border-top: 1px solid var(--stroke-soft);
   padding: 15px 2px 0;
   color: #6f7d91;
-  font-size: 9px;
+  font-size: 11px;
 }
 .discovery-footnote svg {
   color: #60a5fa;
@@ -485,7 +485,7 @@
   align-items: center;
   gap: 7px;
   color: #60a5fa;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.12em;
 }
@@ -497,7 +497,7 @@
 }
 .page-intro p {
   margin: 0;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 .alternate-view .discovery-section {
@@ -509,7 +509,7 @@
   background: #10151d;
   padding: 30px 18px;
   color: #8f9bad;
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
 }
 .collection-block {
@@ -528,12 +528,12 @@
 }
 .collection-heading p {
   margin: 5px 0 0;
-  color: var(--muted);
-  font-size: 10px;
+  color: var(--muted-foreground);
+  font-size: 12px;
 }
 .collection-heading > span {
   color: #7f8da1;
-  font-size: 9px;
+  font-size: 11px;
 }
 .collection-art {
   display: block;
@@ -569,7 +569,7 @@
 
 .ranking-score span {
   color: var(--muted, #8996aa);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -585,7 +585,7 @@
   background: rgba(255, 255, 255, 0.025);
   color: var(--text-secondary, #bdc8d8);
   font: inherit;
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -633,7 +633,7 @@
 
 .ranking-popover-heading span {
   color: var(--muted, #8996aa);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.1em;
 }
@@ -650,13 +650,13 @@
 
 .ranking-popover-heading small {
   color: var(--muted, #8996aa);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .ranking-popover-summary {
   margin: 12px 0;
   color: #a5b2c5;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -676,7 +676,7 @@
   justify-content: space-between;
   gap: 10px;
   color: #92a1b6;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .ranking-score-reconciliation span:last-child {
@@ -701,7 +701,7 @@
   justify-content: space-between;
   gap: 10px;
   color: #cbd6e5;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .ranking-contribution > div:first-child strong {
@@ -726,7 +726,7 @@
 
 .ranking-contribution small {
   color: #8493a9;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.4;
 }
 
@@ -746,13 +746,13 @@
 .ranking-eligibility strong,
 .ranking-reasons strong {
   color: #e5edf8;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .ranking-eligibility span,
 .ranking-reasons span {
   color: #9eacc0;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -845,7 +845,7 @@
 .ranked-experience-copy span {
   overflow: hidden;
   color: #91a0b5;
-  font-size: 11px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -866,7 +866,7 @@
 
 .ranked-experience-row .ranking-why-trigger {
   min-height: 40px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .ranked-bookmark {
@@ -918,7 +918,7 @@
   background: #121923;
   color: #9ba9bd;
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -940,7 +940,7 @@
   align-items: center;
   gap: 6px;
   color: #91a0b5;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 

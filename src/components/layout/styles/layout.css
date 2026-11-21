@@ -46,7 +46,7 @@
 }
 .brand-copy small {
   color: #8c9aaf;
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.09em;
 }
@@ -58,7 +58,7 @@
 .nav-label {
   padding: 0 10px 8px;
   color: #68778c;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -74,7 +74,7 @@
   padding: 0 10px;
   color: #aab5c5;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   text-align: left;
   transition:
     background 0.16s ease,
@@ -110,11 +110,11 @@
   justify-content: space-between;
   padding: 0 9px;
   color: #aab5c5;
-  font-size: 10px;
+  font-size: 12px;
 }
 .genre-nav small {
   color: #64748b;
-  font-size: 9px;
+  font-size: 11px;
 }
 .avatar-button img {
   width: 29px;
@@ -163,7 +163,7 @@
   outline: 0;
   background: transparent;
   color: var(--text);
-  font-size: 11px;
+  font-size: 12px;
 }
 .search-field input::placeholder {
   color: #758399;
@@ -174,11 +174,11 @@
   border-radius: 4px;
   padding: 2px 5px;
   color: #8996a9;
-  font-size: 9px;
+  font-size: 11px;
 }
 .search-count {
   color: #60a5fa;
-  font-size: 9px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .header-actions {
@@ -256,7 +256,7 @@
 }
 .notification-popover span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 .mobile-brand,
 .mobile-filter,

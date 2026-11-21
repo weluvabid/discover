@@ -146,7 +146,7 @@
     padding: 0 12px;
     color: #b5c0d0;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 12px;
     white-space: nowrap;
   }
   .genre-chip.is-selected {
@@ -173,7 +173,7 @@
   .featured-label,
   .featured-rating {
     top: 12px;
-    font-size: 8px;
+    font-size: 10px;
   }
   .featured-label {
     left: 11px;
@@ -193,7 +193,7 @@
     margin-bottom: 8px;
   }
   .genre-tags span {
-    font-size: 8px;
+    font-size: 10px;
   }
   .featured-copy h1 {
     max-width: 420px;
@@ -201,7 +201,7 @@
   }
   .featured-creator {
     margin-top: 7px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .featured-description {
     display: none;
@@ -209,7 +209,7 @@
   .featured-stats {
     gap: 10px;
     margin-top: 11px;
-    font-size: 9px;
+    font-size: 11px;
   }
   .featured-actions {
     margin-top: 12px;
@@ -217,7 +217,7 @@
   .featured-actions .primary-button {
     flex: 1;
     min-height: 43px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .featured-save {
     width: 43px;
@@ -233,7 +233,7 @@
     font-size: 14px;
   }
   .section-title-wrap p {
-    font-size: 9px;
+    font-size: 11px;
   }
   .grid-trending,
   .grid-recent {
@@ -263,22 +263,22 @@
     padding: 8px;
   }
   .card-title {
-    font-size: 10px;
+    font-size: 12px;
   }
   .card-creator {
-    font-size: 8px;
+    font-size: 10px;
   }
   .card-meta {
     margin-top: 8px;
   }
   .active-count,
   .rating {
-    font-size: 8px;
+    font-size: 10px;
   }
   .card-play-button {
     height: 27px;
     margin-top: 8px;
-    font-size: 8px;
+    font-size: 10px;
   }
   .card-recommended .card-content {
     padding: 8px;
@@ -290,7 +290,7 @@
     max-width: 275px;
   }
   .section-note {
-    font-size: 8px;
+    font-size: 10px;
   }
   .hidden-gem-list {
     gap: 8px;
@@ -305,14 +305,14 @@
     height: 58px;
   }
   .gem-title {
-    font-size: 10px;
+    font-size: 12px;
   }
   .gem-info p {
-    font-size: 8px;
+    font-size: 10px;
   }
   .gem-reason {
     max-width: 100%;
-    font-size: 8px;
+    font-size: 10px;
   }
   .gem-rating,
   .gem-players,
@@ -325,7 +325,7 @@
   }
   .discovery-footnote {
     align-items: flex-start;
-    font-size: 8px;
+    font-size: 10px;
     line-height: 1.5;
   }
   .mobile-nav {
@@ -354,7 +354,7 @@
   .mobile-nav-item span {
     overflow: hidden;
     max-width: 100%;
-    font-size: 8px;
+    font-size: 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -371,7 +371,7 @@
     font-size: 27px;
   }
   .page-intro p {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.5;
   }
   .alternate-view .grid-recommended {
@@ -385,11 +385,11 @@
   }
   .collection-heading p {
     max-width: 260px;
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.5;
   }
   .collection-heading > span {
-    font-size: 8px;
+    font-size: 10px;
     white-space: nowrap;
   }
   .experience-dialog {

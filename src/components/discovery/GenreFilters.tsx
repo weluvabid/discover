@@ -11,6 +11,7 @@ interface GenreFiltersProps {
 export function GenreFilters({ selected, onSelect }: GenreFiltersProps) {
   return (
     <Tabs
+      className="genre-tabs"
       value={selected}
       onValueChange={(value) => {
         if (genres.includes(value as ExperienceGenre | 'All')) {
