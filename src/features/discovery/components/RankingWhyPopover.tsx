@@ -45,7 +45,10 @@ function getDisplayedContributions(
     );
 
   if (strongest && correction !== 0) {
-    displayed.set(strongest.id, Number(((displayed.get(strongest.id) ?? 0) + correction).toFixed(1)));
+    displayed.set(
+      strongest.id,
+      Number(((displayed.get(strongest.id) ?? 0) + correction).toFixed(1)),
+    );
   }
 
   return displayed;
@@ -61,6 +64,7 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
 
   const updatePosition = useCallback(() => {
     const rect = triggerRef.current?.getBoundingClientRect();
+
     if (!rect) return;
 
     const width = Math.min(360, window.innerWidth - 32);
@@ -80,6 +84,7 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
 
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition, true);
+
     return () => {
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition, true);
@@ -97,10 +102,12 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
 
       const insideTrigger = rootRef.current?.contains(event.target);
       const insidePanel = panelRef.current?.contains(event.target);
+
       if (!insideTrigger && !insidePanel) setOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
+
       setOpen(false);
       triggerRef.current?.focus();
     };

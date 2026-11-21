@@ -26,10 +26,12 @@ interface AppProps {
 export default function App({ initialLocation = '/' }: AppProps) {
   const page = useDiscoverPage(initialLocation);
   const controlsWereOpen = useRef(false);
+
   useEffect(() => {
     if (controlsWereOpen.current && !page.controlsOpen) {
       document.getElementById('tune-discovery-trigger')?.focus();
     }
+
     controlsWereOpen.current = page.controlsOpen;
   }, [page.controlsOpen]);
   const hasSearch = Boolean(page.query.trim());

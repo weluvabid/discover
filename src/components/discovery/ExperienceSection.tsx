@@ -41,6 +41,7 @@ export function ExperienceSection({
         <div className="ranked-experience-list">
           {experiences.map((experience) => {
             const ranking = rankingById?.get(experience.id);
+
             if (!ranking) return null;
 
             return (

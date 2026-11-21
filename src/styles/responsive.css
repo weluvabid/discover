@@ -465,4 +465,8 @@
     transition-duration: 0.01ms !important;
   }
 }
-@media(max-width:760px){.mobile-nav-item{text-decoration:none}}
+@media (max-width: 760px) {
+  .mobile-nav-item {
+    text-decoration: none;
+  }
+}

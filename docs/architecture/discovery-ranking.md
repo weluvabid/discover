@@ -16,12 +16,12 @@ Eligibility is deliberately separate from ranking. A strong score cannot make an
 
 ## Context eligibility
 
-| Context | Eligibility | Ranking intent |
-| --- | --- | --- |
-| Featured | Rating >= 85 and at least 100 reviews | Select one strongest overall match |
-| Trending | Positive week-over-week player change | Preserve momentum while personalizing order |
-| Recommended | General catalog | Full personalized ranking |
-| Hidden Gems | At most 10,000 active players and rating >= 88 | Prefer affinity and quality; down-weight popularity |
+| Context           | Eligibility                                                | Ranking intent                                       |
+| ----------------- | ---------------------------------------------------------- | ---------------------------------------------------- |
+| Featured          | Rating >= 85 and at least 100 reviews                      | Select one strongest overall match                   |
+| Trending          | Positive week-over-week player change                      | Preserve momentum while personalizing order          |
+| Recommended       | General catalog                                            | Full personalized ranking                            |
+| Hidden Gems       | At most 10,000 active players and rating >= 88             | Prefer affinity and quality; down-weight popularity  |
 | Recently Launched | Published from 0 through 30 days before the injected clock | Preserve recency eligibility, then rank by relevance |
 
 The 30-day window and mock thresholds are explicit policy values, not learned model parameters.
@@ -56,14 +56,14 @@ The catalog and affinity inputs are mock data. `matchScore` is a deterministic s
 
 Multipliers are applied to the user's normalized signal weights, then the resulting weights are normalized again:
 
-| Signal | Featured | Trending | Recommended | Hidden Gems | Recently Launched |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Affinity | 1.20 | 1.20 | 1.00 | 1.30 | 1.20 |
-| Engagement quality | 1.30 | 1.00 | 1.00 | 1.30 | 1.00 |
-| Relevance | 1.20 | 1.50 | 1.00 | 1.30 | 1.30 |
-| Freshness | 0.80 | 0.80 | 1.00 | 0.80 | 0.70 |
-| Popularity | 0.80 | 0.50 | 1.00 | 0.25 | 0.50 |
-| Diversity | 0.80 | 0.70 | 1.00 | 1.10 | 1.00 |
+| Signal             | Featured | Trending | Recommended | Hidden Gems | Recently Launched |
+| ------------------ | -------: | -------: | ----------: | ----------: | ----------------: |
+| Affinity           |     1.20 |     1.20 |        1.00 |        1.30 |              1.20 |
+| Engagement quality |     1.30 |     1.00 |        1.00 |        1.30 |              1.00 |
+| Relevance          |     1.20 |     1.50 |        1.00 |        1.30 |              1.30 |
+| Freshness          |     0.80 |     0.80 |        1.00 |        0.80 |              0.70 |
+| Popularity         |     0.80 |     0.50 |        1.00 |        0.25 |              0.50 |
+| Diversity          |     0.80 |     0.70 |        1.00 |        1.10 |              1.00 |
 
 These are deterministic product heuristics. They are intentionally visible in source so they can be challenged, benchmarked, and tuned against fixtures rather than treated as learned model weights.
 
@@ -73,13 +73,13 @@ Run `pnpm benchmark:ranking` to measure all five contexts against the current mo
 
 A local Node 22.16.0 run during this implementation measured:
 
-| Context | 20-record median | 10,000-record median | 10,000-record p95 |
-| --- | ---: | ---: | ---: |
-| Featured | 0.183 ms | 34.257 ms | 53.532 ms |
-| Trending | 0.068 ms | 37.637 ms | 49.256 ms |
-| Recommended | 0.201 ms | 56.361 ms | 78.218 ms |
-| Hidden Gems | 0.142 ms | 12.358 ms | 14.180 ms |
-| Recently Launched | 0.074 ms | 23.437 ms | 32.132 ms |
+| Context           | 20-record median | 10,000-record median | 10,000-record p95 |
+| ----------------- | ---------------: | -------------------: | ----------------: |
+| Featured          |         0.183 ms |            34.257 ms |         53.532 ms |
+| Trending          |         0.068 ms |            37.637 ms |         49.256 ms |
+| Recommended       |         0.201 ms |            56.361 ms |         78.218 ms |
+| Hidden Gems       |         0.142 ms |            12.358 ms |         14.180 ms |
+| Recently Launched |         0.074 ms |            23.437 ms |         32.132 ms |
 
 These are engine-only measurements in the implementation container, not browser rendering or production-device measurements. Re-run on the project's Node 26 runtime when evaluating future changes.
 

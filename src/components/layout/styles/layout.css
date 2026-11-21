@@ -269,4 +269,6 @@
   margin: 0 auto;
   padding: 8px 22px 56px;
 }
-.nav-item{text-decoration:none}
+.nav-item {
+  text-decoration: none;
+}

@@ -21,8 +21,8 @@
     "precommit": "pnpm check",
     "prepare": "sh ./scripts/install-hooks.sh",
     "preview": "astro preview --host 0.0.0.0",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
+    "test:watch": "NODE_OPTIONS=--no-experimental-webstorage vitest",
     "typecheck": "astro check"
   },
   "dependencies": {

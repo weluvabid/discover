@@ -3,11 +3,7 @@ import './styles/controls-responsive.css';
 import { useEffect, useRef } from 'react';
 import { Check, Info, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import { useRankingDraft } from '@/features/discovery/hooks/use-ranking-draft';
-import type {
-  RankingConfiguration,
-  RankingSignalId,
-  RankingStrategyId,
-} from './engine/ranking';
+import type { RankingConfiguration, RankingSignalId, RankingStrategyId } from './engine/ranking';
 
 interface DiscoveryControlsDialogProps {
   open: boolean;
@@ -51,12 +47,15 @@ export function DiscoveryControlsDialog({
 
   useEffect(() => {
     const dialog = dialogRef.current;
+
     if (!open || !dialog) return;
 
     if (!dialog.open) dialog.showModal();
 
     const handleClose = () => onClose();
+
     dialog.addEventListener('close', handleClose);
+
     return () => dialog.removeEventListener('close', handleClose);
   }, [onClose, open]);
 
@@ -141,9 +140,11 @@ export function DiscoveryControlsDialog({
             <div className="signal-list">
               {signalOrder.map((id) => {
                 const signal = draft.signals.find((item) => item.id === id);
+
                 if (!signal) return null;
 
                 const enabledCount = draft.signals.filter((item) => item.enabled).length;
+
                 return (
                   <div
                     className={`signal-card ${signal.enabled ? '' : 'is-disabled'}`}
@@ -156,9 +157,7 @@ export function DiscoveryControlsDialog({
                           type="checkbox"
                           checked={signal.enabled}
                           disabled={signal.enabled && enabledCount === 1}
-                          onChange={(event) =>
-                            toggleDraftSignal(signal.id, event.target.checked)
-                          }
+                          onChange={(event) => toggleDraftSignal(signal.id, event.target.checked)}
                         />
                         <label htmlFor={`signal-enabled-${signal.id}`}>
                           <strong>{signal.label}</strong>

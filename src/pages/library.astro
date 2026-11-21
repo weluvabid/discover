@@ -2,6 +2,7 @@
 import DiscoverLayout from '@/layouts/DiscoverLayout.astro';
 import { DiscoverIsland } from '@/components/react/DiscoverIsland';
 ---
+
 <DiscoverLayout title="Your Library — Discover" description="Your saved Roblox experiences.">
   <DiscoverIsland initialLocation={`${Astro.url.pathname}${Astro.url.search}`} client:load />
 </DiscoverLayout>

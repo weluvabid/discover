@@ -8,9 +8,17 @@ import {
   type RankingConfiguration,
   type RankingContext,
 } from '@/features/discovery/engine/ranking';
-import { filterExperiencesByGenre, searchExperiences } from '@/features/search/utils/search-experiences';
+import {
+  filterExperiencesByGenre,
+  searchExperiences,
+} from '@/features/search/utils/search-experiences';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import { EXPERIENCE_GENRES, type DiscoveryView, type Experience, type ExperienceGenre } from '@/types/experience';
+import {
+  EXPERIENCE_GENRES,
+  type DiscoveryView,
+  type Experience,
+  type ExperienceGenre,
+} from '@/types/experience';
 
 const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/': 'explore',
@@ -42,9 +50,10 @@ export function useDiscoverPage(initialLocation = '/') {
   );
   const [rankingNow, setRankingNow] = useState(() => new Date());
   const requestedGenre = searchParams.get('genre');
-  const genre: ExperienceGenre | 'All' = requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
-    ? (requestedGenre as ExperienceGenre)
-    : 'All';
+  const genre: ExperienceGenre | 'All' =
+    requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
+      ? (requestedGenre as ExperienceGenre)
+      : 'All';
   const query = searchParams.get('q') ?? '';
 
   useEffect(() => {
@@ -66,6 +75,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
     window.addEventListener('focus', refreshClock);
     document.addEventListener('visibilitychange', refreshClock);
+
     return () => {
       window.removeEventListener('focus', refreshClock);
       document.removeEventListener('visibilitychange', refreshClock);
@@ -75,13 +85,16 @@ export function useDiscoverPage(initialLocation = '/') {
   const updateQuery = useCallback(
     (next: string) => {
       const params = new URLSearchParams();
+
       if (next.trim()) params.set('q', next);
+
       if (genre !== 'All') params.set('genre', genre);
 
       if (next.trim()) {
         navigateTo(`/search?${params.toString()}`, { replace: true });
       } else if (pathname === '/search') {
         const suffix = params.toString();
+
         navigateTo(`/${suffix ? `?${suffix}` : ''}`);
       }
     },
@@ -92,10 +105,14 @@ export function useDiscoverPage(initialLocation = '/') {
     (next: ExperienceGenre | 'All') => {
       const params = new URLSearchParams(searchParams);
       const targetPath = pathname === '/search' ? '/' : pathname;
+
       if (pathname === '/search') params.delete('q');
+
       if (next === 'All') params.delete('genre');
       else params.set('genre', next);
+
       const suffix = params.toString();
+
       navigateTo(`${targetPath}${suffix ? `?${suffix}` : ''}`, { replace: true });
     },
     [pathname, searchParams],
@@ -127,6 +144,7 @@ export function useDiscoverPage(initialLocation = '/') {
     ) as Record<RankingContext, ReturnType<typeof rankForContext>>;
 
     const featuredId = ranked.featured[0]?.experience.id;
+
     ranked.recommended = ranked.recommended
       .filter((item) => item.experience.id !== featuredId)
       .slice(0, 6)
@@ -148,7 +166,9 @@ export function useDiscoverPage(initialLocation = '/') {
   const navigate = useCallback(
     (view: DiscoveryView) => {
       const params = new URLSearchParams();
+
       if (genre !== 'All') params.set('genre', genre);
+
       const serializedParams = params.toString();
       const suffix = serializedParams ? `?${serializedParams}` : '';
 

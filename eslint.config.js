@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import prettier from 'eslint-config-prettier';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -17,9 +18,16 @@ const paddingLineBetweenStatements = [
   { blankLine: 'always', prev: 'return', next: '*' },
 ];
 
-export default tseslint.config(
+export default defineConfig(
   {
-    ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**', '**/build/**', '**/target/**'],
+    ignores: [
+      '**/node_modules/**',
+      '**/coverage/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/target/**',
+      '**/.astro/**',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

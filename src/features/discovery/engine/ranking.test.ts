@@ -62,12 +62,10 @@ describe('discovery ranking', () => {
     const ranked = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
 
     expect(ranked).toBeDefined();
+
     if (!ranked) throw new Error('Expected at least one ranked experience.');
 
-    const contributionTotal = Object.values(ranked.factors).reduce(
-      (sum, value) => sum + value,
-      0,
-    );
+    const contributionTotal = Object.values(ranked.factors).reduce((sum, value) => sum + value, 0);
 
     expect(contributionTotal).toBeCloseTo(ranked.explanation.weightedScore, 8);
     expect(ranked.score).toBeCloseTo(ranked.explanation.finalScore, 8);
@@ -85,12 +83,9 @@ describe('discovery ranking', () => {
     const hidden = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'hidden-gems', {
       now: FIXED_NOW,
     });
-    const recent = rankForContext(
-      experiences,
-      DEFAULT_RANKING_CONFIGURATION,
-      'recently-launched',
-      { now: FIXED_NOW },
-    );
+    const recent = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'recently-launched', {
+      now: FIXED_NOW,
+    });
 
     expect(trending.every((item) => (item.experience.metrics.weeklyChange ?? 0) > 0)).toBe(true);
     expect(
@@ -101,15 +96,20 @@ describe('discovery ranking', () => {
     ).toBe(true);
     expect(
       recent.every((item) => {
-        const age =
-          (FIXED_NOW.getTime() - Date.parse(item.experience.publishedAt)) / 86_400_000;
+        const age = (FIXED_NOW.getTime() - Date.parse(item.experience.publishedAt)) / 86_400_000;
+
         return age >= 0 && age <= 30;
       }),
     ).toBe(true);
   });
 
   it('rejects future-dated releases from Recently Launched', () => {
-    const future = { ...experiences[0]!, publishedAt: '2026-11-22T00:00:00.000Z' };
+    const experience = experiences[0];
+
+    if (!experience) throw new Error('Expected an experience fixture.');
+
+    const future = { ...experience, publishedAt: '2026-11-22T00:00:00.000Z' };
+
     expect(getEligibility('recently-launched', future, FIXED_NOW).eligible).toBe(false);
   });
 
@@ -167,7 +167,12 @@ describe('discovery ranking', () => {
   });
 
   it('rejects invalid publication timestamps from Recently Launched', () => {
-    const invalid = { ...experiences[0]!, publishedAt: 'not-a-date' };
+    const experience = experiences[0];
+
+    if (!experience) throw new Error('Expected an experience fixture.');
+
+    const invalid = { ...experience, publishedAt: 'not-a-date' };
+
     expect(getEligibility('recently-launched', invalid, FIXED_NOW).eligible).toBe(false);
   });
 
@@ -183,7 +188,11 @@ describe('discovery ranking', () => {
   });
 
   it('rejects future publication timestamps from every discovery context', () => {
-    const future = { ...experiences[0]!, publishedAt: '2026-11-22T00:00:00.000Z' };
+    const experience = experiences[0];
+
+    if (!experience) throw new Error('Expected an experience fixture.');
+
+    const future = { ...experience, publishedAt: '2026-11-22T00:00:00.000Z' };
     const contexts = [
       'featured',
       'trending',
@@ -198,9 +207,13 @@ describe('discovery ranking', () => {
   });
 
   it('rejects malformed metric records before scoring', () => {
+    const experience = experiences[0];
+
+    if (!experience) throw new Error('Expected an experience fixture.');
+
     const malformed = {
-      ...experiences[0]!,
-      metrics: { ...experiences[0]!.metrics, activePlayers: -1 },
+      ...experience,
+      metrics: { ...experience.metrics, activePlayers: -1 },
     };
 
     expect(getEligibility('recommended', malformed, FIXED_NOW).eligible).toBe(false);
@@ -226,15 +239,13 @@ describe('discovery ranking', () => {
     const trending = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'trending', {
       now: FIXED_NOW,
     })[0];
-    const recommended = rankForContext(
-      experiences,
-      DEFAULT_RANKING_CONFIGURATION,
-      'recommended',
-      { now: FIXED_NOW },
-    )[0];
+    const recommended = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'recommended', {
+      now: FIXED_NOW,
+    })[0];
 
     expect(trending).toBeDefined();
     expect(recommended).toBeDefined();
+
     if (!trending || !recommended) throw new Error('Expected context ranking fixtures.');
 
     const trendingRelevance = trending.explanation.signals.find(
@@ -248,5 +259,4 @@ describe('discovery ranking', () => {
       recommendedRelevance?.effectiveWeight ?? 0,
     );
   });
-
 });

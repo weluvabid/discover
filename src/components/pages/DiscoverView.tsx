@@ -40,6 +40,7 @@ export function DiscoverView({
     ]),
   ) as Record<RankingContext, Map<string, RankedExperience>>;
   const featured = rankedSections.featured[0];
+
   if (activeView === 'library') {
     return (
       <div className="alternate-view">

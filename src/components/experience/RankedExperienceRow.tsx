@@ -43,9 +43,7 @@ export function RankedExperienceRow({
         className={`ranked-bookmark ${isBookmarked ? 'is-bookmarked' : ''}`}
         onClick={() => onToggleBookmark(experience.id)}
         aria-label={
-          isBookmarked
-            ? `Remove ${experience.title} from library`
-            : `Save ${experience.title}`
+          isBookmarked ? `Remove ${experience.title} from library` : `Save ${experience.title}`
         }
         aria-pressed={isBookmarked}
       >

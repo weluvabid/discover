@@ -11,7 +11,9 @@ export function ExploreFilterBar({ genre, onGenreChange }: ExploreFilterBarProps
   return (
     <div className="explore-filter-bar" aria-label="Explore filters">
       <GenreFilters selected={genre} onSelect={onGenreChange} />
-      <span className="explore-sort-indicator"><ArrowDownWideNarrow size={13} /> Ranked by relevance</span>
+      <span className="explore-sort-indicator">
+        <ArrowDownWideNarrow size={13} /> Ranked by relevance
+      </span>
     </div>
   );
 }

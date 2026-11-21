@@ -5,6 +5,7 @@ const LOCATION_CHANGE_EVENT = 'discover:location-change';
 function subscribe(onStoreChange: () => void) {
   window.addEventListener('popstate', onStoreChange);
   window.addEventListener(LOCATION_CHANGE_EVENT, onStoreChange);
+
   return () => {
     window.removeEventListener('popstate', onStoreChange);
     window.removeEventListener(LOCATION_CHANGE_EVENT, onStoreChange);

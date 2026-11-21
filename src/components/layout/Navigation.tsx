@@ -28,6 +28,7 @@ interface SidebarProps extends NavigationProps {
 
 function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
   const path = view === 'explore' ? '/' : `/${view}`;
+
   return genre === 'All' ? path : `${path}?genre=${encodeURIComponent(genre)}`;
 }
 
@@ -44,7 +45,15 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
             href={getNavigationPath(id, selectedGenre)}
             aria-current={activeView === id ? 'page' : undefined}
             onClick={(event) => {
-              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              if (
+                event.button !== 0 ||
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey
+              )
+                return;
+
               event.preventDefault();
               navigateTo(getNavigationPath(id, selectedGenre));
             }}
@@ -95,7 +104,15 @@ export function MobileNavigation({ activeView, selectedGenre }: NavigationProps)
           className={`mobile-nav-item ${activeView === id ? 'is-active' : ''}`}
           aria-current={activeView === id ? 'page' : undefined}
           onClick={(event) => {
-            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            if (
+              event.button !== 0 ||
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey
+            )
+              return;
+
             event.preventDefault();
             navigateTo(getNavigationPath(id, selectedGenre));
           }}

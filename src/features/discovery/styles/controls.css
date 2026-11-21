@@ -365,7 +365,18 @@
 }
 
 /* Controls-only layout: ranking results remain on the Explore page. */
-.controls-workspace-single{display:block;overflow-y:auto}
-.controls-workspace-single .controls-config-panel{width:min(100%,900px);margin:0 auto;border-right:0;padding:24px 28px}
+.controls-workspace-single {
+  display: block;
+  overflow-y: auto;
+}
+.controls-workspace-single .controls-config-panel {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  border-right: 0;
+  padding: 24px 28px;
+}
 
-.controls-workspace-single .controls-config-panel{height:auto;overflow:visible}
+.controls-workspace-single .controls-config-panel {
+  height: auto;
+  overflow: visible;
+}

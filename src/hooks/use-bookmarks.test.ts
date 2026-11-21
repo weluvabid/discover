@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useBookmarks } from './use-bookmarks';
@@ -6,11 +8,11 @@ const storageKey = 'discover:bookmarks';
 
 describe('useBookmarks', () => {
   beforeEach(() => {
-    localStorage.clear();
+    window.localStorage.clear();
   });
 
   it('restores saved experience IDs from local storage', () => {
-    localStorage.setItem(storageKey, JSON.stringify(['deep-descent']));
+    window.localStorage.setItem(storageKey, JSON.stringify(['deep-descent']));
 
     const { result } = renderHook(() => useBookmarks());
 
@@ -23,7 +25,7 @@ describe('useBookmarks', () => {
     act(() => result.current.toggleBookmark('deep-descent'));
 
     expect(result.current.bookmarks).toEqual(['deep-descent']);
-    expect(JSON.parse(localStorage.getItem(storageKey) ?? '[]')).toEqual(['deep-descent']);
+    expect(JSON.parse(window.localStorage.getItem(storageKey) ?? '[]')).toEqual(['deep-descent']);
 
     act(() => result.current.toggleBookmark('deep-descent'));
 
@@ -31,7 +33,7 @@ describe('useBookmarks', () => {
   });
 
   it('recovers from malformed stored data', () => {
-    localStorage.setItem(storageKey, '{invalid');
+    window.localStorage.setItem(storageKey, '{invalid');
 
     const { result } = renderHook(() => useBookmarks());
 

@@ -1,19 +1,10 @@
 import type { Experience, ExperienceGenre } from '@/types/experience';
 
 export type RankingSignalId =
-  | 'affinity'
-  | 'quality'
-  | 'relevance'
-  | 'freshness'
-  | 'popularity'
-  | 'diversity';
+  'affinity' | 'quality' | 'relevance' | 'freshness' | 'popularity' | 'diversity';
 export type RankingStrategyId = 'balanced' | 'popularity' | 'personalized' | 'discovery';
 export type RankingContext =
-  | 'featured'
-  | 'trending'
-  | 'recommended'
-  | 'hidden-gems'
-  | 'recently-launched';
+  'featured' | 'trending' | 'recommended' | 'hidden-gems' | 'recently-launched';
 
 export interface RankingSignal {
   id: RankingSignalId;
@@ -186,7 +177,9 @@ function distributeIntegerWeights<T extends { id: RankingSignalId; weight: numbe
 
   const total = items.reduce((sum, item) => sum + safeWeight(item.weight), 0);
   const shares = items.map((item) => {
-    const exact = total > 0 ? (safeWeight(item.weight) / total) * totalWeight : totalWeight / items.length;
+    const exact =
+      total > 0 ? (safeWeight(item.weight) / total) * totalWeight : totalWeight / items.length;
+
     return {
       id: item.id,
       weight: Math.floor(exact),
@@ -196,6 +189,7 @@ function distributeIntegerWeights<T extends { id: RankingSignalId; weight: numbe
   const remaining = totalWeight - shares.reduce((sum, share) => sum + share.weight, 0);
 
   shares.sort((a, b) => b.remainder - a.remainder || compareIds(a.id, b.id));
+
   for (const share of shares.slice(0, remaining)) share.weight += 1;
 
   return new Map(shares.map((share) => [share.id, share.weight]));
@@ -203,9 +197,11 @@ function distributeIntegerWeights<T extends { id: RankingSignalId; weight: numbe
 
 export function normalizeSignals(signals: RankingSignal[]): RankingSignal[] {
   const enabled = signals.filter((signal) => signal.enabled);
+
   if (enabled.length === 0) return signals.map((signal) => ({ ...signal, weight: 0 }));
 
   const normalized = distributeIntegerWeights(enabled, 100);
+
   return signals.map((signal) => ({
     ...signal,
     weight: signal.enabled ? (normalized.get(signal.id) ?? 0) : 0,
@@ -218,6 +214,7 @@ export function updateSignalWeight(
   nextWeight: number,
 ): RankingSignal[] {
   const enabled = signals.filter((signal) => signal.enabled);
+
   if (!enabled.some((signal) => signal.id === id)) return signals;
 
   if (enabled.length === 1) {
@@ -232,7 +229,9 @@ export function updateSignalWeight(
 
   return signals.map((signal) => {
     if (!signal.enabled) return { ...signal, weight: 0 };
+
     if (signal.id === id) return { ...signal, weight: bounded };
+
     return { ...signal, weight: redistributed.get(signal.id) ?? 0 };
   });
 }
@@ -264,7 +263,9 @@ export function createPreset(strategy: RankingStrategyId): RankingConfiguration 
 
 function ageInDays(experience: Experience, now: Date): number {
   const published = Date.parse(experience.publishedAt);
+
   if (!Number.isFinite(published)) return Number.POSITIVE_INFINITY;
+
   return (now.getTime() - published) / DAY_MS;
 }
 
@@ -291,11 +292,16 @@ export function getEligibility(
   if (!Number.isFinite(now.getTime())) {
     return { eligible: false, reasons: ['Ranking clock is invalid.'] };
   }
+
   if (!Number.isFinite(publishedAt) || publishedAt > now.getTime()) {
     return { eligible: false, reasons: ['Publication timestamp is invalid or in the future.'] };
   }
+
   if (!metricsValid) {
-    return { eligible: false, reasons: ['Required experience metrics are missing or outside valid ranges.'] };
+    return {
+      eligible: false,
+      reasons: ['Required experience metrics are missing or outside valid ranges.'],
+    };
   }
 
   switch (context) {
@@ -377,7 +383,10 @@ function buildScoredCandidates(
   }));
   const effectiveTotal = weighted.reduce((sum, signal) => sum + signal.effective, 0);
   const weights = new Map<RankingSignalId, number>(
-    weighted.map((signal) => [signal.id, effectiveTotal > 0 ? signal.effective / effectiveTotal : 0]),
+    weighted.map((signal) => [
+      signal.id,
+      effectiveTotal > 0 ? signal.effective / effectiveTotal : 0,
+    ]),
   );
   const genreFrequency = new Map<string, number>();
 
@@ -385,84 +394,105 @@ function buildScoredCandidates(
     genreFrequency.set(experience.genre, (genreFrequency.get(experience.genre) ?? 0) + 1);
   }
 
-  return items
-    .map((experience) => {
-      const raw = rawSignals(
-        experience,
-        genreFrequency.get(experience.genre) ?? 1,
-        items.length,
-        now,
-      );
-      const signalsExplanation = signals.map((signal) => {
-        const effectiveWeight = weights.get(signal.id) ?? 0;
-        const normalizedScore = raw[signal.id] * 100;
-        return {
-          id: signal.id,
-          label: signal.label,
-          rawScore: raw[signal.id],
-          normalizedScore,
-          configuredWeight: signal.weight / 100,
-          contextMultiplier: multipliers[signal.id],
-          effectiveWeight,
-          contribution: normalizedScore * effectiveWeight,
-          enabled: signal.enabled,
-        };
-      });
-      const factors = Object.fromEntries(
-        signalsExplanation.map((signal) => [signal.id, signal.contribution]),
-      ) as Record<RankingSignalId, number>;
-      const score = signalsExplanation.reduce((sum, signal) => sum + signal.contribution, 0);
-      const eligibility = getEligibility(context, experience, now);
-      const reasons = signalsExplanation
-        .filter((signal) => signal.enabled && signal.contribution >= 12)
-        .sort((a, b) => b.contribution - a.contribution)
-        .slice(0, 3)
-        .map((signal) => `${signal.label} contributed ${signal.contribution.toFixed(1)} points.`);
+  return items.map((experience) => {
+    const raw = rawSignals(
+      experience,
+      genreFrequency.get(experience.genre) ?? 1,
+      items.length,
+      now,
+    );
+    const signalsExplanation = signals.map((signal) => {
+      const effectiveWeight = weights.get(signal.id) ?? 0;
+      const normalizedScore = raw[signal.id] * 100;
 
       return {
-        experience,
-        score,
-        factors,
-        position: 0,
-        explanation: {
-          context,
-          strategy: configuration.strategy,
-          finalScore: score,
-          weightedScore: score,
-          diversityPenalty: 0,
-          diversityAdjustment: 0,
-          signals: signalsExplanation,
-          eligibilityReasons: eligibility.reasons,
-          reasons,
-        },
+        id: signal.id,
+        label: signal.label,
+        rawScore: raw[signal.id],
+        normalizedScore,
+        configuredWeight: signal.weight / 100,
+        contextMultiplier: multipliers[signal.id],
+        effectiveWeight,
+        contribution: normalizedScore * effectiveWeight,
+        enabled: signal.enabled,
       };
     });
+    const factors = Object.fromEntries(
+      signalsExplanation.map((signal) => [signal.id, signal.contribution]),
+    ) as Record<RankingSignalId, number>;
+    const score = signalsExplanation.reduce((sum, signal) => sum + signal.contribution, 0);
+    const eligibility = getEligibility(context, experience, now);
+    const reasons = signalsExplanation
+      .filter((signal) => signal.enabled && signal.contribution >= 12)
+      .sort((a, b) => b.contribution - a.contribution)
+      .slice(0, 3)
+      .map((signal) => `${signal.label} contributed ${signal.contribution.toFixed(1)} points.`);
+
+    return {
+      experience,
+      score,
+      factors,
+      position: 0,
+      explanation: {
+        context,
+        strategy: configuration.strategy,
+        finalScore: score,
+        weightedScore: score,
+        diversityPenalty: 0,
+        diversityAdjustment: 0,
+        signals: signalsExplanation,
+        eligibilityReasons: eligibility.reasons,
+        reasons,
+      },
+    };
+  });
 }
 
 function compareRanked(a: RankedExperience, b: RankedExperience): number {
   return b.score - a.score || compareIds(a.experience.id, b.experience.id);
 }
 
-function selectTopCandidates(
-  candidates: RankedExperience[],
-  count: number,
-): RankedExperience[] {
+function getHeapItem(heap: RankedExperience[], index: number): RankedExperience {
+  const item = heap[index];
+
+  if (!item) throw new Error(`Ranking heap invariant violated at index ${index}.`);
+
+  return item;
+}
+
+function selectTopCandidates(candidates: RankedExperience[], count: number): RankedExperience[] {
   if (count >= candidates.length) return [...candidates].sort(compareRanked);
+
   if (count <= 0) return [];
 
   const heap: RankedExperience[] = [];
   const siftDown = (startIndex: number) => {
     let index = startIndex;
+
     while (true) {
       const left = index * 2 + 1;
       const right = left + 1;
       let worst = index;
 
-      if (left < heap.length && compareRanked(heap[worst]!, heap[left]!) < 0) worst = left;
-      if (right < heap.length && compareRanked(heap[worst]!, heap[right]!) < 0) worst = right;
+      if (
+        left < heap.length &&
+        compareRanked(getHeapItem(heap, worst), getHeapItem(heap, left)) < 0
+      )
+        worst = left;
+
+      if (
+        right < heap.length &&
+        compareRanked(getHeapItem(heap, worst), getHeapItem(heap, right)) < 0
+      )
+        worst = right;
+
       if (worst === index) return;
 
-      [heap[index], heap[worst]] = [heap[worst]!, heap[index]!];
+      const current = getHeapItem(heap, index);
+      const replacement = getHeapItem(heap, worst);
+
+      heap[index] = replacement;
+      heap[worst] = current;
       index = worst;
     }
   };
@@ -471,13 +501,20 @@ function selectTopCandidates(
     if (heap.length < count) {
       heap.push(candidate);
       let index = heap.length - 1;
+
       while (index > 0) {
         const parent = Math.floor((index - 1) / 2);
-        if (compareRanked(heap[parent]!, heap[index]!) >= 0) break;
-        [heap[parent], heap[index]] = [heap[index]!, heap[parent]!];
+
+        if (compareRanked(getHeapItem(heap, parent), getHeapItem(heap, index)) >= 0) break;
+
+        const parentItem = getHeapItem(heap, parent);
+        const currentItem = getHeapItem(heap, index);
+
+        heap[parent] = currentItem;
+        heap[index] = parentItem;
         index = parent;
       }
-    } else if (compareRanked(candidate, heap[0]!) < 0) {
+    } else if (compareRanked(candidate, getHeapItem(heap, 0)) < 0) {
       heap[0] = candidate;
       siftDown(0);
     }
@@ -508,6 +545,7 @@ function candidateSimilarity(
 
   const union = leftTags.size + rightTags.size - intersection;
   const tagSimilarity = union > 0 ? intersection / union : 0;
+
   return clamp((left.genre === right.genre ? 0.55 : 0) + tagSimilarity * 0.45);
 }
 
@@ -528,6 +566,7 @@ function rerankForDiversity(candidates: RankedExperience[], limit: number): Rank
 
     for (let index = 0; index < remaining.length; index += 1) {
       const candidate = remaining[index];
+
       if (!candidate) continue;
 
       const maxSimilarity = selected.reduce(
@@ -541,7 +580,8 @@ function rerankForDiversity(candidates: RankedExperience[], limit: number): Rank
 
       if (
         adjustedScore > bestAdjustedScore ||
-        (adjustedScore === bestAdjustedScore && candidate.experience.id.localeCompare(currentBestId) < 0)
+        (adjustedScore === bestAdjustedScore &&
+          candidate.experience.id.localeCompare(currentBestId) < 0)
       ) {
         bestAdjustedScore = adjustedScore;
         bestAdjustment = adjustment;
@@ -550,10 +590,12 @@ function rerankForDiversity(candidates: RankedExperience[], limit: number): Rank
     }
 
     const [chosen] = remaining.splice(bestIndex, 1);
+
     if (!chosen) continue;
 
     const diversityAdjustment = Math.max(-chosen.score, bestAdjustment);
     const finalScore = chosen.score + diversityAdjustment;
+
     selected.push({
       ...chosen,
       score: finalScore,
@@ -575,6 +617,7 @@ export function retrieveCandidates(
 ): Experience[] {
   return catalog.filter((experience) => {
     const genre = options.genre;
+
     return (
       genre === undefined ||
       genre === 'All' ||
@@ -619,6 +662,7 @@ export function rankExperiences(
   now = new Date(),
 ): RankedExperience[] {
   const scored = buildScoredCandidates(experiences, configuration, 'recommended', now);
+
   return rerankForDiversity(selectTopCandidates(scored, scored.length), scored.length);
 }
 
@@ -628,6 +672,7 @@ export function isDefaultRankingConfiguration(configuration: RankingConfiguratio
     configuration.signals.length === DEFAULT_RANKING_CONFIGURATION.signals.length &&
     configuration.signals.every((signal, index) => {
       const baseline = DEFAULT_RANKING_CONFIGURATION.signals[index];
+
       return (
         baseline !== undefined &&
         signal.id === baseline.id &&
