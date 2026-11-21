@@ -1,7 +1,8 @@
 import { Worker } from 'node:worker_threads';
+import { performance } from 'node:perf_hooks';
 import { fileURLToPath } from 'node:url';
 import type { Experience } from '@/types/experience';
-import type { RankingConfiguration, RankingContext, RankedExperience } from '@/features/discovery/engine/ranking';
+import type { RankingConfiguration, RankingContext, RankedExperience, RankingOptions } from '@/features/discovery/engine/ranking';
 
 type Task = {
   id: number;
@@ -11,6 +12,8 @@ type Task = {
   options: { limit: number; genre?: Experience['genre'] | 'All' };
   resolve: (value: RankedExperience[]) => void;
   reject: (error: Error) => void;
+  enqueuedAt: number;
+  startedAt?: number;
 };
 
 type Slot = { worker: Worker; task?: Task; generation: number };
@@ -21,6 +24,14 @@ export class RankingWorkerPool {
   private nextId = 1;
   private closed = false;
   private pending = new Map<number, Task>();
+  private completed = 0;
+  private failed = 0;
+  private totalQueueWaitMs = 0;
+  private totalExecutionMs = 0;
+
+  getStats() {
+    return { workers: this.size, busy: this.slots.filter((slot) => slot?.task).length, queued: this.queue.length, pending: this.pending.size, completed: this.completed, failed: this.failed, avgQueueWaitMs: this.completed + this.failed ? this.totalQueueWaitMs / (this.completed + this.failed) : 0, avgExecutionMs: this.completed + this.failed ? this.totalExecutionMs / (this.completed + this.failed) : 0 };
+  }
 
   constructor(
     private readonly size = 2,
@@ -51,6 +62,7 @@ export class RankingWorkerPool {
         options: { limit: options?.limit ?? 40, genre: options?.genre },
         resolve,
         reject,
+        enqueuedAt: performance.now(),
       };
       this.pending.set(task.id, task);
       this.queue.push(task);
@@ -70,8 +82,9 @@ export class RankingWorkerPool {
       if (!task || task.id !== message.id) return;
       slot.task = undefined;
       this.pending.delete(task.id);
-      if (message.error) task.reject(new Error(message.error));
-      else task.resolve(message.result ?? []);
+      if (task.startedAt !== undefined) this.totalExecutionMs += performance.now() - task.startedAt;
+      if (message.error) { this.failed += 1; task.reject(new Error(message.error)); }
+      else { this.completed += 1; task.resolve(message.result ?? []); }
       this.dispatch();
     });
     worker.on('error', (error) => this.failSlot(index, slot, error));
@@ -89,6 +102,8 @@ export class RankingWorkerPool {
       const task = slot.task;
       slot.task = undefined;
       this.pending.delete(task.id);
+      if (task.startedAt !== undefined) this.totalExecutionMs += performance.now() - task.startedAt;
+      this.failed += 1;
       task.reject(error);
     }
     this.slots[index] = undefined;
@@ -102,6 +117,8 @@ export class RankingWorkerPool {
       const task = this.queue.shift();
       if (!task) break;
       slot.task = task;
+      task.startedAt = performance.now();
+      this.totalQueueWaitMs += task.startedAt - task.enqueuedAt;
       slot.worker.postMessage({
         id: task.id,
         catalog: task.catalog,
@@ -118,6 +135,7 @@ export class RankingWorkerPool {
     const error = new Error('Ranking worker pool shut down.');
     for (const task of this.queue.splice(0)) {
       this.pending.delete(task.id);
+      this.failed += 1;
       task.reject(error);
     }
     for (const slot of this.slots) {

@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { performance } from 'node:perf_hooks';
+import { performance, monitorEventLoopDelay } from 'node:perf_hooks';
 import { openDatabaseReadOnly } from '../src/server/db/database';
 import { handleApiRequest } from '../src/server/api/app';
 import { RankingWorkerPool } from '../src/server/ranking/worker-pool';
@@ -21,8 +21,10 @@ const warmups = Number(process.env.BENCHMARK_WARMUPS ?? 10);
 const concurrencyLevels = (process.env.BENCHMARK_CONCURRENCY ?? '1,5,10,25')
   .split(',')
   .map(Number)
-  .filter((value) => Number.isInteger(value) && value > 0 && value <= 100);
+  .filter((value) => Number.isInteger(value) && value > 0 && value <= 1000);
 
+const eventLoop = monitorEventLoopDelay({ resolution: 10 });
+const stageByRequest = new Map<string, StageTimings>();
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? '/', `http://${request.headers.host ?? host}`);
@@ -35,7 +37,9 @@ const server = createServer(async (request, response) => {
       }
       body = raw ? JSON.parse(raw) : {};
     }
-    const result = await handleApiRequest(db, request.method ?? 'GET', url, body, rankingPool?.rank);
+    const requestId = request.headers['x-benchmark-id'];
+    const requestStages = typeof requestId === 'string' ? stageByRequest.get(requestId) : undefined;
+    const result = await handleApiRequest(db, request.method ?? 'GET', url, body, rankingPool?.rank, (stage, duration) => { if (requestStages) requestStages[stage] = duration; });
     const payload = JSON.stringify(result.body);
     response.writeHead(result.status, {
       'Content-Type': 'application/json; charset=utf-8',
@@ -65,16 +69,20 @@ function summarize(values: number[], elapsed: number) {
   };
 }
 
-async function request(path: string, method = 'GET', body?: unknown) {
+type StageTimings = { catalog?: number; ranking?: number };
+async function request(path: string, method = 'GET', body?: unknown, stages?: StageTimings) {
   const start = performance.now();
+  const requestId = stages ? `${Math.random()}-${performance.now()}` : undefined;
+  if (requestId && stages) stageByRequest.set(requestId, stages);
   const response = await fetch(`http://${host}:${port}${path}`, {
     method,
-    headers: body === undefined ? undefined : { 'content-type': 'application/json' },
+    headers: { ...(body === undefined ? {} : { 'content-type': 'application/json' }), ...(requestId ? { 'x-benchmark-id': requestId } : {}) },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const payload = await response.json();
   const duration = performance.now() - start;
   if (!response.ok) throw new Error(`${method} ${path}: HTTP ${response.status} ${JSON.stringify(payload)}`);
+  if (requestId) stageByRequest.delete(requestId);
   return { duration, payload };
 }
 
@@ -94,6 +102,9 @@ try {
     throw new Error(`Local valid catalog is empty (catalogCount=${catalogCount}).`);
   }
 
+  eventLoop.enable();
+  const cpuStart = process.cpuUsage();
+  const memoryStart = process.memoryUsage();
   process.stdout.write(`Local SQLite API benchmark\nDatabase: ${databasePath}\nEligible catalog: ${catalogCount}\nRanking workers: ${workerCount}\nSamples/context: ${samples}; warmups: ${warmups}\n`);
 
   process.stdout.write('\nDiscovery request latency (HTTP + SQLite + ranking + JSON)\n');
@@ -115,21 +126,34 @@ try {
   for (const concurrency of concurrencyLevels) {
     const total = Math.max(concurrency, samples);
     const durations: number[] = [];
+    const catalogStages: number[] = [];
+    const rankingStages: number[] = [];
     const started = performance.now();
     for (let offset = 0; offset < total; offset += concurrency) {
       const batch = Array.from({ length: Math.min(concurrency, total - offset) }, async () => {
-        const result = await request('/api/discover/recommended', 'POST', { limit: 40, persona: 'builder' });
+        const stages: StageTimings = {};
+        const result = await request('/api/discover/recommended', 'POST', { limit: 40, persona: 'builder' }, stages);
         durations.push(result.duration);
+        if (stages.catalog !== undefined) catalogStages.push(stages.catalog);
+        if (stages.ranking !== undefined) rankingStages.push(stages.ranking);
       });
       await Promise.all(batch);
     }
     const elapsed = performance.now() - started;
     const stats = summarize(durations, elapsed);
-    process.stdout.write(`${String(concurrency).padStart(3)} concurrent  p50 ${stats.medianMs.toFixed(2)} ms · p95 ${stats.p95Ms.toFixed(2)} ms · p99 ${stats.p99Ms.toFixed(2)} ms · ${stats.throughputRps.toFixed(1)} req/s\n`);
+    const stageStats = `catalog p50 ${percentile(catalogStages, 0.5).toFixed(2)} ms · ranking p50 ${percentile(rankingStages, 0.5).toFixed(2)} ms`;
+    const pool = rankingPool?.getStats();
+    process.stdout.write(`${String(concurrency).padStart(3)} concurrent  p50 ${stats.medianMs.toFixed(2)} ms · p95 ${stats.p95Ms.toFixed(2)} ms · p99 ${stats.p99Ms.toFixed(2)} ms · ${stats.throughputRps.toFixed(1)} req/s · ${stageStats} · workers ${pool?.workers ?? 0} · avg queue ${pool?.avgQueueWaitMs?.toFixed(2) ?? '0.00'} ms · avg worker ${pool?.avgExecutionMs?.toFixed(2) ?? '0.00'} ms · queued ${pool?.queued ?? 0}\n`);
   }
 
   const detailRow = db.prepare("SELECT universe_id FROM games WHERE source_status = 'valid' ORDER BY universe_id LIMIT 1").get() as { universe_id: string } | undefined;
   if (!detailRow) throw new Error('No valid catalog record available for detail benchmark.');
+
+  eventLoop.disable();
+  const cpu = process.cpuUsage(cpuStart);
+  const memoryEnd = process.memoryUsage();
+  const loop = { mean: Number.isFinite(eventLoop.mean) ? eventLoop.mean / 1e6 : 0, p95: eventLoop.percentile(95) / 1e6, max: eventLoop.max / 1e6 };
+  process.stdout.write(`\nRuntime diagnostics\nCPU user ${(cpu.user / 1000).toFixed(1)} ms · system ${(cpu.system / 1000).toFixed(1)} ms\nRSS ${(memoryStart.rss / 1048576).toFixed(1)} → ${(memoryEnd.rss / 1048576).toFixed(1)} MiB · heap ${(memoryStart.heapUsed / 1048576).toFixed(1)} → ${(memoryEnd.heapUsed / 1048576).toFixed(1)} MiB\nEvent-loop delay mean ${loop.mean.toFixed(2)} ms · p95 ${loop.p95.toFixed(2)} ms · max ${loop.max.toFixed(2)} ms\nWorker pool ${JSON.stringify(rankingPool?.getStats() ?? { workers: 0 })}\n`);
 
   process.stdout.write('\nSupporting endpoint latency\n');
   for (const [label, path] of [
