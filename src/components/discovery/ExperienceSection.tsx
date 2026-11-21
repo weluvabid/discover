@@ -28,6 +28,7 @@ interface ExperienceSectionProps {
   emptyIcon?: ReactNode;
   emptyAction?: ReactNode;
   rankingById?: Map<string, RankedExperience>;
+  rankingLabel?: string;
   loading?: boolean;
   hideHeader?: boolean;
 }
@@ -46,6 +47,7 @@ export function ExperienceSection({
   emptyIcon = <Compass aria-hidden="true" />,
   emptyAction,
   rankingById,
+  rankingLabel,
   loading = false,
   hideHeader = false,
 }: ExperienceSectionProps) {
@@ -78,6 +80,7 @@ export function ExperienceSection({
               key={experience.id}
               experience={experience}
               ranking={rankingById?.get(experience.id)}
+              rankingLabel={rankingLabel}
               variant={variant}
               isBookmarked={bookmarks.includes(experience.id)}
               onToggleBookmark={onToggleBookmark}

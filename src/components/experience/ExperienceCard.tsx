@@ -23,6 +23,7 @@ interface ExperienceCardProps {
   onToggleBookmark: (id: string) => void;
   onPlay: (experience: Experience) => void;
   ranking?: RankedExperience;
+  rankingLabel?: string;
 }
 
 export function ExperienceCard({
@@ -32,6 +33,7 @@ export function ExperienceCard({
   onToggleBookmark,
   onPlay,
   ranking,
+  rankingLabel,
 }: ExperienceCardProps) {
   const weeklyChange = experience.metrics.weeklyChange;
   const formattedWeeklyChange =
@@ -165,7 +167,12 @@ export function ExperienceCard({
                 {ranking.score.toFixed(1)}
               </strong>
               <span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">
-                RANK SCORE
+                {rankingLabel ??
+                  (variant === 'trending'
+                    ? 'TRENDING SCORE'
+                    : variant === 'recent'
+                      ? 'RECENT SCORE'
+                      : 'RECOMMENDED SCORE')}
               </span>
             </div>
             <RankingWhyPopover ranking={ranking} showScore={false} />

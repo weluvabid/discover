@@ -1,7 +1,6 @@
-
 import type { DiscoveryPersona, ExperienceGenre } from '@/types/experience';
 import { GenreFilters } from './GenreFilters';
-import { CAvatar24 } from '@/components/ui/c-avatar-24';
+import { PersonaCommandSelector } from './PersonaCommandSelector';
 
 interface ExploreFilterBarProps {
   genre: ExperienceGenre | 'All';
@@ -27,7 +26,11 @@ export function ExploreFilterBar({
         <GenreFilters selected={genre} onSelect={onGenreChange} />
       </div>
       <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <CAvatar24 personas={personas} selectedPersonaId={persona} onSelect={onPersonaChange} />
+        <PersonaCommandSelector
+          personas={personas}
+          selectedPersonaId={persona}
+          onSelect={onPersonaChange}
+        />
         <span className="inline-flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
           <span aria-hidden="true">↧</span>
           Ranked by relevance

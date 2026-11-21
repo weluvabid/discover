@@ -102,6 +102,7 @@ export function DiscoverView({
           title="Rising this week"
           experiences={rankedSections.trending.map((item) => item.experience)}
           rankingById={rankingMaps.trending}
+          rankingLabel="TRENDING SCORE"
           variant="trending"
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
@@ -158,6 +159,7 @@ export function DiscoverView({
         title="Trending for You"
         experiences={rankedSections.trending.map((item) => item.experience)}
         rankingById={rankingMaps.trending}
+        rankingLabel="TRENDING SCORE"
         variant="trending"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
@@ -179,6 +181,7 @@ export function DiscoverView({
         subtitle={selectedPersona ? `Ranked against the ${selectedPersona.label} profile and experience signals.` : "Ranked by engagement quality, relevance and discovery signals."}
         experiences={recommendations}
         rankingById={rankingMaps.recommended}
+        rankingLabel="RECOMMENDED SCORE"
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
@@ -190,6 +193,7 @@ export function DiscoverView({
         subtitle="Lesser-known worlds with exceptional ratings and dedicated communities."
         experiences={rankedSections['hidden-gems'].map((item) => item.experience)}
         rankingById={rankingMaps['hidden-gems']}
+        rankingLabel="HIDDEN GEMS SCORE"
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
@@ -201,6 +205,7 @@ export function DiscoverView({
         subtitle="New releases ranked by relevance to your discovery preferences."
         experiences={rankedSections['recently-launched'].map((item) => item.experience)}
         rankingById={rankingMaps['recently-launched']}
+        rankingLabel="RECENTLY LAUNCHED SCORE"
         variant="recent"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}

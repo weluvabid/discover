@@ -86,7 +86,8 @@ export function FeaturedExperience({
             className="absolute bottom-0 right-0 inline-flex items-center gap-1 bg-card pl-1 text-sm font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label={`Read more about ${experience.title}`}
           >
-            Read more <ArrowUpRight size={15} />
+            Read more <span className="sr-only">about {experience.title}</span>{' '}
+            <ArrowUpRight size={15} aria-hidden="true" />
           </a>
         </div>
         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
@@ -113,7 +114,7 @@ export function FeaturedExperience({
           <div className="flex items-center justify-between border-t border-border pt-3">
             <span className={`text-sm font-semibold ${getRankScoreClass(ranking.score)}`}>
               {ranking.score.toFixed(1)}{' '}
-              <span className="text-xs text-muted-foreground">RANK SCORE</span>
+              <span className="text-xs text-muted-foreground">FEATURED SCORE</span>
             </span>
             <RankingWhyPopover ranking={ranking} showScore={false} />
           </div>
