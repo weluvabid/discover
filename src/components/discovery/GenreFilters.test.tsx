@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GenreFilters } from './GenreFilters';
+
+afterEach(() => cleanup());
 
 describe('GenreFilters', () => {
   it('exposes the selected genre as the active tab', () => {

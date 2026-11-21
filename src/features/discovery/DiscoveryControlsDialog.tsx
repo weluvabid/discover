@@ -177,6 +177,7 @@ export function DiscoveryControlsDialog({
                         <TabsTrigger
                           key={option.id}
                           value={option.id}
+                          aria-label={`${option.label} ${option.description}`}
                           data-selected-strategy={draft.strategy === option.id ? 'true' : 'false'}
                           className="h-auto min-h-12 w-56 max-w-[80vw] min-w-0 flex-none flex-col items-start gap-1 overflow-hidden rounded-xl border border-border bg-secondary px-3 py-2 text-left whitespace-normal data-active:bg-accent data-active:text-foreground"
                         >

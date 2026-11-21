@@ -1,8 +1,7 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 
 const CONTEXT_LABELS = {
@@ -54,6 +53,7 @@ function getDisplayedContributions(
 
 export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopoverProps) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverId = useId();
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
       )}
       <Popover
         open={open}
-        onOpenChange={(nextOpen) => {
+        onOpenChange={(nextOpen, eventDetails) => {
           if (nextOpen) {
             window.dispatchEvent(
               new CustomEvent('discover:ranking-popover-open', { detail: popoverId }),
@@ -108,28 +108,26 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           }
 
           setOpen(nextOpen);
+
+          if (!nextOpen && eventDetails.reason === 'escape-key') {
+            triggerRef.current?.focus();
+          }
         }}
       >
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <PopoverTrigger
-                render={
-                  <Button
-                    className="size-7 rounded-full text-muted-foreground"
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label="Why this result?"
-                    aria-expanded={open}
-                  />
-                }
-              >
-                <Info size={16} aria-hidden="true" />
-              </PopoverTrigger>
-            }
-          />
-          <TooltipContent side="top">Why this result?</TooltipContent>
-        </Tooltip>
+        <PopoverTrigger
+          render={
+            <Button
+              className="size-7 rounded-full text-muted-foreground"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Why this result?"
+              aria-expanded={open}
+              ref={triggerRef}
+            />
+          }
+        >
+          <Info size={16} aria-hidden="true" />
+        </PopoverTrigger>
         <PopoverContent
           className="max-h-[min(80dvh,48rem)] w-[min(28rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] gap-4 overflow-y-auto overscroll-contain border border-border bg-popover p-4 text-popover-foreground shadow-xl sm:w-[28rem]"
           align="end"
