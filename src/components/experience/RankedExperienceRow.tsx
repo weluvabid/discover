@@ -3,6 +3,7 @@ import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { formatCount } from '@/lib/utils';
 import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 import { ExperienceArtwork } from './ExperienceArtwork';
+import { Button } from '@/components/ui/button';
 
 interface RankedExperienceRowProps {
   ranking: RankedExperience;
@@ -25,21 +26,24 @@ export function RankedExperienceRow({
         <strong>#{ranking.position}</strong>
         <span>—</span>
       </div>
-      <button
+      <Button
+        variant="ghost"
         className="ranked-artwork"
         onClick={() => onSelect(experience)}
         aria-label={`View ${experience.title}`}
       >
         <ExperienceArtwork src={experience.artwork.thumbnail} alt={experience.artwork.alt} />
-      </button>
-      <button className="ranked-experience-copy" onClick={() => onSelect(experience)}>
+      </Button>
+      <Button variant="ghost" className="ranked-experience-copy" onClick={() => onSelect(experience)}>
         <strong>{experience.title}</strong>
         <span>
           {experience.subgenre} · {formatCount(experience.metrics.activePlayers)} active
         </span>
-      </button>
+      </Button>
       <RankingWhyPopover ranking={ranking} />
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         className={`ranked-bookmark ${isBookmarked ? 'is-bookmarked' : ''}`}
         onClick={() => onToggleBookmark(experience.id)}
         aria-label={
@@ -48,7 +52,7 @@ export function RankedExperienceRow({
         aria-pressed={isBookmarked}
       >
         <Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'} />
-      </button>
+      </Button>
     </article>
   );
 }

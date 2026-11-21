@@ -2,6 +2,7 @@ import { Bookmark, Play, Sparkles, Star, TrendingUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
+import { Button } from '@/components/ui/button';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 
@@ -24,7 +25,8 @@ export function ExperienceCard({
 }: ExperienceCardProps) {
   return (
     <article className={`experience-card card-${variant}`}>
-      <button
+      <Button
+        variant="ghost"
         className="card-art-button"
         onClick={() => onSelect(experience)}
         aria-label={`View ${experience.title}`}
@@ -36,17 +38,19 @@ export function ExperienceCard({
           </span>
         )}
         {variant === 'recent' && <span className="new-pill">NEW</span>}
-      </button>
+      </Button>
       <div className="card-content">
         {variant === 'recommended' && experience.matchScore !== undefined && (
           <span className="match-label">{experience.matchScore}% MATCH</span>
         )}
         <div className="card-title-row">
-          <button className="card-title" onClick={() => onSelect(experience)}>
+          <Button variant="ghost" className="card-title" onClick={() => onSelect(experience)}>
             {experience.title}
-          </button>
+          </Button>
           {variant !== 'recent' && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               className={`bookmark-button ${isBookmarked ? 'is-bookmarked' : ''}`}
               onClick={() => onToggleBookmark(experience.id)}
               aria-label={
@@ -57,7 +61,7 @@ export function ExperienceCard({
               aria-pressed={isBookmarked}
             >
               <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} />
-            </button>
+            </Button>
           )}
         </div>
         <p className="card-creator">
@@ -77,10 +81,10 @@ export function ExperienceCard({
             <Star size={12} fill="currentColor" /> {experience.metrics.rating}%
           </span>
         </div>
-        <button className="card-play-button" onClick={() => onSelect(experience)}>
+        <Button variant="outline" className="card-play-button" onClick={() => onSelect(experience)}>
           <Play size={12} fill="currentColor" />{' '}
           {variant === 'recommended' ? 'Play Now' : 'Quick Play'}
-        </button>
+        </Button>
       </div>
     </article>
   );

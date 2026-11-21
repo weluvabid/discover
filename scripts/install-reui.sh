@@ -1,9 +1,7 @@
-
 #!/usr/bin/env bash
 
 set -euo pipefail
 
-# Install the standard shadcn primitives used by Discover.
 pnpm dlx shadcn@latest add \
   button \
   badge \
@@ -15,4 +13,10 @@ pnpm dlx shadcn@latest add \
   separator \
   slider \
   switch \
-  tooltip
+  tooltip \
+  @reui/c-dialog-3 \
+  @reui/c-popover-10 \
+  @reui/c-empty-2 \
+  @reui/c-empty-11 \
+  @reui/c-command-7 \
+  @reui/c-tabs-9

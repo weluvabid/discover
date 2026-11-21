@@ -2,6 +2,7 @@ import { Bookmark, ChevronRight, Compass, Gem, Sparkles, TrendingUp } from 'luci
 import type { RankedExperience, RankingContext } from '@/features/discovery/engine/ranking';
 
 import { ExperienceSection } from '@/components/discovery/ExperienceSection';
+import { Button } from '@/components/ui/button';
 import { ExploreFilterBar } from '@/components/discovery/ExploreFilterBar';
 import { FeaturedExperience } from '@/components/experience/FeaturedExperience';
 import { CollectionsView } from './CollectionsView';
@@ -57,7 +58,14 @@ export function DiscoverView({
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
           onSelect={onSelect}
-          emptyMessage="Your library is empty. Save experiences as you explore and they'll appear here."
+          emptyTitle="Your library is empty"
+          emptyMessage="Save experiences as you explore and they'll appear here."
+          emptyIcon={<Bookmark aria-hidden="true" />}
+          emptyAction={
+            <Button variant="outline" size="sm" onClick={() => onNavigate('explore')}>
+              Browse experiences
+            </Button>
+          }
         />
       </div>
     );
@@ -145,9 +153,9 @@ export function DiscoverView({
         onToggleBookmark={onToggleBookmark}
         onSelect={onSelect}
         action={
-          <button className="text-action" onClick={() => onNavigate('trending')}>
+          <Button variant="ghost" size="xs" className="text-action" onClick={() => onNavigate('trending')}>
             View all ({rankedSections.trending.length}) <ChevronRight size={15} />
-          </button>
+          </Button>
         }
       />
       <ExperienceSection

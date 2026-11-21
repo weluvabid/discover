@@ -1,6 +1,7 @@
 import { Bookmark, Compass, Gem, Layers3, TrendingUp, type LucideIcon } from 'lucide-react';
 import type { DiscoveryView, ExperienceGenre } from '@/types/experience';
 import { navigateTo } from '@/hooks/use-browser-location';
+import { Button } from '@/components/ui/button';
 import { Brand } from './Brand';
 
 interface NavigationItem {
@@ -74,7 +75,9 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
             ['Co-op', '540'],
           ] as const
         ).map(([genre, count]) => (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             className={`genre-link ${selectedGenre === genre ? 'is-selected' : ''}`}
             key={genre}
             onClick={() => onSelectGenre(genre)}
@@ -87,7 +90,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                   ? 'Survival & Co-op'
                   : 'Psychological Horror'}
             <small>{count}</small>
-          </button>
+          </Button>
         ))}
       </div>
     </aside>

@@ -100,6 +100,7 @@
   }
   .discovery-controls-trigger {
     width: 31px;
+    height: 31px;
     min-height: 31px;
     justify-content: center;
     border: 0;
@@ -391,12 +392,9 @@
     font-size: 8px;
     white-space: nowrap;
   }
-  .dialog-backdrop {
-    align-items: end;
-    padding: 0;
-  }
   .experience-dialog {
     width: 100%;
+    max-width: 100%;
     max-height: 90dvh;
     border-radius: 14px 14px 0 0;
   }
@@ -412,15 +410,6 @@
   .dialog-stats {
     justify-content: space-between;
     gap: 9px;
-  }
-  .filter-backdrop {
-    align-items: end;
-    padding: 0;
-  }
-  .filter-sheet {
-    width: 100%;
-    border-radius: 14px 14px 0 0;
-    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
   }
 }
 @media (max-width: 380px) {

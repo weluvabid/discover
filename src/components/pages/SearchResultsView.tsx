@@ -33,7 +33,8 @@ export function SearchResultsView({
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
         onSelect={onSelect}
-        emptyMessage="No experiences match that search. Try another title, creator or genre."
+        emptyTitle="No matching experiences"
+        emptyMessage="Try another title, creator or genre."
       />
     </div>
   );

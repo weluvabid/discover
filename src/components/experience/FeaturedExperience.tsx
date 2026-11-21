@@ -66,14 +66,16 @@ export function FeaturedExperience({
           <Button className="primary-button" onClick={() => onSelect(experience)}>
             <Gamepad2 size={17} /> Play on Roblox <Play size={13} fill="currentColor" />
           </Button>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             className={`featured-save ${isBookmarked ? 'is-bookmarked' : ''}`}
             onClick={() => onToggleBookmark(experience.id)}
             aria-label={isBookmarked ? 'Remove from library' : 'Save to library'}
             aria-pressed={isBookmarked}
           >
             {isBookmarked ? <Heart size={18} fill="currentColor" /> : <Bookmark size={18} />}
-          </button>
+          </Button>
         </div>
       </div>
     </section>

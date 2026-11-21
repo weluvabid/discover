@@ -1,3 +1,4 @@
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EXPERIENCE_GENRES, type ExperienceGenre } from '@/types/experience';
 
 const genres: Array<ExperienceGenre | 'All'> = ['All', ...EXPERIENCE_GENRES];
@@ -9,17 +10,25 @@ interface GenreFiltersProps {
 
 export function GenreFilters({ selected, onSelect }: GenreFiltersProps) {
   return (
-    <div className="genre-filters" role="group" aria-label="Filter experiences by genre">
-      {genres.map((genre) => (
-        <button
-          key={genre}
-          className={`genre-chip ${selected === genre ? 'is-selected' : ''}`}
-          onClick={() => onSelect(genre)}
-          aria-pressed={selected === genre}
-        >
-          {genre}
-        </button>
-      ))}
-    </div>
+    <Tabs
+      value={selected}
+      onValueChange={(value) => {
+        if (genres.includes(value as ExperienceGenre | 'All')) {
+          onSelect(value as ExperienceGenre | 'All');
+        }
+      }}
+    >
+      <TabsList className="genre-filters" aria-label="Filter experiences by genre">
+        {genres.map((genre) => (
+          <TabsTrigger
+            key={genre}
+            value={genre}
+            className={`genre-chip ${selected === genre ? 'is-selected' : ''}`}
+          >
+            {genre}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   );
 }

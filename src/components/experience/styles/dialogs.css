@@ -1,38 +1,21 @@
-.dialog-backdrop,
-.filter-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: grid;
-  place-items: center;
-  background: #03060bd9;
-  padding: 20px;
-  backdrop-filter: blur(8px);
-}
 .experience-dialog {
-  position: relative;
   width: min(100%, 560px);
+  max-width: min(100% - 2rem, 560px);
   max-height: min(90vh, 760px);
   overflow: auto;
   border: 1px solid #354155;
   border-radius: 12px;
   background: #111720;
+  gap: 0;
+  padding: 0;
   box-shadow: 0 25px 80px #000b;
 }
-.dialog-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+.experience-dialog [data-slot='dialog-close'] {
   z-index: 2;
-  display: grid;
-  width: 32px;
-  height: 32px;
-  place-items: center;
   border: 1px solid #ffffff35;
   border-radius: 7px;
   background: #090d15c9;
   color: white;
-  cursor: pointer;
 }
 .dialog-art {
   width: 100%;
@@ -94,6 +77,11 @@
   gap: 6px;
   margin: 14px 0;
 }
+.dialog-tag {
+  border-color: #34445d;
+  background: #182232;
+  color: #b7c8df;
+}
 .dialog-play {
   width: 100%;
 }
@@ -105,6 +93,7 @@
 }
 .filter-sheet {
   width: min(100%, 420px);
+  gap: 18px;
   border: 1px solid var(--stroke);
   border-radius: 12px;
   background: #111720;
@@ -112,16 +101,13 @@
   box-shadow: 0 25px 80px #000b;
 }
 .filter-sheet-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 8px;
 }
-.filter-sheet-heading h2 {
+.filter-sheet-heading [data-slot='dialog-title'] {
   margin: 0;
   font-size: 16px;
 }
-.filter-sheet > p {
-  margin: 8px 0 15px;
+.filter-sheet-heading [data-slot='dialog-description'] {
   color: var(--muted);
   font-size: 11px;
 }
@@ -133,4 +119,19 @@
 .filter-apply {
   width: 100%;
   margin-top: 18px;
+}
+
+
+@media (max-width: 760px) {
+  .filter-sheet {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+    border-radius: 14px 14px 0 0;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  }
 }

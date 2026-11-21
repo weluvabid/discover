@@ -48,6 +48,9 @@
 }
 .text-action {
   display: inline-flex;
+  height: auto;
+  min-height: 0;
+  border-radius: 0;
   align-items: center;
   gap: 4px;
   border: 0;
@@ -94,6 +97,9 @@
   position: relative;
   display: block;
   width: 100%;
+  height: auto;
+  min-height: 0;
+  border-radius: 0;
   overflow: hidden;
   border: 0;
   background: #18202b;
@@ -172,7 +178,10 @@
 }
 .card-title {
   display: block;
+  height: auto;
+  min-height: 0;
   min-width: 0;
+  border-radius: 0;
   overflow: hidden;
   border: 0;
   background: transparent;
@@ -812,8 +821,11 @@
 
 .ranked-experience-copy {
   display: grid;
+  height: auto;
+  min-height: 0;
   gap: 6px;
   min-width: 0;
+  border-radius: 0;
   padding: 0;
   border: 0;
   background: none;
@@ -989,4 +1001,22 @@
   .explore-sort-indicator {
     align-self: flex-end;
   }
+}
+
+
+/* Tabs provide the accessible single-selection model; genre chips retain Discover styling. */
+.genre-filters[data-slot='tabs-list'] {
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.genre-filters [data-slot='tabs-trigger'] {
+  height: auto;
+  min-height: 30px;
+  flex: 0 0 auto;
+  border-radius: 7px;
 }

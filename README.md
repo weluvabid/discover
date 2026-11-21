@@ -4,9 +4,9 @@ A Roblox-inspired experience discovery prototype exploring personalized discover
 
 ## Stack
 
-- React 19 + TypeScript
-- Vite
+- Astro 7 + React 19 + TypeScript
 - Tailwind CSS 4
+- ReUI (Base UI + Maia)
 - Lucide React
 - Vitest + Testing Library
 - pnpm 12
@@ -47,8 +47,8 @@ This runs TypeScript, ESLint, Prettier, Vitest, and the production build.
 
 Explore is powered by one shared, explainable ranking engine with five separate contexts: Featured, Trending, Recommended, Hidden Gems, and Recently Launched. Context eligibility is evaluated before ranking; user preferences affect ordering within eligible candidate pools. Ranked results expose weighted signal contributions and any diversity reranking adjustment through the **Why this result?** popover.
 
-The client uses React Router routes for `/`, `/trending`, `/hidden-gems`, `/collections`, `/library`, and `/search?q=...`. Genre filters are reflected in the URL and constrain every Explore context. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
+Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/collections`, `/library`, and `/search`. Genre filters are reflected in the URL and constrain every Explore context. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
 
 ## Frontend platform
 
-Discover uses Astro for filesystem routing and document composition, with the interactive discovery application hydrated as a single React island. ReUI is configured as the component source registry using the Base UI + Maia style. See [the frontend migration notes](docs/architecture/frontend-migration.md) for setup and the remaining ReUI conversion checkpoint.
+Discover uses Astro for filesystem routing and document composition, with the interactive discovery application hydrated as a single React island. ReUI is the primary component ecosystem using the Base UI + Maia style. Shared primitives and selected ReUI compositions are integrated across discovery controls, ranking explanations, experience details, filters, navigation actions, and empty states. See [the frontend migration notes](docs/architecture/frontend-migration.md) for component ownership and setup.

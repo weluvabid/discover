@@ -1,6 +1,12 @@
 import { lazy, Suspense, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { GenreFilters } from '@/components/discovery/GenreFilters';
 import { Header } from '@/components/layout/Header';
 import { MobileNavigation, Sidebar } from '@/components/layout/Navigation';
@@ -84,35 +90,21 @@ export default function App({ initialLocation = '/' }: AppProps) {
       </div>
       <MobileNavigation activeView={page.activeView} selectedGenre={page.genre} />
 
-      {page.filterOpen && (
-        <div className="filter-backdrop" role="presentation">
-          <section
-            className="filter-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="filter-title"
+      <Dialog open={page.filterOpen} onOpenChange={page.setFilterOpen}>
+        <DialogContent className="filter-sheet">
+          <DialogHeader className="filter-sheet-heading">
+            <DialogTitle>Filter experiences</DialogTitle>
+            <DialogDescription>Choose a genre to refine discovery.</DialogDescription>
+          </DialogHeader>
+          <GenreFilters selected={page.genre} onSelect={page.setGenre} />
+          <Button
+            className="primary-button filter-apply"
+            onClick={() => page.setFilterOpen(false)}
           >
-            <div className="filter-sheet-heading">
-              <h2 id="filter-title">Filter experiences</h2>
-              <button
-                className="icon-button"
-                onClick={() => page.setFilterOpen(false)}
-                aria-label="Close filters"
-              >
-                <X size={18} />
-              </button>
-            </div>
-            <p>Choose a genre to refine discovery.</p>
-            <GenreFilters selected={page.genre} onSelect={page.setGenre} />
-            <Button
-              className="primary-button filter-apply"
-              onClick={() => page.setFilterOpen(false)}
-            >
-              Show {page.visibleResults.length} experiences
-            </Button>
-          </section>
-        </div>
-      )}
+            Show {page.visibleResults.length} experiences
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <Suspense fallback={null}>
         {page.selectedExperience && (
