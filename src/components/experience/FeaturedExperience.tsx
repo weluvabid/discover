@@ -54,8 +54,8 @@ export function FeaturedExperience({
           <Sparkles size={15} aria-hidden="true" className="size-4 sm:size-[15px]" />
           <span className="hidden sm:inline">FEATURED SPOTLIGHT</span>
         </span>
-        <span className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-background/85 px-3 py-2 text-xs font-bold text-foreground backdrop-blur">
-          <ThumbsUp size={14} className="text-emerald-500" />
+        <span className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-background/90 px-3 py-2 text-xs font-bold text-foreground backdrop-blur">
+          <ThumbsUp size={14} className="text-emerald-400" />
           {experience.metrics.rating}% Positive
         </span>
       </a>

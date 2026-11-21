@@ -1,7 +1,12 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import { DEFAULT_RANKING_CONFIGURATION, filterEligibleCandidates, rankForContext } from '../src/features/discovery/engine/ranking';
+import {
+  DEFAULT_RANKING_CONFIGURATION,
+  filterEligibleCandidates,
+  rankForContext,
+  updateSignalWeight,
+} from '../src/features/discovery/engine/ranking';
 import type { RankingContext } from '../src/features/discovery/engine/ranking';
 import { seedPersonas } from '../src/server/ingestion/synthetic';
 import { getCatalog } from '../src/server/ranking/catalog';
@@ -54,6 +59,55 @@ function topGenres(items: Array<{ experience: { genre: string } }>) {
     .map(([genre, count]) => ({ genre, count, share: percentage(count, items.length) }));
 }
 
+function normalizedGenreEntropy(items: Array<{ experience: { genre: string } }>): number {
+  if (items.length < 2) return 0;
+
+  const counts = new Map<string, number>();
+  for (const item of items) {
+    counts.set(item.experience.genre, (counts.get(item.experience.genre) ?? 0) + 1);
+  }
+
+  if (counts.size < 2) return 0;
+
+  const entropy = [...counts.values()].reduce((sum, count) => {
+    const probability = count / items.length;
+    return sum - probability * Math.log(probability);
+  }, 0);
+
+  return entropy / Math.log(counts.size);
+}
+
+function meanPairwiseSimilarity(
+  items: Array<{ experience: { genre: string; tags: string[] } }>,
+): number {
+  if (items.length < 2) return 0;
+
+  let total = 0;
+  let pairs = 0;
+
+  for (let leftIndex = 0; leftIndex < items.length; leftIndex += 1) {
+    const left = items[leftIndex];
+    if (!left) continue;
+    const leftTags = new Set(left.experience.tags.map((tag) => tag.toLowerCase()));
+
+    for (let rightIndex = leftIndex + 1; rightIndex < items.length; rightIndex += 1) {
+      const right = items[rightIndex];
+      if (!right) continue;
+      const rightTags = new Set(right.experience.tags.map((tag) => tag.toLowerCase()));
+      let intersection = 0;
+
+      for (const tag of leftTags) if (rightTags.has(tag)) intersection += 1;
+
+      const union = leftTags.size + rightTags.size - intersection;
+      const tagSimilarity = union > 0 ? intersection / union : 0;
+      total += (left.experience.genre === right.experience.genre ? 0.55 : 0) + tagSimilarity * 0.45;
+      pairs += 1;
+    }
+  }
+
+  return pairs ? total / pairs : 0;
+}
+
 try {
   const catalog = getCatalog(db, { limit: 10_000 });
 
@@ -96,6 +150,7 @@ try {
         genre: item.experience.genre,
         creator: item.experience.creator,
         matchScore: item.experience.matchScore ?? null,
+        personaRelevanceScore: item.experience.personaRelevanceScore ?? null,
         score: Number(item.score.toFixed(3)),
         position: item.position,
       })),
@@ -108,12 +163,51 @@ try {
           percentage(preferredCount, ranked.length) - percentage(baselinePreferredCount, baseline.length),
         meanMatchScore: mean(ranked.map((item) => item.experience.matchScore ?? 0)),
         topGenres: topGenres(ranked),
+        normalizedGenreEntropy: normalizedGenreEntropy(ranked),
+        maximumGenreShare: Math.max(0, ...topGenres(ranked).map((item) => item.share)),
+        meanPairwiseSimilarity: meanPairwiseSimilarity(ranked),
         overlapWithBaseline: jaccard(
           new Set(ranked.map((item) => item.experience.id)),
           baselineIds,
         ),
         contextEligibility,
       },
+    };
+  });
+
+  const diversityWeights = [0, 5, 10, 20, 30];
+  const diversitySensitivity = personas.map((persona) => {
+    const personalizedCatalog = getCatalog(db, { limit: 10_000, persona: persona.id });
+
+    return {
+      id: persona.id,
+      label: persona.label,
+      runs: diversityWeights.map((weight) => {
+        const configuration = {
+          ...DEFAULT_RANKING_CONFIGURATION,
+          signals: updateSignalWeight(
+            DEFAULT_RANKING_CONFIGURATION.signals,
+            'diversity',
+            weight,
+          ),
+        };
+        const ranked = rankForContext(personalizedCatalog, configuration, 'recommended', {
+          now,
+          limit,
+        });
+        const genres = topGenres(ranked);
+
+        return {
+          configuredDiversityWeight: weight,
+          resultCount: ranked.length,
+          normalizedGenreEntropy: normalizedGenreEntropy(ranked),
+          maximumGenreShare: Math.max(0, ...genres.map((item) => item.share)),
+          meanPairwiseSimilarity: meanPairwiseSimilarity(ranked),
+          totalAppliedDiversityPenalty: Number(
+            ranked.reduce((sum, item) => sum + Math.abs(item.explanation.diversityPenalty), 0).toFixed(3),
+          ),
+        };
+      }),
     };
   });
 
@@ -155,8 +249,11 @@ try {
       maxPairwiseTopResultJaccard: maxPairwiseOverlap,
       meanPreferredGenreShare: mean(evaluations.map((evaluation) => evaluation.metrics.preferredGenreShare)),
       meanPreferredGenreLiftPoints: mean(evaluations.map((evaluation) => evaluation.metrics.preferredGenreLiftPoints)),
+      meanNormalizedGenreEntropy: mean(evaluations.map((evaluation) => evaluation.metrics.normalizedGenreEntropy)),
+      meanPairwiseSimilarity: mean(evaluations.map((evaluation) => evaluation.metrics.meanPairwiseSimilarity)),
     },
     evaluations,
+    diversitySensitivity,
     pairwiseOverlaps: pairwiseOverlaps.map((item) => ({ ...item, overlap: Number(item.overlap.toFixed(4)) })),
   };
 
@@ -174,16 +271,18 @@ try {
     `- Mean pairwise top-result Jaccard overlap: **${(meanPairwiseOverlap * 100).toFixed(1)}%** (maximum ${(maxPairwiseOverlap * 100).toFixed(1)}%).`,
     `- Mean preferred-genre share: **${summary.aggregate.meanPreferredGenreShare.toFixed(1)}%**.`,
     `- Mean preferred-genre lift over the unpersonalized baseline: **${summary.aggregate.meanPreferredGenreLiftPoints >= 0 ? '+' : ''}${summary.aggregate.meanPreferredGenreLiftPoints.toFixed(1)} percentage points**.`,
+    `- Mean normalized genre entropy: **${summary.aggregate.meanNormalizedGenreEntropy.toFixed(3)}** (higher means a more even genre distribution).`,
+    `- Mean within-list genre/tag similarity: **${summary.aggregate.meanPairwiseSimilarity.toFixed(3)}** (lower means less repetition).`,
     '',
     '## Profile results',
     '',
-    '| Profile | Preferred genres | Preferred share | Baseline share | Lift | Mean match | Top genres |',
-    '|---|---|---:|---:|---:|---:|---|',
+    '| Profile | Preferred genres | Preferred share | Baseline share | Lift | Mean match | Genre entropy | Mean similarity | Top genres |',
+    '|---|---|---:|---:|---:|---:|---:|---:|---|',
     ...evaluations.map((evaluation) => {
       const genres = evaluation.metrics.topGenres.slice(0, 3).map((item) => `${item.genre} (${item.count})`).join(', ');
       const lift = evaluation.metrics.preferredGenreLiftPoints;
 
-      return `| ${evaluation.label} | ${evaluation.preferences.join(', ')} | ${evaluation.metrics.preferredGenreShare.toFixed(1)}% | ${evaluation.metrics.baselinePreferredGenreShare.toFixed(1)}% | ${lift >= 0 ? '+' : ''}${lift.toFixed(1)} pp | ${evaluation.metrics.meanMatchScore.toFixed(1)} | ${genres || '—'} |`;
+      return `| ${evaluation.label} | ${evaluation.preferences.join(', ')} | ${evaluation.metrics.preferredGenreShare.toFixed(1)}% | ${evaluation.metrics.baselinePreferredGenreShare.toFixed(1)}% | ${lift >= 0 ? '+' : ''}${lift.toFixed(1)} pp | ${evaluation.metrics.meanMatchScore.toFixed(1)} | ${evaluation.metrics.normalizedGenreEntropy.toFixed(3)} | ${evaluation.metrics.meanPairwiseSimilarity.toFixed(3)} | ${genres || '—'} |`;
     }),
     '',
     '## Top results by profile',
@@ -202,6 +301,18 @@ try {
       '| Context | Eligible catalog | Returned |',
       '|---|---:|---:|',
       ...evaluation.metrics.contextEligibility.map((item) => `| ${item.context} | ${item.eligibleCandidates} | ${item.returned} |`),
+      '',
+    ]),
+    '## Diversity control sensitivity',
+    '',
+    'The following sweep reruns each persona with diversity weights of 0, 5, 10, 20 and 30. A zero weight should produce zero reranking penalty; increasing weight should increase total applied penalty for comparable candidate lists. Genre entropy, maximum genre share and mean pairwise similarity show the resulting list composition.',
+    '',
+    ...diversitySensitivity.flatMap((profile) => [
+      `### ${profile.label}`,
+      '',
+      '| Diversity weight | Genre entropy | Maximum genre share | Mean similarity | Applied penalty |',
+      '|---:|---:|---:|---:|---:|',
+      ...profile.runs.map((run) => `| ${run.configuredDiversityWeight} | ${run.normalizedGenreEntropy.toFixed(3)} | ${run.maximumGenreShare.toFixed(1)}% | ${run.meanPairwiseSimilarity.toFixed(3)} | ${run.totalAppliedDiversityPenalty.toFixed(3)} |`),
       '',
     ]),
     '## Interpretation',

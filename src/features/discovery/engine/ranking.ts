@@ -63,7 +63,7 @@ export const DEFAULT_RANKING_CONFIGURATION: RankingConfiguration = {
     {
       id: 'affinity',
       label: 'User affinity',
-      description: 'Match score against personal play habits and genres.',
+      description: "Alignment with the selected persona's preferred genres.",
       weight: 25,
       enabled: true,
     },
@@ -362,6 +362,7 @@ function rawSignals(
   genreFrequency: number,
   catalogSize: number,
   now: Date,
+  hasPersona: boolean,
 ): Record<RankingSignalId, number> {
   const launchAge = ageInDays(experience.publishedAt, now);
   const updateAge = ageInDays(experience.updatedAt, now);
@@ -369,7 +370,7 @@ function rawSignals(
     Number.isFinite(launchAge) && launchAge >= 0 ? Math.exp(-launchAge / 180) : 0;
   const updateFreshness =
     Number.isFinite(updateAge) && updateAge >= 0 ? Math.exp(-updateAge / 60) : 0;
-  const match = clamp((experience.matchScore ?? 72) / 100);
+  const match = experience.matchScore === undefined ? 0 : clamp(experience.matchScore / 100);
   const rating = clamp(experience.metrics.rating / 100);
   const playtime = clamp(experience.metrics.averagePlaytimeMinutes / 60);
   const hasSyntheticEngagement =
@@ -387,12 +388,10 @@ function rawSignals(
     ? clamp(rating * 0.35 + playtime * 0.2 + retention * 0.25 + repeatPlay * 0.15 + session * 0.05)
     : rating;
   const popularity = clamp(Math.log10(Math.max(0, experience.metrics.activePlayers) + 1) / 5);
-  const tags = clamp(experience.tags.length / 12);
-
   return {
-    affinity: clamp(match * 0.78 + tags * 0.22),
+    affinity: hasPersona ? match : 0,
     quality: hasSyntheticEngagement ? quality : clamp(rating * 0.65 + playtime * 0.35),
-    relevance: clamp(match * 0.7 + clamp(experience.description.length / 500) * 0.3),
+    relevance: hasPersona ? clamp(experience.personaRelevanceScore ?? 0) : 0,
     freshness: clamp(Math.max(launchFreshness, updateFreshness * 0.75)),
     popularity,
     diversity: clamp(1 - Math.max(0, genreFrequency - 1) / Math.max(1, catalogSize - 1)),
@@ -404,13 +403,20 @@ function buildScoredCandidates(
   configuration: RankingConfiguration,
   context: RankingContext,
   now: Date,
+  hasPersona: boolean,
 ): RankedExperience[] {
   const signals = normalizeSignals(configuration.signals);
   const multipliers = CONTEXT_MULTIPLIERS[context];
-  const weighted = signals.map((signal) => ({
-    ...signal,
-    effective: signal.enabled ? signal.weight * multipliers[signal.id] : 0,
-  }));
+  const weighted = signals.map((signal) => {
+    const personaDependent = signal.id === 'affinity' || signal.id === 'relevance';
+    const active = signal.enabled && (hasPersona || !personaDependent);
+
+    return {
+      ...signal,
+      active,
+      effective: active ? signal.weight * multipliers[signal.id] : 0,
+    };
+  });
   const effectiveTotal = weighted.reduce((sum, signal) => sum + signal.effective, 0);
   const weights = new Map<RankingSignalId, number>(
     weighted.map((signal) => [
@@ -430,8 +436,9 @@ function buildScoredCandidates(
       genreFrequency.get(experience.genre) ?? 1,
       items.length,
       now,
+      hasPersona,
     );
-    const signalsExplanation = signals.map((signal) => {
+    const signalsExplanation = weighted.map((signal) => {
       const effectiveWeight = weights.get(signal.id) ?? 0;
       const normalizedScore = raw[signal.id] * 100;
 
@@ -444,7 +451,7 @@ function buildScoredCandidates(
         contextMultiplier: multipliers[signal.id],
         effectiveWeight,
         contribution: normalizedScore * effectiveWeight,
-        enabled: signal.enabled,
+        enabled: signal.active,
       };
     });
     const factors = Object.fromEntries(
@@ -490,7 +497,43 @@ function getHeapItem(heap: RankedExperience[], index: number): RankedExperience 
   return item;
 }
 
-function selectTopCandidates(candidates: RankedExperience[], count: number): RankedExperience[] {
+function getDiversityStrength(
+  configuration: RankingConfiguration,
+  context: RankingContext,
+): number {
+  const configured = normalizeSignals(configuration.signals);
+  const contextMultipliers = CONTEXT_MULTIPLIERS[context];
+  const effectiveTotal = configured.reduce(
+    (sum, signal) =>
+      sum + (signal.enabled ? signal.weight * contextMultipliers[signal.id] : 0),
+    0,
+  );
+  const diversity = configured.find((signal) => signal.id === 'diversity');
+
+  if (!diversity?.enabled || diversity.weight <= 0 || effectiveTotal <= 0) return 0;
+
+  const effectiveShare =
+    (diversity.weight * contextMultipliers.diversity) / effectiveTotal;
+
+  const baseline = normalizeSignals(DEFAULT_RANKING_CONFIGURATION.signals);
+  const baselineTotal = baseline.reduce(
+    (sum, signal) => sum + signal.weight * contextMultipliers[signal.id],
+    0,
+  );
+  const baselineDiversity = baseline.find((signal) => signal.id === 'diversity');
+  const baselineShare =
+    baselineTotal > 0 && baselineDiversity
+      ? (baselineDiversity.weight * contextMultipliers.diversity) / baselineTotal
+      : 0;
+
+  return baselineShare > 0 ? clamp(effectiveShare / baselineShare, 0, 2.5) : 0;
+}
+
+function selectTopCandidates(
+  candidates: RankedExperience[],
+  count: number,
+  diversityPenaltyBudget = MAX_DIVERSITY_PENALTY,
+): RankedExperience[] {
   if (count >= candidates.length) return [...candidates].sort(compareRanked);
 
   if (count <= 0) return [];
@@ -551,7 +594,7 @@ function selectTopCandidates(candidates: RankedExperience[], count: number): Ran
   }
 
   heap.sort(compareRanked);
-  const threshold = (heap[heap.length - 1]?.score ?? 0) - MAX_DIVERSITY_PENALTY;
+  const threshold = (heap[heap.length - 1]?.score ?? 0) - diversityPenaltyBudget;
   const selectedIds = new Set(heap.map((candidate) => candidate.experience.id));
   const diversityCandidates = candidates.filter(
     (candidate) => candidate.score >= threshold && !selectedIds.has(candidate.experience.id),
@@ -579,7 +622,17 @@ function candidateSimilarity(
   return clamp((left.genre === right.genre ? 0.55 : 0) + tagSimilarity * 0.45);
 }
 
-function rerankForDiversity(candidates: RankedExperience[], limit: number): RankedExperience[] {
+function rerankForDiversity(
+  candidates: RankedExperience[],
+  limit: number,
+  diversityStrength: number,
+): RankedExperience[] {
+  if (diversityStrength <= 0) {
+    return candidates
+      .slice(0, limit)
+      .sort(compareRanked)
+      .map((item, index) => ({ ...item, position: index + 1 }));
+  }
   const remaining = [...candidates];
   const selected: RankedExperience[] = [];
   const tagSets = new Map(
@@ -604,7 +657,10 @@ function rerankForDiversity(candidates: RankedExperience[], limit: number): Rank
           Math.max(max, candidateSimilarity(item.experience, candidate.experience, tagSets)),
         0,
       );
-      const adjustment = selected.length === 0 ? 0 : -MAX_DIVERSITY_PENALTY * maxSimilarity;
+      const adjustment =
+        selected.length === 0
+          ? 0
+          : -MAX_DIVERSITY_PENALTY * diversityStrength * maxSimilarity;
       const adjustedScore = candidate.score + adjustment;
       const currentBestId = remaining[bestIndex]?.experience.id ?? '';
 
@@ -675,15 +731,23 @@ export function rankForContext(
   const now = resolveRankingClock(experiences, options.now);
   const retrieved = retrieveCandidates(experiences, options);
   const eligible = filterEligibleCandidates(retrieved, context, now);
-  const scored = buildScoredCandidates(eligible, configuration, context, now);
+  // Persona selection belongs to the ranking request, not the filtered candidate subset.
+  // A context may legitimately exclude every game carrying an individual match score.
+  const hasPersona = experiences.some((experience) => experience.matchScore !== undefined);
+  const scored = buildScoredCandidates(eligible, configuration, context, now, hasPersona);
   const limit = options.limit ?? scored.length;
+  const diversityStrength = getDiversityStrength(configuration, context);
   const candidatePoolSize = Math.min(
     scored.length,
-    limit <= 1 ? limit : Math.max(limit, limit * 8),
+    diversityStrength <= 0 || limit <= 1 ? limit : Math.max(limit, limit * 8),
   );
-  const candidatePool = selectTopCandidates(scored, candidatePoolSize);
+  const candidatePool = selectTopCandidates(
+    scored,
+    candidatePoolSize,
+    MAX_DIVERSITY_PENALTY * diversityStrength,
+  );
 
-  return rerankForDiversity(candidatePool, limit);
+  return rerankForDiversity(candidatePool, limit, diversityStrength);
 }
 
 export function rankExperiences(
@@ -692,9 +756,25 @@ export function rankExperiences(
   now?: Date,
 ): RankedExperience[] {
   const rankingClock = resolveRankingClock(experiences, now);
-  const scored = buildScoredCandidates(experiences, configuration, 'recommended', rankingClock);
+  const hasPersona = experiences.some((experience) => experience.matchScore !== undefined);
+  const scored = buildScoredCandidates(
+    experiences,
+    configuration,
+    'recommended',
+    rankingClock,
+    hasPersona,
+  );
+  const diversityStrength = getDiversityStrength(configuration, 'recommended');
 
-  return rerankForDiversity(selectTopCandidates(scored, scored.length), scored.length);
+  return rerankForDiversity(
+    selectTopCandidates(
+      scored,
+      scored.length,
+      MAX_DIVERSITY_PENALTY * diversityStrength,
+    ),
+    scored.length,
+    diversityStrength,
+  );
 }
 
 export function isDefaultRankingConfiguration(configuration: RankingConfiguration): boolean {

@@ -1,6 +1,6 @@
 import type { DatabaseSync } from 'node:sqlite';
 import type { Experience, ExperienceGenre } from '@/types/experience';
-import { calculatePersonaMatchScore, seedPersonas } from '../ingestion/synthetic';
+import { calculatePersonaMatchScore, calculatePersonaRelevanceScore, seedPersonas } from '../ingestion/synthetic';
 
 const PERSONA_PREFERENCES = new Map(seedPersonas().map((persona) => [persona.id, persona.preferences]));
 
@@ -30,6 +30,7 @@ interface GameRow {
   updated_at: string | null;
   source_updated_at: string | null;
   source_date_fetched: string | null;
+  match_scores_json: string;
   active_players: number;
   rating: number;
   review_count: number;
@@ -40,7 +41,6 @@ interface GameRow {
   d7_retention: number;
   d30_retention: number;
   repeat_play_rate: number;
-  match_scores_json: string;
 }
 
 function mapGenre(value: string): ExperienceGenre {
@@ -63,7 +63,6 @@ function mapGenre(value: string): ExperienceGenre {
 
 function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: string): Experience {
   const tags = JSON.parse(row.tags_json || '[]') as string[];
-  const matchScores = JSON.parse(row.match_scores_json || '{}') as Record<string, number>;
 
   return {
     id: row.universe_id,
@@ -94,20 +93,25 @@ function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: str
     updatedAt: row.source_updated_at ?? row.updated_at ?? undefined,
     freshnessReferenceAt,
     tags: tags.length > 0 ? tags : [row.genre],
-    matchScore: persona
+    matchScore: persona && PERSONA_PREFERENCES.has(persona)
       ? (() => {
-          const preferences = PERSONA_PREFERENCES.get(persona);
-
-          return preferences
-            ? calculatePersonaMatchScore(
+          const persistedScores = JSON.parse(row.match_scores_json || '{}') as Record<string, number>;
+          const persistedScore = persistedScores[persona];
+          return Number.isFinite(persistedScore)
+            ? persistedScore
+            : calculatePersonaMatchScore(
                 mapGenre(row.genre),
-                preferences,
-                row.rating,
-                persona,
-                [row.title, row.description, row.subgenre, ...tags].join(' '),
-              )
-            : (matchScores[persona] ?? 50);
+                PERSONA_PREFERENCES.get(persona) ?? [],
+              );
         })()
+      : undefined,
+    personaRelevanceScore: persona
+      ? calculatePersonaRelevanceScore(persona, {
+          title: row.title,
+          description: row.description,
+          subgenre: row.subgenre || row.genre,
+          tags,
+        })
       : undefined,
   };
 }

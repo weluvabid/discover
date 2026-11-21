@@ -60,22 +60,16 @@ export function ExperienceCard({
         {overlayLabel && (
           <span
             className={`absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold shadow-sm backdrop-blur ${
-              variant !== 'trending' || weeklyChange === undefined
-                ? 'border-border bg-background/85 text-foreground'
-                : weeklyChange > 0
-                  ? 'border-emerald-500/25 bg-emerald-500/15 text-emerald-400'
-                  : weeklyChange < 0
-                    ? 'border-rose-500/25 bg-rose-500/15 text-rose-400'
-                    : 'border-amber-500/25 bg-amber-500/15 text-amber-400'
+              'border-border bg-background/90 text-foreground'
             }`}
           >
             {variant === 'trending' && weeklyChange !== undefined &&
               (weeklyChange > 0 ? (
-                <TrendingUp size={13} />
+                <TrendingUp size={13} className="text-emerald-400" />
               ) : weeklyChange < 0 ? (
-                <TrendingDown size={13} />
+                <TrendingDown size={13} className="text-rose-400" />
               ) : (
-                <Minus size={13} />
+                <Minus size={13} className="text-amber-400" />
               ))}
             {variant === 'recommended' && <Sparkles size={13} />}
             {overlayLabel}

@@ -50,9 +50,9 @@ export function SearchResultsView({
             Search results{' '}
             <span
               aria-live="polite"
-              className="ml-2 align-middle text-sm font-medium text-muted-foreground sm:text-base"
+              className="mt-2 block text-base font-medium text-muted-foreground sm:ml-3 sm:mt-0 sm:inline sm:text-sm"
             >
-              ·{' '}
+              <span className="hidden sm:inline">· </span>
               {loading
                 ? 'Searching…'
                 : results.length === 100

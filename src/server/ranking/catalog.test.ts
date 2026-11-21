@@ -46,6 +46,18 @@ describe('catalog search ordering and genre counts', () => {
     expect(getCatalog(db, { query: 'Blox Fruits', sort: 'updated' }).map((item) => item.id)).toEqual(['103', '102', '101']);
   });
 
+  it('only attaches persona signals when a known persona is selected', () => {
+    const unpersonalized = getCatalog(db, { limit: 10 });
+    expect(unpersonalized.every((experience) => experience.matchScore === undefined)).toBe(true);
+    expect(unpersonalized.every((experience) => experience.personaRelevanceScore === undefined)).toBe(true);
+
+    const builderCatalog = getCatalog(db, { limit: 10, persona: 'builder' });
+    const tycoon = builderCatalog.find((experience) => experience.id === '103');
+
+    expect(tycoon?.matchScore).toBe(84);
+    expect(tycoon?.personaRelevanceScore).toBeGreaterThan(0);
+  });
+
   it('counts distinct eligible experiences using the catalog genre mapping', () => {
     expect(getGenreCounts(db)).toEqual({
       All: 3,

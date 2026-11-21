@@ -105,7 +105,128 @@ describe('discovery ranking', () => {
       'persona-weak-match',
     ]);
     expect(ranked[0]?.factors.affinity).toBeGreaterThan(ranked[1]?.factors.affinity ?? 0);
+    expect(ranked[0]?.factors.relevance).toBe(ranked[1]?.factors.relevance);
+  });
+
+  it('ranks persona-specific topical matches through relevance independently of affinity', () => {
+    const fixture = experiences[0];
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const strongTopic = {
+      ...fixture,
+      id: 'strong-topic',
+      matchScore: 84,
+      personaRelevanceScore: 1,
+    };
+    const weakTopic = {
+      ...fixture,
+      id: 'weak-topic',
+      matchScore: 84,
+      personaRelevanceScore: 0,
+    };
+    const ranked = rankForContext(
+      [weakTopic, strongTopic],
+      DEFAULT_RANKING_CONFIGURATION,
+      'recommended',
+      { now: FIXED_NOW, limit: 2 },
+    );
+
+    expect(ranked[0]?.experience.id).toBe('strong-topic');
+    expect(ranked[0]?.factors.affinity).toBe(ranked[1]?.factors.affinity);
     expect(ranked[0]?.factors.relevance).toBeGreaterThan(ranked[1]?.factors.relevance ?? 0);
+  });
+
+  it('makes zero diversity weight disable both the rarity signal and greedy reranking', () => {
+    const fixture = experiences[0];
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const candidates = Array.from({ length: 6 }, (_, index) => ({
+      ...fixture,
+      id: `same-genre-${index}`,
+      title: `Same genre ${index}`,
+      matchScore: undefined,
+      personaRelevanceScore: undefined,
+      tags: ['shared', 'same'],
+    }));
+    const configuration = {
+      ...DEFAULT_RANKING_CONFIGURATION,
+      signals: updateSignalWeight(DEFAULT_RANKING_CONFIGURATION.signals, 'diversity', 0),
+    };
+    const ranked = rankExperiences(candidates, configuration, FIXED_NOW);
+
+    expect(ranked.every((item) => item.explanation.diversityPenalty === 0)).toBe(true);
+    expect(ranked.every((item) => item.factors.diversity === 0)).toBe(true);
+  });
+
+  it('increases greedy reranking pressure when the diversity weight increases', () => {
+    const fixture = experiences[0];
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const candidates = Array.from({ length: 6 }, (_, index) => ({
+      ...fixture,
+      id: `same-genre-${index}`,
+      title: `Same genre ${index}`,
+      matchScore: undefined,
+      personaRelevanceScore: undefined,
+      tags: ['shared', 'same'],
+    }));
+    const lowDiversity = {
+      ...DEFAULT_RANKING_CONFIGURATION,
+      signals: updateSignalWeight(DEFAULT_RANKING_CONFIGURATION.signals, 'diversity', 5),
+    };
+    const highDiversity = {
+      ...DEFAULT_RANKING_CONFIGURATION,
+      signals: updateSignalWeight(DEFAULT_RANKING_CONFIGURATION.signals, 'diversity', 25),
+    };
+    const low = rankExperiences(candidates, lowDiversity, FIXED_NOW);
+    const high = rankExperiences(candidates, highDiversity, FIXED_NOW);
+    const penaltyTotal = (items: typeof low) =>
+      items.reduce((sum, item) => sum + Math.abs(item.explanation.diversityPenalty), 0);
+
+    expect(penaltyTotal(high)).toBeGreaterThan(penaltyTotal(low));
+  });
+
+  it('does not use description length as a relevance signal', () => {
+    const fixture = experiences[0];
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const concise = {
+      ...fixture,
+      matchScore: 90,
+      personaRelevanceScore: 0.65,
+      description: 'A concise description.',
+    };
+    const verbose = {
+      ...concise,
+      description: `A concise description. ${'Additional unrelated prose. '.repeat(100)}`,
+    };
+    const conciseRanked = rankExperiences([concise], DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
+    const verboseRanked = rankExperiences([verbose], DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
+
+    expect(verboseRanked?.factors.relevance).toBe(conciseRanked?.factors.relevance);
+  });
+
+  it('removes persona-only signal weights when no persona is selected', () => {
+    const fixture = experiences[0];
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const unpersonalized = {
+      ...fixture,
+      matchScore: undefined,
+      personaRelevanceScore: undefined,
+    };
+    const ranked = rankExperiences([unpersonalized], DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
+
+    expect(ranked?.factors.affinity).toBe(0);
+    expect(ranked?.factors.relevance).toBe(0);
+    expect(ranked?.explanation.signals.find((signal) => signal.id === 'affinity')).toMatchObject({
+      enabled: false,
+      effectiveWeight: 0,
+    });
+    expect(ranked?.explanation.signals.find((signal) => signal.id === 'relevance')).toMatchObject({
+      enabled: false,
+      effectiveWeight: 0,
+    });
   });
 
   it('uses deterministic synthetic retention and repeat-play inputs in engagement quality', () => {
@@ -349,6 +470,42 @@ describe('discovery ranking', () => {
           item.subgenre.toLowerCase().includes('horror'),
       ),
     ).toBe(true);
+  });
+
+  it('keeps persona signals enabled when context filtering removes persona-scored games', () => {
+    const eligibleWithoutPersonaScore = experiences.find(
+      (experience) =>
+        experience.matchScore === undefined &&
+        getEligibility('trending', experience, FIXED_NOW).eligible,
+    );
+    const personaScoredButIneligible = experiences.find(
+      (experience) => experience.matchScore !== undefined,
+    );
+
+    expect(eligibleWithoutPersonaScore).toBeDefined();
+    expect(personaScoredButIneligible).toBeDefined();
+
+    if (!eligibleWithoutPersonaScore || !personaScoredButIneligible) {
+      throw new Error('Expected both persona-scored and unscored fixtures.');
+    }
+
+    const ranked = rankForContext(
+      [
+        eligibleWithoutPersonaScore,
+        {
+          ...personaScoredButIneligible,
+          metrics: { ...personaScoredButIneligible.metrics, weeklyChange: -1 },
+        },
+      ],
+      DEFAULT_RANKING_CONFIGURATION,
+      'trending',
+      { now: FIXED_NOW },
+    )[0];
+
+    expect(ranked).toBeDefined();
+    const relevance = ranked?.explanation.signals.find((signal) => signal.id === 'relevance');
+    expect(relevance).toMatchObject({ enabled: true });
+    expect(relevance?.effectiveWeight).toBeGreaterThan(0);
   });
 
   it('applies context multipliers before normalizing effective weights', () => {

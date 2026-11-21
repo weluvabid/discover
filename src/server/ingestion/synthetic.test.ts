@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { calculatePersonaMatchScore, generateSyntheticMetrics } from './synthetic';
+import {
+  calculatePersonaMatchScore,
+  calculatePersonaRelevanceScore,
+  generateSyntheticMetrics,
+} from './synthetic';
 
 const input = {
   universeId: '2711375305',
@@ -39,47 +43,49 @@ describe('synthetic metrics', () => {
 describe('persona match scoring', () => {
   it('prioritizes exact preferred genres over adjacent and unrelated genres', () => {
     const preferences = ['Simulation', 'Puzzle'];
-    const direct = calculatePersonaMatchScore('Simulation', preferences, 75, 'builder');
-    const adjacent = calculatePersonaMatchScore('Co-op', preferences, 75, 'builder');
-    const unrelated = calculatePersonaMatchScore('Horror', preferences, 75, 'builder');
+    const direct = calculatePersonaMatchScore('Simulation', preferences);
+    const adjacent = calculatePersonaMatchScore('Co-op', preferences);
+    const unrelated = calculatePersonaMatchScore('Horror', preferences);
 
     expect(direct).toBeGreaterThan(adjacent);
     expect(adjacent).toBeGreaterThan(unrelated);
   });
 
-  it('uses persona-specific metadata to distinguish profiles with shared genre preferences', () => {
-    const builderPreferences = ['Simulation', 'Puzzle'];
-    const progressionPreferences = ['Simulation', 'Action RPG'];
-    const builder = calculatePersonaMatchScore(
-      'Simulation',
-      builderPreferences,
-      75,
-      'builder',
-      'Build a factory tycoon',
-    );
-    const tactician = calculatePersonaMatchScore(
-      'Simulation',
-      builderPreferences,
-      75,
-      'tactician',
-      'Build a factory tycoon',
-    );
-    const collector = calculatePersonaMatchScore(
-      'Simulation',
-      progressionPreferences,
-      75,
-      'collector',
-      'Collect pets and trade eggs',
-    );
-    const completionist = calculatePersonaMatchScore(
-      'Simulation',
-      progressionPreferences,
-      75,
-      'completionist',
-      'Collect pets and trade eggs',
-    );
+  it('keeps genre affinity independent from topical keyword relevance', () => {
+    const preferences = ['Simulation', 'Puzzle'];
+    const genreAffinity = calculatePersonaMatchScore('Simulation', preferences);
 
-    expect(builder).toBeGreaterThan(tactician);
-    expect(collector).toBeGreaterThan(completionist);
+    const builderRelevance = calculatePersonaRelevanceScore('builder', {
+      title: 'Factory Tycoon',
+      description: 'Build and design your own production line.',
+      subgenre: 'Tycoon',
+      tags: ['factory', 'building', 'automation'],
+    });
+    const tacticianRelevance = calculatePersonaRelevanceScore('tactician', {
+      title: 'Factory Tycoon',
+      description: 'Build and design your own production line.',
+      subgenre: 'Tycoon',
+      tags: ['factory', 'building', 'automation'],
+    });
+
+    expect(genreAffinity).toBe(84);
+    expect(builderRelevance).toBeGreaterThan(tacticianRelevance);
+  });
+
+  it('does not reward repeated or longer descriptions for the same matched keywords', () => {
+    const concise = calculatePersonaRelevanceScore('collector', {
+      title: 'Pet Collector',
+      description: 'Collect pets and trade eggs.',
+      subgenre: 'Collection',
+      tags: ['pets', 'trading'],
+    });
+    const verbose = calculatePersonaRelevanceScore('collector', {
+      title: 'Pet Collector',
+      description: `Collect pets and trade eggs. ${'Pets and collecting. '.repeat(100)}`,
+      subgenre: 'Collection',
+      tags: ['pets', 'trading'],
+    });
+
+    expect(verbose).toBe(concise);
   });
 });

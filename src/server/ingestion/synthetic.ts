@@ -223,28 +223,53 @@ const PERSONA_KEYWORDS: Record<string, string[]> = {
   ],
 };
 
-/** Deterministic persona affinity calibrated to the declared genre preferences. */
+/** Deterministic persona affinity based on declared genre preferences and rating. */
 export function calculatePersonaMatchScore(
   genre: ExperienceGenre,
   preferences: readonly ExperienceGenre[],
-  rating = 75,
-  personaId?: string,
-  searchableText = '',
 ): number {
   const direct = preferences.includes(genre);
-  const adjacent = RELATED_GENRES[genre].some((candidate) => preferences.includes(candidate));
-  const keywords = PERSONA_KEYWORDS[personaId ?? ''] ?? [];
-  const normalizedText = searchableText.toLowerCase();
-  const keywordMatch = keywords.some((keyword) => {
-    const escaped = keyword.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const adjacent = (RELATED_GENRES[genre] ?? []).some((candidate) => preferences.includes(candidate));
 
-    return new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`).test(normalizedText);
-  });
-  const base = direct ? 84 : adjacent ? 58 : 28;
-  const keywordBoost = keywordMatch ? 12 : 0;
-  const ratingAdjustment = (rating - 75) * 0.08;
+  return direct ? 84 : adjacent ? 58 : 28;
+}
 
-  return Math.round(clamp(base + keywordBoost + ratingAdjustment, 20, 99));
+/**
+ * Measures persona-specific topical alignment without rewarding description length.
+ * Each keyword contributes at most once, with stronger evidence in titles and taxonomy.
+ */
+export function calculatePersonaRelevanceScore(
+  personaId: string,
+  input: {
+    title: string;
+    description: string;
+    subgenre: string;
+    tags: readonly string[];
+  },
+): number {
+  const keywords = PERSONA_KEYWORDS[personaId] ?? [];
+  if (keywords.length === 0) return 0;
+
+  const fields = [
+    { value: input.title, weight: 1 },
+    { value: input.subgenre, weight: 0.85 },
+    { value: input.tags.join(' '), weight: 0.75 },
+    { value: input.description, weight: 0.45 },
+  ];
+  let score = 0;
+
+  for (const keyword of keywords) {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`, 'i');
+    const strongestMatch = fields.reduce(
+      (best, field) => (pattern.test(field.value) ? Math.max(best, field.weight) : best),
+      0,
+    );
+    score += strongestMatch;
+  }
+
+  // Two strong topical matches saturate the signal; repeated prose cannot inflate it.
+  return Math.round(clamp(score / 2, 0, 1) * 100) / 100;
 }
 
 const GENRE_AFFINITY: Record<string, ExperienceGenre[]> = {
@@ -311,7 +336,7 @@ export function generateSyntheticMetrics(input: {
   const matchScores = Object.fromEntries(
     PERSONAS.map(([id, , , preferences]) => [
       id,
-      calculatePersonaMatchScore(genre as ExperienceGenre, preferences, input.rating, id),
+      calculatePersonaMatchScore(genre as ExperienceGenre, preferences),
     ]),
   );
 

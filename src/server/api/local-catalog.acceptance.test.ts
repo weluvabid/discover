@@ -100,8 +100,12 @@ describe('Local catalog acceptance (read-only)', () => {
       'hidden-gems',
       'recently-launched',
     ] as const;
-    const now = new Date();
     const catalog = getCatalog(db, { limit: 10_000 });
+    const freshnessReference = catalog
+      .map((experience) => Date.parse(experience.freshnessReferenceAt ?? ''))
+      .filter(Number.isFinite)
+      .reduce((latest, timestamp) => Math.max(latest, timestamp), Number.NEGATIVE_INFINITY);
+    const now = Number.isFinite(freshnessReference) ? new Date(freshnessReference) : new Date();
 
     for (const context of contexts) {
       const response = await handleApiRequest(

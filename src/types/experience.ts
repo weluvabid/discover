@@ -68,6 +68,8 @@ export interface Experience {
   tags: string[];
   discoveryReason?: string;
   matchScore?: number;
+  /** Persona-specific topical relevance, independent of genre affinity. */
+  personaRelevanceScore?: number;
   isFeatured?: boolean;
 }
 
