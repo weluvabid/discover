@@ -86,22 +86,8 @@ These are engine-only measurements in the implementation container, not browser 
 The context pipeline uses a bounded top-candidate heap before diversity reranking. The reranker can subtract at most eight points, so it retains the top `8 × resultLimit` candidates plus every candidate within eight points of that cutoff. A candidate below that bound cannot outrank the retained cutoff candidate even if the latter receives the maximum diversity penalty. This avoids sorting and pairwise-comparing the entire catalog for small visible result windows while preserving the bounded reranking result.
 
 
-## Worker-pool ranking experiment
+## API execution model
 
-The API accepts `RANKING_WORKERS=0` (default) for the synchronous baseline or a
-positive worker count for off-thread ranking. SQLite catalog retrieval remains on
-the HTTP thread; only the pure ranking computation is moved to workers. This
-deliberately isolates ranking from database I/O so the benchmark can show whether
-ranking is the limiting stage.
+The API runs ranking in a four-thread Node.js worker pool by default. Candidate retrieval remains on the HTTP thread and uses the local SQLite read model. Set `RANKING_WORKERS=0` to use synchronous ranking, or override the worker count for benchmarking. The worker queue is bounded by `RANKING_QUEUE_CAPACITY` (default `128`); when capacity is exhausted, discovery returns HTTP 503.
 
-- `RANKING_WORKERS=2` starts two Node worker threads.
-- `RANKING_QUEUE_CAPACITY=128` bounds waiting ranking jobs. When all workers are
-  occupied and the queue is full, discovery returns HTTP 503.
-- Worker errors reject the associated request; failed workers are replaced.
-- Shutdown terminates the pool and rejects queued/in-flight work.
-
-Benchmark the same production build and local read-only catalog with
-`RANKING_WORKERS=0`, then `2`, `4`, and `8`. Compare throughput and tail latency
-at identical concurrency levels. This experiment intentionally keeps SQLite on
-the main thread; if throughput remains flat, the next experiment should isolate
-catalog retrieval rather than increasing worker count.
+I moved ranking to workers after API measurements showed that synchronous CPU work was blocking the HTTP event loop. The benchmark, trade-offs, and reasoning behind the four-worker default are documented in [Moving discovery ranking off the HTTP thread](ranking-worker-investigation.md).

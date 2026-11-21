@@ -5,7 +5,7 @@ import { hydrateFromTurso } from './turso-sync';
 import { RankingWorkerPool } from './ranking/worker-pool';
 
 const db = openDatabase();
-const workerCount = Number(process.env.RANKING_WORKERS ?? 0);
+const workerCount = Number(process.env.RANKING_WORKERS ?? 4);
 const rankingPool = workerCount > 0 ? new RankingWorkerPool(workerCount, Number(process.env.RANKING_QUEUE_CAPACITY ?? 128)) : undefined;
 const port = Number(process.env.PORT ?? 8787);
 const host = process.env.HOST ?? '127.0.0.1';
