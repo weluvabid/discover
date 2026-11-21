@@ -50,7 +50,7 @@ Ranking accepts an injected `Date`. The Explore page captures one clock value fo
 
 ## Current data boundary
 
-The browser still uses the mock catalog until the API integration phase. The backend catalog is populated from a pinned Roblox discovery CSV and enriched through public Roblox metadata endpoints. `matchScore` is a deterministic synthetic persona-affinity input, not a value learned from real player events. For enriched records, the existing quality signal also consumes synthetic D1/D7/D30 retention, repeat-play rate and average session duration; mock records without those fields retain the original rating/playtime calculation. The six-signal interface, context eligibility and ranking strategies remain shared between both data sources.
+The browser requests discovery results from the Hono API. The API ranks the valid local SQLite catalog, populated from a pinned Roblox discovery CSV and enriched through public Roblox metadata endpoints. `matchScore` is a deterministic synthetic persona-affinity input, not a value learned from real player events. For enriched records, the existing quality signal also consumes synthetic D1/D7/D30 retention, repeat-play rate and average session duration; mock records without those fields retain the original rating/playtime calculation. The six-signal interface, context eligibility and ranking strategies remain shared between both data sources.
 
 ## Context ranking profiles
 
@@ -91,3 +91,9 @@ The context pipeline uses a bounded top-candidate heap before diversity rerankin
 The API runs ranking in a four-thread Node.js worker pool by default. Candidate retrieval remains on the HTTP thread and uses the local SQLite read model. Set `RANKING_WORKERS=0` to use synchronous ranking, or override the worker count for benchmarking. The worker queue is bounded by `RANKING_QUEUE_CAPACITY` (default `128`); when capacity is exhausted, discovery returns HTTP 503.
 
 I moved ranking to workers after API measurements showed that synchronous CPU work was blocking the HTTP event loop. The benchmark, trade-offs, and reasoning behind the four-worker default are documented in [Moving discovery ranking off the HTTP thread](ranking-worker-investigation.md).
+
+## Play-style matching
+
+The discovery API exposes the catalog's 12 play-style profiles through `GET /api/personas`. The Explore filter lets a visitor choose a profile such as Competitive climber, Social explorer or Creative builder. The selected profile is stored in the URL as `persona`, so a discovery view can be shared and refreshed without losing the selection.
+
+Discovery requests pass that profile to the catalog query. Each experience receives its corresponding catalog match score, which feeds the affinity and relevance signals and is shown as a profile-match indicator on result cards. Leaving the profile set to “All play styles” keeps discovery broad and does not attach a profile match score.

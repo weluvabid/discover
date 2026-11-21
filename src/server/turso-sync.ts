@@ -233,10 +233,13 @@ function rowValue(value: { value?: string } | undefined): string | null {
 
 function sqliteValue(value: unknown): string | number | bigint | null {
   if (value === null || value === undefined) return null;
+
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint') {
     return value;
   }
+
   if (typeof value === 'boolean') return value ? 1 : 0;
+
   throw new Error(`Unsupported value in synchronized catalog: ${typeof value}`);
 }
 
@@ -244,6 +247,7 @@ async function queryRows(endpoint: string, token: string, sql: string) {
   const results = await pipeline(endpoint, token, [
     { type: 'execute', stmt: { sql, want_rows: true } },
   ]);
+
   return results[0]?.response?.result?.rows ?? [];
 }
 
@@ -254,6 +258,7 @@ export async function hydrateFromTurso(
 ) {
   const databaseUrl = options.url ?? process.env.TURSO_DATABASE_URL;
   const token = options.authToken ?? process.env.TURSO_AUTH_TOKEN;
+
   if (!databaseUrl || !token) throw new Error('TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are required.');
 
   const endpoint = endpointFor(databaseUrl);
@@ -295,9 +300,12 @@ export async function hydrateFromTurso(
   );
 
   db.exec('BEGIN IMMEDIATE');
+
   try {
     db.exec('DELETE FROM game_metric_snapshots; DELETE FROM games;');
+
     for (const game of games) insertGame.run(...gameColumns.map((column) => sqliteValue(game[column])));
+
     for (const snapshot of snapshots) {
       insertSnapshot.run(
         ...[
@@ -313,9 +321,11 @@ export async function hydrateFromTurso(
         ].map(sqliteValue),
       );
     }
+
     for (const persona of personas) {
       insertPersona.run(persona.id, persona.label, persona.description, persona.preferences_json);
     }
+
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');

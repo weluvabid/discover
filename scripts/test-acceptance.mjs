@@ -4,12 +4,17 @@ import { spawnSync } from 'node:child_process';
 
 function readEnvFile(path) {
   if (!existsSync(path)) return {};
+
   const values = {};
+
   for (const line of readFileSync(path, 'utf8').split(/\r?\n/)) {
     const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+
     if (!match || line.trimStart().startsWith('#')) continue;
+
     values[match[1]] = match[2].replace(/^(['"])(.*)\1$/, '$2');
   }
+
   return values;
 }
 
@@ -40,4 +45,5 @@ if (result.error) {
   process.stderr.write(`${result.error.message}\n`);
   process.exit(2);
 }
+
 process.exit(result.status ?? 1);

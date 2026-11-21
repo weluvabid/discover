@@ -47,7 +47,7 @@ This runs TypeScript, ESLint, Prettier, Vitest, and the production build.
 
 Explore is powered by one shared, explainable ranking engine with five separate contexts: Featured, Trending, Recommended, Hidden Gems, and Recently Launched. Context eligibility is evaluated before ranking; user preferences affect ordering within eligible candidate pools. Ranked results expose weighted signal contributions and any diversity reranking adjustment through the **Why this result?** popover.
 
-Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/collections`, `/library`, and `/search`. Genre filters are reflected in the URL and constrain every Explore context. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
+Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/collections`, `/library`, and `/search`. Genre and play-style filters are reflected in the URL and constrain every Explore context. Twelve catalog play styles can be selected to tailor affinity and relevance scores; the ranking explanation shows how the selected profile contributes. Search results prioritize title and creator matches before popularity. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
 
 ## Frontend platform
 

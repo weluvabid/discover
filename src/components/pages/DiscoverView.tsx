@@ -7,7 +7,7 @@ import { ExploreFilterBar } from '@/components/discovery/ExploreFilterBar';
 import { FeaturedExperience } from '@/components/experience/FeaturedExperience';
 import { CollectionsView } from './CollectionsView';
 import { PageIntro } from './PageIntro';
-import type { DiscoveryView, Experience, ExperienceGenre } from '@/types/experience';
+import type { DiscoveryPersona, DiscoveryView, Experience, ExperienceGenre } from '@/types/experience';
 
 interface DiscoverViewProps {
   activeView: DiscoveryView;
@@ -17,6 +17,9 @@ interface DiscoverViewProps {
   recommendations: Experience[];
   rankedSections: Record<RankingContext, RankedExperience[]>;
   genre: ExperienceGenre | 'All';
+  personas: DiscoveryPersona[];
+  persona: string;
+  onPersonaChange: (persona: string) => void;
   onGenreChange: (genre: ExperienceGenre | 'All') => void;
   onToggleBookmark: (id: string) => void;
   onPlay: (experience: Experience) => void;
@@ -31,6 +34,9 @@ export function DiscoverView({
   recommendations,
   rankedSections,
   genre,
+  personas,
+  persona,
+  onPersonaChange,
   onGenreChange,
   onToggleBookmark,
   onPlay,
@@ -43,6 +49,7 @@ export function DiscoverView({
     ]),
   ) as Record<RankingContext, Map<string, RankedExperience>>;
   const featured = rankedSections.featured[0];
+  const selectedPersona = personas.find((item) => item.id === persona);
 
   if (activeView === 'library') {
     return (
@@ -127,12 +134,12 @@ export function DiscoverView({
   return (
     <>
       <PageIntro
-        eyebrow="PERSONALIZED DISCOVERY"
+        eyebrow={selectedPersona ? 'PERSONALIZED DISCOVERY' : 'DISCOVERY'}
         title="Explore"
-        description="Find worlds worth your time, ranked around what matters to you."
+        description={selectedPersona ? `Discover worlds matched to the ${selectedPersona.label.toLowerCase()} play style.` : "Find worlds worth your time, ranked by engagement, relevance and discovery signals."}
         icon={<Compass size={17} />}
       />
-      <ExploreFilterBar genre={genre} onGenreChange={onGenreChange} />
+      <ExploreFilterBar genre={genre} onGenreChange={onGenreChange} personas={personas} persona={persona} onPersonaChange={onPersonaChange} />
       {featured && (
         <FeaturedExperience
           experience={featured.experience}
@@ -163,7 +170,7 @@ export function DiscoverView({
       />
       <ExperienceSection
         title="Recommended For You"
-        subtitle="Ranked by your active discovery preferences and experience signals."
+        subtitle={selectedPersona ? `Ranked against the ${selectedPersona.label} profile and experience signals.` : "Ranked by engagement quality, relevance and discovery signals."}
         experiences={recommendations}
         rankingById={rankingMaps.recommended}
         variant="recommended"
@@ -192,8 +199,8 @@ export function DiscoverView({
         onPlay={onPlay}
       />
       <div className="mt-10 flex items-start gap-2 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
-        <Sparkles size={14} /> Recommendations are generated from sample player preferences and
-        experience signals.
+        <Sparkles size={14} /> Play-style matches combine genre affinity with experience engagement
+        and discovery signals.
       </div>
     </>
   );

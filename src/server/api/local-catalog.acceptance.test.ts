@@ -31,6 +31,7 @@ describe('Local catalog acceptance (read-only)', () => {
   it('passes SQLite integrity and foreign-key checks', () => {
     const integrity = db.prepare('PRAGMA integrity_check').all() as Array<{ integrity_check: string }>;
     const foreignKeys = db.prepare('PRAGMA foreign_key_check').all();
+
     expect(integrity).toEqual([{ integrity_check: 'ok' }]);
     expect(foreignKeys).toEqual([]);
   });
@@ -55,6 +56,7 @@ describe('Local catalog acceptance (read-only)', () => {
         SUM(CASE WHEN source_status NOT IN ('pending','valid','unavailable','invalid') THEN 1 ELSE 0 END) AS bad_status
         FROM games`)
       .get() as { total: number; unique_ids: number; bad_status: number };
+
     expect(Number(result.total)).toBe(Number(result.unique_ids));
     expect(Number(result.bad_status)).toBe(0);
   });
@@ -70,6 +72,7 @@ describe('Local catalog acceptance (read-only)', () => {
         SUM(CASE WHEN json_valid(tags_json) = 0 OR json_valid(match_scores_json) = 0 OR json_type(match_scores_json) != 'object' THEN 1 ELSE 0 END) AS bad_json
         FROM games`)
       .get() as Record<string, number>;
+
     for (const value of Object.values(result)) expect(Number(value)).toBe(0);
   });
 
@@ -84,6 +87,7 @@ describe('Local catalog acceptance (read-only)', () => {
       .prepare(`SELECT COUNT(*) AS count FROM game_metric_snapshots s
         LEFT JOIN games g ON g.universe_id = s.universe_id WHERE g.universe_id IS NULL`)
       .get() as { count: number };
+
     expect(Number(duplicates.count)).toBe(0);
     expect(Number(orphaned.count)).toBe(0);
   });
@@ -106,17 +110,20 @@ describe('Local catalog acceptance (read-only)', () => {
         new URL(`http://localhost/api/discover/${context}`),
         { limit: 100, persona: 'builder' },
       );
+
       expect(response.status, context).toBe(200);
       const body = response.body as {
         context: string;
         totalCandidates: number;
         results: Array<{ experience: Experience; score: number; position: number; explanation: { context: string; eligibilityReasons: string[] } }>;
       };
+
       expect(body.context).toBe(context);
       expect(body.totalCandidates).toBeGreaterThan(0);
       const eligibleCount = catalog.filter((experience) =>
         getEligibility(context, experience, now).eligible,
       ).length;
+
       expect(body.results.length).toBe(Math.min(100, eligibleCount));
       body.results.forEach((item, index) => {
         expect(item.position).toBe(index + 1);
@@ -133,7 +140,9 @@ describe('Local catalog acceptance (read-only)', () => {
 
   it('uses all twelve deterministic persona definitions and returns persona-specific scores', async () => {
     const personas = seedPersonas();
+
     expect(personas).toHaveLength(12);
+
     for (const persona of personas) {
       const response = await handleApiRequest(
         db,
@@ -141,9 +150,11 @@ describe('Local catalog acceptance (read-only)', () => {
         new URL('http://localhost/api/discover/recommended'),
         { persona: persona.id, limit: 5 },
       );
+
       expect(response.status).toBe(200);
       expect((response.body as { persona: string | null }).persona).toBe(persona.id);
       const results = (response.body as { results: Array<{ experience: Experience }> }).results;
+
       for (const result of results) {
         expect(result.experience.matchScore).toEqual(expect.any(Number));
         expect(result.experience.matchScore).toBeGreaterThanOrEqual(20);
@@ -152,6 +163,7 @@ describe('Local catalog acceptance (read-only)', () => {
     }
 
     const listed = await handleApiRequest(db, 'GET', new URL('http://localhost/api/personas'));
+
     expect((listed.body as { data: unknown[] }).data).toHaveLength(12);
   });
 
@@ -173,9 +185,11 @@ describe('Local catalog acceptance (read-only)', () => {
     );
     const pages = [first, second, third].map((response) => {
       expect(response.status).toBe(200);
+
       return (response.body as { data: Experience[]; total: number }).data;
     });
     const ids = pages.flat().map((experience) => experience.id);
+
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids.length).toBeGreaterThan(0);
     expect((first.body as { total: number }).total).toBeGreaterThanOrEqual(ids.length);
@@ -185,6 +199,7 @@ describe('Local catalog acceptance (read-only)', () => {
     const sample = db
       .prepare("SELECT universe_id, title FROM games WHERE source_status = 'valid' ORDER BY universe_id LIMIT 1")
       .get() as { universe_id: string; title: string } | undefined;
+
     expect(sample).toBeDefined();
     const query = sample!.title.slice(0, Math.min(12, sample!.title.length));
     const search = await handleApiRequest(
@@ -197,6 +212,7 @@ describe('Local catalog acceptance (read-only)', () => {
       'GET',
       new URL(`http://localhost/api/experiences/${sample!.universe_id}`),
     );
+
     expect(search.status).toBe(200);
     expect((search.body as { data: Experience[] }).data.some((item) => item.id === sample!.universe_id)).toBe(true);
     expect(detail).toMatchObject({ status: 200, body: { id: sample!.universe_id, title: sample!.title } });
@@ -207,6 +223,7 @@ describe('Local catalog acceptance (read-only)', () => {
     const count = db
       .prepare("SELECT COUNT(*) AS count FROM games WHERE source_status = 'valid'")
       .get() as { count: number };
+
     expect(response).toMatchObject({ status: 200, body: { status: 'ok', catalogCount: Number(count.count) } });
   });
 });

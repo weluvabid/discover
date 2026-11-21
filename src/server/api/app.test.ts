@@ -72,7 +72,20 @@ describe('Discover API handler', () => {
 
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ context: 'recommended', persona: 'builder' });
-    expect((result.body as { results: unknown[] }).results).toHaveLength(1);
+    expect((result.body as { results: Array<{ experience: { matchScore?: number } }> }).results).toHaveLength(1);
+    expect((result.body as { results: Array<{ experience: { matchScore?: number } }> }).results[0]?.experience.matchScore).toBe(94);
+  });
+
+  it('exposes the available play styles for discovery matching', async () => {
+    const result = await handleApiRequest(db, 'GET', new URL('http://localhost/api/personas'));
+    const personas = (result.body as { data: Array<{ id: string; preferences: string[] }> }).data;
+
+    expect(result.status).toBe(200);
+    expect(personas.length).toBe(12);
+    expect(personas.find((persona) => persona.id === 'builder')?.preferences).toEqual([
+      'Simulation',
+      'Puzzle',
+    ]);
   });
 
   it('rejects unknown discovery contexts and invalid result limits', async () => {

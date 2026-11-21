@@ -68,6 +68,15 @@ describe('Discover API adversarial inputs', () => {
     expect(getCatalog(db, { query: "' OR 1=1 --" })).toEqual([]);
   });
 
+  it('orders search matches by title relevance before player popularity', () => {
+    insertGame(db, { universeId: '1004', title: 'Adventure Quest' });
+    insertGame(db, { universeId: '1005', title: 'Ordinary Adventure', description: 'Adventure game' });
+
+    const results = getCatalog(db, { query: 'Adventure' });
+
+    expect(results.map((item) => item.id)).toEqual(['1004', '1002', '1005']);
+  });
+
   it('does not expose unavailable records through catalog, search or detail routes', async () => {
     const catalog = await handleApiRequest(db, 'GET', new URL('http://localhost/api/experiences'));
     const search = await handleApiRequest(
@@ -96,6 +105,7 @@ describe('Discover API adversarial inputs', () => {
       'GET',
       new URL(`http://localhost/api/experiences?limit=${encodeURIComponent(limit)}`),
     );
+
     expect(result.status).toBe(400);
   });
 
@@ -105,6 +115,7 @@ describe('Discover API adversarial inputs', () => {
       'GET',
       new URL(`http://localhost/api/search?q=${'x'.repeat(201)}`),
     );
+
     expect(result.status).toBe(400);
   });
 
@@ -121,6 +132,7 @@ describe('Discover API adversarial inputs', () => {
       new URL('http://localhost/api/discover/../../admin'),
       {},
     );
+
     expect(invalidLimit.status).toBe(400);
     expect(unknownContext.status).toBe(404);
   });
@@ -132,6 +144,7 @@ describe('Discover API adversarial inputs', () => {
       new URL('http://localhost/api/discover/recommended'),
       { signals: [{ id: '__proto__', weight: Number.NaN }], limit: 5 },
     );
+
     expect(result.status).toBe(200);
     expect((result.body as { results: unknown[] }).results).toHaveLength(2);
   });
@@ -147,6 +160,7 @@ describe('Discover API adversarial inputs', () => {
       'GET',
       new URL('http://localhost/api/experiences?limit=1&offset=1&q=Adventure'),
     );
+
     expect(first).toMatchObject({ status: 200, body: { total: 1, offset: 0 } });
     expect(second).toMatchObject({ status: 200, body: { total: 1, offset: 1, data: [] } });
   });

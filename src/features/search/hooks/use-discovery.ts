@@ -10,20 +10,24 @@ export function useDiscovery() {
 
   useEffect(() => {
     const normalized = query.trim();
+
     if (!normalized) {
       setResults([]);
       setError(null);
       setLoading(false);
+
       return;
     }
 
     const controller = new AbortController();
+
     setLoading(true);
     setError(null);
     searchCatalog(normalized, 'All', controller.signal)
       .then(setResults)
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
+
         setError(cause instanceof Error ? cause.message : 'Search failed.');
       })
       .finally(() => {

@@ -150,6 +150,7 @@ export async function handleApiRequest(
       : undefined;
     const catalogStarted = performance.now();
     const catalog = getCatalog(db, { limit: 10_000, genre, persona });
+
     observe?.('catalog', performance.now() - catalogStarted);
     const strategy = ['balanced', 'popularity', 'personalized', 'discovery'].includes(
       input.strategy ?? '',
@@ -175,8 +176,10 @@ export async function handleApiRequest(
         validSignals && input.signals ? input.signals : DEFAULT_RANKING_CONFIGURATION.signals,
     };
     let results: RankedExperience[];
+
     try {
       const rankingStarted = performance.now();
+
       results = await ranker(catalog, configuration, context, {
         limit,
         genre: genre as never,
@@ -191,6 +194,7 @@ export async function handleApiRequest(
       ) {
         return { status: 503, body: { error: 'Ranking capacity temporarily exhausted.' } };
       }
+
       throw error;
     }
 

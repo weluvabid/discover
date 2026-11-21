@@ -79,6 +79,7 @@ process.once('SIGTERM', shutdown);
 const start = async () => {
   if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
     const result = await hydrateFromTurso(db);
+
     process.stdout.write(`Hydrated API read model from Turso: ${JSON.stringify(result)}\n`);
   }
 
@@ -89,6 +90,7 @@ const start = async () => {
 
 start().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : 'Unknown startup error';
+
   process.stderr.write(`Discover API startup failed: ${message}\n`);
   db.close();
   process.exitCode = 1;

@@ -13,6 +13,7 @@ parentPort.on('message', (message: {
 }) => {
   try {
     const result = rankForContext(message.catalog, message.configuration, message.context, message.options);
+
     parentPort!.postMessage({ id: message.id, result });
   } catch (error) {
     parentPort!.postMessage({

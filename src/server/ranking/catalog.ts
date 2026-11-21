@@ -112,14 +112,33 @@ export function getCatalog(
     parameters.push(query, query, query);
   }
 
+  const queryOrder = options.query
+    ? `CASE
+         WHEN lower(title) = lower(?) THEN 0
+         WHEN lower(title) LIKE lower(?) ESCAPE '\\' THEN 1
+         WHEN lower(creator) = lower(?) THEN 2
+         WHEN lower(creator) LIKE lower(?) ESCAPE '\\' THEN 3
+         WHEN lower(title) LIKE lower(?) ESCAPE '\\' THEN 4
+         ELSE 5
+       END,`
+    : '';
+  const queryOrderParameters = options.query
+    ? [
+        options.query,
+        `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
+        options.query,
+        `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
+        `%${options.query.replace(/[\\%_]/g, '\\$&')}%`,
+      ]
+    : [];
   const rows = db
     .prepare(
       `SELECT * FROM games
        WHERE ${conditions.join(' AND ')}
-       ORDER BY active_players DESC, universe_id
+       ORDER BY ${queryOrder} active_players DESC, universe_id
        LIMIT 10000`,
     )
-    .all(...parameters) as unknown as GameRow[];
+    .all(...parameters, ...queryOrderParameters) as unknown as GameRow[];
   const experiences = rows
     .map((row) => toExperience(row, options.persona))
     .filter((experience) => !options.genre || options.genre === 'All' || experience.genre === options.genre);
@@ -137,6 +156,7 @@ export function getCatalogCount(
   if (options.query) {
     conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')");
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
+
     parameters.push(query, query, query);
   }
 

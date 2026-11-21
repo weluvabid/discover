@@ -70,3 +70,10 @@ export interface Experience {
 }
 
 export type DiscoveryView = 'explore' | 'trending' | 'hidden-gems' | 'collections' | 'library';
+
+export interface DiscoveryPersona {
+  id: string;
+  label: string;
+  description: string;
+  preferences: ExperienceGenre[];
+}
