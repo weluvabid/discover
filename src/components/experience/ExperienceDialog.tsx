@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { BadgeCheck, ExternalLink, Gamepad2 } from 'lucide-react';
+import { BadgeCheck } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
@@ -12,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { ExperienceArtwork } from './ExperienceArtwork';
+import { ExperiencePlayButton } from './ExperiencePlayButton';
 
 interface ExperienceDialogProps {
   experience: Experience | null;
@@ -67,12 +67,11 @@ export function ExperienceDialog({ experience, onClose }: ExperienceDialogProps)
                 </Badge>
               ))}
             </div>
-            <Button
-              className="primary-button dialog-play"
+            <ExperiencePlayButton
+              className="dialog-play"
               onClick={() => setLaunchNoticeFor(experience.id)}
-            >
-              <Gamepad2 size={17} /> Play on Roblox <ExternalLink size={14} />
-            </Button>
+              label="Play on Roblox"
+            />
             {launchNoticeFor === experience.id ? (
               <p className="dialog-note" role="status">
                 This sample experience does not have a Roblox launch URL yet.

@@ -1,10 +1,11 @@
-import { Bookmark, Play, Sparkles, Star, TrendingUp } from 'lucide-react';
+import { Bookmark, Sparkles, Star, TrendingUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
 import { Button } from '@/components/ui/button';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
+import { ExperiencePlayButton } from './ExperiencePlayButton';
 
 interface ExperienceCardProps {
   experience: Experience;
@@ -23,8 +24,17 @@ export function ExperienceCard({
   onSelect,
   ranking,
 }: ExperienceCardProps) {
+  const overlayLabel =
+    variant === 'trending' && experience.metrics.weeklyChange !== undefined
+      ? `+${experience.metrics.weeklyChange}%`
+      : variant === 'recommended' && experience.matchScore !== undefined
+        ? `${experience.matchScore}% MATCH`
+        : variant === 'recent'
+          ? 'NEW'
+          : null;
+
   return (
-    <article className={`experience-card card-${variant}`}>
+    <article className="experience-card">
       <Button
         variant="ghost"
         className="card-art-button"
@@ -32,46 +42,47 @@ export function ExperienceCard({
         aria-label={`View ${experience.title}`}
       >
         <ExperienceArtwork src={experience.artwork.thumbnail} alt={experience.artwork.alt} />
-        {variant === 'trending' && experience.metrics.weeklyChange !== undefined && (
-          <span className="trend-pill">
-            <TrendingUp size={12} /> +{experience.metrics.weeklyChange}%
+        {overlayLabel && (
+          <span className="experience-art-badge">
+            {variant === 'trending' && <TrendingUp size={13} aria-hidden="true" />}
+            {variant === 'recommended' && <Sparkles size={13} aria-hidden="true" />}
+            {overlayLabel}
           </span>
         )}
-        {variant === 'recent' && <span className="new-pill">NEW</span>}
+        {ranking && <span className="experience-rank-badge">#{ranking.position}</span>}
       </Button>
+
       <div className="card-content">
-        {variant === 'recommended' && experience.matchScore !== undefined && (
-          <span className="match-label">{experience.matchScore}% MATCH</span>
-        )}
         <div className="card-title-row">
           <Button variant="ghost" className="card-title" onClick={() => onSelect(experience)}>
             {experience.title}
           </Button>
-          {variant !== 'recent' && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className={`bookmark-button ${isBookmarked ? 'is-bookmarked' : ''}`}
-              onClick={() => onToggleBookmark(experience.id)}
-              aria-label={
-                isBookmarked
-                  ? `Remove ${experience.title} from library`
-                  : `Save ${experience.title}`
-              }
-              aria-pressed={isBookmarked}
-            >
-              <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className={`bookmark-button ${isBookmarked ? 'is-bookmarked' : ''}`}
+            onClick={() => onToggleBookmark(experience.id)}
+            aria-label={
+              isBookmarked
+                ? `Remove ${experience.title} from library`
+                : `Save ${experience.title}`
+            }
+            aria-pressed={isBookmarked}
+          >
+            <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} />
+          </Button>
         </div>
+
         <p className="card-creator">
           {experience.creator} <span>·</span> {experience.subgenre}
         </p>
+
         {variant === 'recommended' && experience.discoveryReason && (
           <span className="recommendation-reason">
-            <Sparkles size={11} /> {experience.discoveryReason}
+            <Sparkles size={12} aria-hidden="true" /> {experience.discoveryReason}
           </span>
         )}
+
         <div className="card-meta">
           <span className="active-count">
             <i /> {formatCount(experience.metrics.activePlayers)} active
@@ -80,11 +91,21 @@ export function ExperienceCard({
             <Star size={12} fill="currentColor" /> {experience.metrics.rating}%
           </span>
         </div>
-        {ranking && <RankingWhyPopover ranking={ranking} />}
-        <Button variant="outline" className="card-play-button" onClick={() => onSelect(experience)}>
-          <Play size={12} fill="currentColor" />{' '}
-          {variant === 'recommended' ? 'Play Now' : 'Quick Play'}
-        </Button>
+
+        <ExperiencePlayButton
+          onClick={() => onSelect(experience)}
+          label="Play on Roblox"
+        />
+
+        {ranking && (
+          <div className="card-ranking-meta">
+            <span className="card-ranking-score">
+              <strong>{ranking.score.toFixed(1)}</strong>
+              <small>RANK SCORE</small>
+            </span>
+            <RankingWhyPopover ranking={ranking} showScore={false} />
+          </div>
+        )}
       </div>
     </article>
   );

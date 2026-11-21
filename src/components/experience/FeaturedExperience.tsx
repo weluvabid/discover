@@ -1,8 +1,9 @@
-import { BadgeCheck, Bookmark, Gamepad2, Heart, Play, ThumbsUp } from 'lucide-react';
+import { BadgeCheck, Bookmark, Heart, ThumbsUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ExperienceArtwork } from './ExperienceArtwork';
+import { ExperiencePlayButton } from './ExperiencePlayButton';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 
@@ -61,11 +62,8 @@ export function FeaturedExperience({
             {formatCount(experience.metrics.reviewCount)} <small>reviews</small>
           </span>
         </div>
-        {ranking && <RankingWhyPopover ranking={ranking} />}
         <div className="featured-actions">
-          <Button className="primary-button" onClick={() => onSelect(experience)}>
-            <Gamepad2 size={17} /> Play on Roblox <Play size={13} fill="currentColor" />
-          </Button>
+          <ExperiencePlayButton onClick={() => onSelect(experience)} />
           <Button
             variant="ghost"
             size="icon"
@@ -77,6 +75,15 @@ export function FeaturedExperience({
             {isBookmarked ? <Heart size={18} fill="currentColor" /> : <Bookmark size={18} />}
           </Button>
         </div>
+        {ranking && (
+          <div className="featured-ranking-meta">
+            <span className="card-ranking-score">
+              <strong>{ranking.score.toFixed(1)}</strong>
+              <small>RANK SCORE</small>
+            </span>
+            <RankingWhyPopover ranking={ranking} showScore={false} />
+          </div>
+        )}
       </div>
     </section>
   );

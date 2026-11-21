@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { Compass } from 'lucide-react';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import type { Experience } from '@/types/experience';
-import { RankedExperienceRow } from '@/components/experience/RankedExperienceRow';
 import { ExperienceCard } from '@/components/experience/ExperienceCard';
 import {
   Empty,
@@ -28,7 +27,6 @@ interface ExperienceSectionProps {
   emptyIcon?: ReactNode;
   emptyAction?: ReactNode;
   rankingById?: Map<string, RankedExperience>;
-  layout?: 'grid' | 'ranked-list';
 }
 
 export function ExperienceSection({
@@ -45,7 +43,6 @@ export function ExperienceSection({
   emptyIcon = <Compass aria-hidden="true" />,
   emptyAction,
   rankingById,
-  layout = 'grid',
 }: ExperienceSectionProps) {
   return (
     <section className={`discovery-section section-${variant}`}>
@@ -59,24 +56,6 @@ export function ExperienceSection({
           </EmptyHeader>
           {emptyAction && <EmptyContent>{emptyAction}</EmptyContent>}
         </Empty>
-      ) : layout === 'ranked-list' ? (
-        <div className="ranked-experience-list">
-          {experiences.map((experience) => {
-            const ranking = rankingById?.get(experience.id);
-
-            if (!ranking) return null;
-
-            return (
-              <RankedExperienceRow
-                key={experience.id}
-                ranking={ranking}
-                isBookmarked={bookmarks.includes(experience.id)}
-                onToggleBookmark={onToggleBookmark}
-                onSelect={onSelect}
-              />
-            );
-          })}
-        </div>
       ) : (
         <div className={`experience-grid grid-${variant}`}>
           {experiences.map((experience) => (

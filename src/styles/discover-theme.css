@@ -420,53 +420,9 @@
 }
 
 
-/* Final discovery refinements: Iris surfaces, horizontal genre chips, readable scores. */
-.ranked-experience-row {
-  border-color: var(--border);
-  background: var(--card);
-}
-
-.ranked-experience-row:hover {
-  border-color: var(--ring);
-  background: var(--accent);
-}
-
-.ranked-position,
-.ranked-experience-copy strong {
-  color: var(--foreground);
-}
-
-.ranked-position span,
-.ranked-experience-copy span,
-.ranked-bookmark {
-  color: var(--muted-foreground);
-}
-
-.ranked-bookmark:hover,
-.ranked-bookmark.is-bookmarked {
-  background: var(--accent);
-  color: var(--foreground);
-}
-
-.ranked-experience-copy:focus-visible,
-.ranked-artwork:focus-visible,
-.ranked-bookmark:focus-visible {
-  outline-color: var(--ring);
-}
-
-.ranked-artwork {
-  border-color: var(--border);
-  background: var(--secondary);
-}
-
-.ranking-score strong,
-.ranked-experience-row .ranking-score strong {
-  color: var(--foreground);
-}
-
-.ranking-score span {
-  color: var(--muted-foreground);
-}
+/* Final discovery refinements: Iris surfaces and readable ranking metadata. */
+.ranking-score strong { color: var(--foreground); }
+.ranking-score span { color: var(--muted-foreground); }
 
 /* Tabs are the accessible single-select primitive; their triggers are presented as chips. */
 .explore-filter-bar {

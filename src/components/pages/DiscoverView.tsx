@@ -163,7 +163,6 @@ export function DiscoverView({
         subtitle="Ranked by your active discovery preferences and experience signals."
         experiences={recommendations}
         rankingById={rankingMaps.recommended}
-        layout="ranked-list"
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
