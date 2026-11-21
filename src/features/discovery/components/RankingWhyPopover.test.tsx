@@ -23,6 +23,8 @@ describe('RankingWhyPopover', () => {
       screen.getByRole('dialog', { name: `Why ${item.experience.title} ranked here` }),
     ).toBeTruthy();
     expect(screen.getByText('RANKING EXPLANATION')).toBeTruthy();
+    expect(screen.getByText('Weighted signals')).toBeTruthy();
+    expect(screen.getByText('Final Score')).toBeTruthy();
   });
 
   it('keeps only one explanation open and restores focus on Escape', () => {

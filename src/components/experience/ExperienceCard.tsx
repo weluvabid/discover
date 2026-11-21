@@ -99,11 +99,11 @@ export function ExperienceCard({
 
         {ranking && (
           <div className="card-ranking-meta">
-            <span className="card-ranking-score">
+            <div className="card-ranking-score">
               <strong>{ranking.score.toFixed(1)}</strong>
               <small>RANK SCORE</small>
-            </span>
-            <RankingWhyPopover ranking={ranking} showScore={false} />
+              <RankingWhyPopover ranking={ranking} showScore={false} />
+            </div>
           </div>
         )}
       </div>

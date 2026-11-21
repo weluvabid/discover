@@ -43,7 +43,6 @@ export function useDiscoverPage(initialLocation = '/') {
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
 
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
-  const [filterOpen, setFilterOpen] = useState(false);
   const [controlsOpen, setControlsOpen] = useState(false);
   const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(
     DEFAULT_RANKING_CONFIGURATION,
@@ -163,6 +162,13 @@ export function useDiscoverPage(initialLocation = '/') {
   );
   const hasCustomRanking = !isDefaultRankingConfiguration(rankingConfiguration);
 
+  const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
+    const params = new URLSearchParams();
+    if (next !== 'All') params.set('genre', next);
+    const suffix = params.toString();
+    navigateTo(`/${suffix ? `?${suffix}` : ''}`);
+  }, []);
+
   const navigate = useCallback(
     (view: DiscoveryView) => {
       const params = new URLSearchParams();
@@ -187,14 +193,13 @@ export function useDiscoverPage(initialLocation = '/') {
     activeView,
     selectedExperience,
     setSelectedExperience,
-    filterOpen,
-    setFilterOpen,
     controlsOpen,
     setControlsOpen,
     rankingConfiguration,
     setRankingConfiguration,
     genre,
     setGenre,
+    selectGenre,
     bookmarks,
     toggleBookmark,
     query,

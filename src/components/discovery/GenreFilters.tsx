@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EXPERIENCE_GENRES, type ExperienceGenre } from '@/types/experience';
+import { GENRE_FILTER_OPTIONS, type ExperienceGenre } from '@/types/experience';
 
-const genres: Array<ExperienceGenre | 'All'> = ['All', ...EXPERIENCE_GENRES];
+const genres = GENRE_FILTER_OPTIONS;
 
 interface GenreFiltersProps {
   selected: ExperienceGenre | 'All';
@@ -14,7 +14,7 @@ export function GenreFilters({ selected, onSelect }: GenreFiltersProps) {
       className="genre-tabs"
       value={selected}
       onValueChange={(value) => {
-        if (genres.includes(value as ExperienceGenre | 'All')) {
+        if (genres.some((genre) => genre.value === value)) {
           onSelect(value as ExperienceGenre | 'All');
         }
       }}
@@ -22,11 +22,11 @@ export function GenreFilters({ selected, onSelect }: GenreFiltersProps) {
       <TabsList className="genre-filters" aria-label="Filter experiences by genre">
         {genres.map((genre) => (
           <TabsTrigger
-            key={genre}
-            value={genre}
-            className={`genre-chip ${selected === genre ? 'is-selected' : ''}`}
+            key={genre.value}
+            value={genre.value}
+            className={`genre-chip ${selected === genre.value ? 'is-selected' : ''}`}
           >
-            {genre}
+            {genre.label}
           </TabsTrigger>
         ))}
       </TabsList>

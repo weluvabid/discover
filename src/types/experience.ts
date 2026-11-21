@@ -10,6 +10,26 @@ export const EXPERIENCE_GENRES = [
 
 export type ExperienceGenre = (typeof EXPERIENCE_GENRES)[number];
 
+export const GENRE_OPTIONS: ReadonlyArray<{
+  value: ExperienceGenre;
+  label: string;
+  count?: string;
+}> = [
+  { value: 'Action RPG', label: 'Action & RPG', count: '1.4k' },
+  { value: 'Exploration', label: 'Exploration' },
+  { value: 'Co-op', label: 'Survival & Co-op', count: '540' },
+  { value: 'Racing', label: 'Racing' },
+  { value: 'Horror', label: 'Psychological Horror', count: '680' },
+  { value: 'Simulation', label: 'Simulation & Sandbox', count: '920' },
+  { value: 'Puzzle', label: 'Puzzle' },
+];
+
+export const GENRE_FILTER_OPTIONS: ReadonlyArray<{
+  value: ExperienceGenre | 'All';
+  label: string;
+  count?: string;
+}> = [{ value: 'All', label: 'All' }, ...GENRE_OPTIONS];
+
 export interface ExperienceArtwork {
   thumbnail: string;
   hero?: string;

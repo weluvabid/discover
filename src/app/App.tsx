@@ -1,15 +1,6 @@
 import { lazy, Suspense, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { GenreFilters } from '@/components/discovery/GenreFilters';
 import { Header } from '@/components/layout/Header';
-import { MobileNavigation, Sidebar } from '@/components/layout/Navigation';
+import { Sidebar } from '@/components/layout/Navigation';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { DiscoverView } from '@/components/pages/DiscoverView';
 import { SearchResultsView } from '@/components/pages/SearchResultsView';
@@ -49,9 +40,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
         activeView={page.activeView}
         selectedGenre={page.genre}
         onSelectGenre={(selected) => {
-          page.navigate('explore');
-          page.setQuery('');
-          page.setGenre(selected);
+          page.selectGenre(selected);
         }}
       />
       <div className="main-column">
@@ -59,8 +48,6 @@ export default function App({ initialLocation = '/' }: AppProps) {
           query={page.query}
           onQueryChange={page.setQuery}
           resultCount={page.visibleResults.length}
-          onOpenFilters={() => page.setFilterOpen(true)}
-          onOpenLibrary={() => page.navigate('library')}
           onOpenDiscoveryControls={() => page.setControlsOpen(true)}
           hasCustomRanking={page.hasCustomRanking}
         />
@@ -89,24 +76,6 @@ export default function App({ initialLocation = '/' }: AppProps) {
           )}
         </main>
       </div>
-      <MobileNavigation activeView={page.activeView} selectedGenre={page.genre} />
-
-      <Dialog open={page.filterOpen} onOpenChange={page.setFilterOpen}>
-        <DialogContent className="filter-sheet">
-          <DialogHeader className="filter-sheet-heading">
-            <DialogTitle>Filter experiences</DialogTitle>
-            <DialogDescription>Choose a genre to refine discovery.</DialogDescription>
-          </DialogHeader>
-          <GenreFilters selected={page.genre} onSelect={page.setGenre} />
-          <Button
-            className="primary-button filter-apply"
-            onClick={() => page.setFilterOpen(false)}
-          >
-            Show {page.visibleResults.length} experiences
-          </Button>
-        </DialogContent>
-      </Dialog>
-
       <Suspense fallback={null}>
         {page.selectedExperience && (
           <ExperienceDialog

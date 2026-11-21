@@ -149,14 +149,17 @@ function SidebarProvider({
 
 function Sidebar({
   side = "left",
+  mobileSide,
   variant = "sidebar",
   collapsible = "offcanvas",
   className,
   children,
   dir,
+  id,
   ...props
 }: React.ComponentProps<"div"> & {
   side?: "left" | "right"
+  mobileSide?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
@@ -181,17 +184,18 @@ function Sidebar({
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetContent
+          id={id}
           dir={dir}
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          className={cn("w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground", className)}
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
             } as React.CSSProperties
           }
-          side={side}
+          side={mobileSide ?? side}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>
@@ -205,6 +209,7 @@ function Sidebar({
 
   return (
     <div
+      id={id}
       className="group peer hidden text-sidebar-foreground md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}

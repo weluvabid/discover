@@ -1,4 +1,4 @@
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .discovery-controls-dialog {
     width: 100vw;
     height: 100dvh;
@@ -123,7 +123,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .controls-workspace-single .controls-config-panel {
     width: 100%;
     padding: 16px;
@@ -133,7 +133,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .controls-workspace-single .controls-config-panel {
     height: auto;
     overflow: visible;

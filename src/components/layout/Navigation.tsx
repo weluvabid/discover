@@ -1,5 +1,5 @@
 import { Bookmark, Compass, Gem, Layers3, TrendingUp } from 'lucide-react';
-import type { DiscoveryView, ExperienceGenre } from '@/types/experience';
+import { GENRE_FILTER_OPTIONS, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
 import { navigateTo } from '@/hooks/use-browser-location';
 import { Brand } from './Brand';
 import {
@@ -24,19 +24,9 @@ const navigationItems = [
   { id: 'library', label: 'Library', icon: Bookmark },
 ] as const;
 
-const genreItems = [
-  { id: 'Action RPG', label: 'Action & RPG', count: '1.4k' },
-  { id: 'Horror', label: 'Psychological Horror', count: '680' },
-  { id: 'Simulation', label: 'Simulation & Sandbox', count: '920' },
-  { id: 'Co-op', label: 'Survival & Co-op', count: '540' },
-] as const;
-
-interface NavigationProps {
+interface SidebarProps {
   activeView: DiscoveryView;
   selectedGenre: ExperienceGenre | 'All';
-}
-
-interface SidebarProps extends NavigationProps {
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
 }
 
@@ -49,7 +39,12 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
   const { isMobile, setOpenMobile } = useSidebar();
 
   return (
-    <ReUISidebar collapsible="icon" className="discover-sidebar">
+    <ReUISidebar
+      id="discover-navigation"
+      collapsible="icon"
+      mobileSide="right"
+      className="discover-sidebar"
+    >
       <SidebarHeader className="discover-sidebar-header">
         <Brand />
       </SidebarHeader>
@@ -72,7 +67,9 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                             event.ctrlKey ||
                             event.shiftKey ||
                             event.altKey
-                          ) return;
+                          ) {
+                            return;
+                          }
                           event.preventDefault();
                           navigateTo(getNavigationPath(id, selectedGenre));
                           if (isMobile) setOpenMobile(false);
@@ -95,18 +92,18 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
           <SidebarGroupLabel>BROWSE GENRES</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {genreItems.map(({ id, label, count }) => (
-                <SidebarMenuItem key={id}>
+              {GENRE_FILTER_OPTIONS.map(({ value, label, count }) => (
+                <SidebarMenuItem key={value}>
                   <SidebarMenuButton
-                    isActive={selectedGenre === id}
+                    isActive={selectedGenre === value}
                     tooltip={label}
                     onClick={() => {
-                      onSelectGenre(id);
+                      onSelectGenre(value);
                       if (isMobile) setOpenMobile(false);
                     }}
                   >
                     <span className="min-w-0 flex-1 truncate">{label}</span>
-                    <span className="discover-genre-count">{count}</span>
+                    {count && <span className="discover-genre-count">{count}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -115,34 +112,5 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
         </SidebarGroup>
       </SidebarContent>
     </ReUISidebar>
-  );
-}
-
-export function MobileNavigation({ activeView, selectedGenre }: NavigationProps) {
-  return (
-    <nav className="mobile-nav" aria-label="Mobile navigation">
-      {navigationItems.map(({ id, label, icon: Icon }) => (
-        <a
-          key={id}
-          href={getNavigationPath(id, selectedGenre)}
-          className={`mobile-nav-item ${activeView === id ? 'is-active' : ''}`}
-          aria-current={activeView === id ? 'page' : undefined}
-          onClick={(event) => {
-            if (
-              event.button !== 0 ||
-              event.metaKey ||
-              event.ctrlKey ||
-              event.shiftKey ||
-              event.altKey
-            ) return;
-            event.preventDefault();
-            navigateTo(getNavigationPath(id, selectedGenre));
-          }}
-        >
-          <Icon size={21} strokeWidth={activeView === id ? 2.4 : 1.9} />
-          <span>{label}</span>
-        </a>
-      ))}
-    </nav>
   );
 }
