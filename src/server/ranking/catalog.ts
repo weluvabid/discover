@@ -106,7 +106,7 @@ export function getCatalog(
   const parameters: (string | number)[] = [];
 
   if (options.query) {
-    conditions.push('(title LIKE ? OR creator LIKE ? OR description LIKE ?)');
+    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')");
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
 
     parameters.push(query, query, query);
@@ -127,12 +127,26 @@ export function getCatalog(
   return experiences.slice(offset, offset + limit);
 }
 
-export function getCatalogCount(db: DatabaseSync): number {
-  const result = db
-    .prepare("SELECT COUNT(*) AS count FROM games WHERE source_status = 'valid'")
-    .get() as { count: number };
+export function getCatalogCount(
+  db: DatabaseSync,
+  options: { query?: string; genre?: string } = {},
+): number {
+  const conditions = ["source_status = 'valid'"];
+  const parameters: string[] = [];
 
-  return Number(result.count);
+  if (options.query) {
+    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')");
+    const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
+    parameters.push(query, query, query);
+  }
+
+  const rows = db
+    .prepare(`SELECT genre FROM games WHERE ${conditions.join(' AND ')}`)
+    .all(...parameters) as Array<{ genre: string }>;
+
+  if (!options.genre || options.genre === 'All') return rows.length;
+
+  return rows.reduce((count, row) => count + (mapGenre(row.genre) === options.genre ? 1 : 0), 0);
 }
 
 export function getExperience(db: DatabaseSync, universeId: string): Experience | undefined {

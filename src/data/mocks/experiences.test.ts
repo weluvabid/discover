@@ -1,25 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { experiences } from './experiences';
-import { searchExperiences } from '@/hooks/use-discovery';
+import { searchExperiences } from '@/features/search/utils/search-experiences';
 
 describe('searchExperiences', () => {
   it('returns the complete catalog for an empty query', () => {
-    expect(searchExperiences('')).toHaveLength(experiences.length);
+    expect(searchExperiences('', experiences)).toHaveLength(experiences.length);
   });
 
   it('matches titles, creators, genres and tags without case sensitivity', () => {
-    expect(searchExperiences('CYBERPUNK').map((experience) => experience.id)).toContain(
-      'vanguard-cyber-drift',
-    );
-    expect(searchExperiences('aether dynamic').map((experience) => experience.id)).toContain(
-      'deep-descent',
-    );
-    expect(searchExperiences('horror').length).toBeGreaterThan(0);
+    expect(
+      searchExperiences('CYBERPUNK', experiences).map((experience) => experience.id),
+    ).toContain('vanguard-cyber-drift');
+    expect(
+      searchExperiences('aether dynamic', experiences).map((experience) => experience.id),
+    ).toContain('deep-descent');
+    expect(searchExperiences('horror', experiences).length).toBeGreaterThan(0);
   });
 
   it('trims surrounding whitespace and returns no results for unknown terms', () => {
-    expect(searchExperiences('  racing  ').length).toBeGreaterThan(0);
-    expect(searchExperiences('not-a-real-experience')).toEqual([]);
+    expect(searchExperiences('  racing  ', experiences).length).toBeGreaterThan(0);
+    expect(searchExperiences('not-a-real-experience', experiences)).toEqual([]);
   });
 });
 

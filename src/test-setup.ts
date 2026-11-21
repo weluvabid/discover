@@ -29,13 +29,15 @@ function createMemoryStorage(): Storage {
 // implementation if the configured origin or test runner does not expose it.
 let browserStorage: Storage | undefined;
 
-try {
-  browserStorage = window.localStorage;
-} catch {
-  browserStorage = undefined;
+if (typeof window !== 'undefined') {
+  try {
+    browserStorage = window.localStorage;
+  } catch {
+    browserStorage = undefined;
+  }
 }
 
-if (!browserStorage) {
+if (typeof window !== 'undefined' && !browserStorage) {
   Object.defineProperty(window, 'localStorage', {
     configurable: true,
     value: createMemoryStorage(),

@@ -70,3 +70,15 @@ pnpm dev
 The API listens on `http://127.0.0.1:8787` by default. The frontend uses that origin automatically in Astro development. For a separately hosted frontend, bind the API process to `HOST=0.0.0.0`, set `PUBLIC_DISCOVER_API_URL` to the API origin including `/api` (for example, `https://api.example.com/api`) at build time and configure the API's `CORS_ORIGIN` for the frontend origin.
 
 When `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are present, the API hydrates its local SQLite read model from the synchronized Turso catalog before accepting requests. This keeps ranking computation local to the API process while Turso remains the remote catalog source. Run `pnpm db:sync` after local ingestion changes, then restart the API to refresh its read model.
+
+## Testing the local catalog
+
+The normal `pnpm test` suite uses isolated in-memory fixtures and does not require the local catalog or Turso credentials. It includes adversarial API tests for SQL wildcard/injection payloads, malformed ranking configuration, hostile pagination values, oversized search input, unavailable records, and filtered pagination totals.
+
+Run the read-only acceptance suite against the actual local SQLite catalog:
+
+```bash
+pnpm test:acceptance
+```
+
+The command reads `DATABASE_PATH` from the process environment or `.env`, defaulting to `data/roblox-games.db`. The acceptance suite opens the database in read-only mode and verifies SQLite integrity, foreign keys, the Catalog v1 row counts, uniqueness, metadata and synthetic metric bounds, snapshot consistency, all five discovery contexts, persona requests, catalog pagination, search, and detail lookups. Set `DATABASE_PATH=/absolute/path/to/roblox-games.db` to target another local copy.

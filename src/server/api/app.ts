@@ -47,13 +47,15 @@ export async function handleApiRequest(
   if (method === 'GET' && url.pathname === '/api/experiences') {
     const limit = Number(url.searchParams.get('limit') ?? 100);
     const offset = Number(url.searchParams.get('offset') ?? 0);
+    const query = url.searchParams.get('q')?.trim();
 
     if (
       !Number.isInteger(limit) ||
       !Number.isInteger(offset) ||
       limit < 1 ||
       limit > 500 ||
-      offset < 0
+      offset < 0 ||
+      (query?.length ?? 0) > 200
     ) {
       return { status: 400, body: { error: 'Invalid pagination.' } };
     }
@@ -64,10 +66,13 @@ export async function handleApiRequest(
         data: getCatalog(db, {
           limit,
           offset,
-          query: url.searchParams.get('q') ?? undefined,
+          query: query || undefined,
           genre: url.searchParams.get('genre') ?? undefined,
         }),
-        total: getCatalogCount(db),
+        total: getCatalogCount(db, {
+          query: url.searchParams.get('q')?.trim() || undefined,
+          genre: url.searchParams.get('genre') ?? undefined,
+        }),
         limit,
         offset,
       },
@@ -87,6 +92,10 @@ export async function handleApiRequest(
 
   if (method === 'GET' && url.pathname === '/api/search') {
     const query = url.searchParams.get('q')?.trim();
+
+    if ((query?.length ?? 0) > 200) {
+      return { status: 400, body: { error: 'Search query must be 200 characters or fewer.' } };
+    }
 
     return {
       status: 200,

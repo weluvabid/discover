@@ -1,3 +1,4 @@
+/* @vitest-environment node */
 import type { DatabaseSync } from 'node:sqlite';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { handleApiRequest } from './app';
