@@ -2,12 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { experiences } from '@/data/mocks/experiences';
 import {
   DEFAULT_RANKING_CONFIGURATION,
-  normalizeSignals,
+  filterEligibleCandidates,
+  getEligibility,
   isDefaultRankingConfiguration,
+  normalizeSignals,
   rankExperiences,
+  rankForContext,
+  retrieveCandidates,
   toggleSignal,
   updateSignalWeight,
 } from './ranking';
+
+const FIXED_NOW = new Date('2026-11-21T00:00:00.000Z');
 
 describe('discovery ranking', () => {
   it('identifies the default ranking without serializing the configuration', () => {
@@ -44,26 +50,203 @@ describe('discovery ranking', () => {
   });
 
   it('returns deterministic rankings for identical input', () => {
-    const first = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION);
-    const second = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION);
+    const first = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
+    const second = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
 
     expect(first.map((item) => [item.experience.id, item.score])).toEqual(
       second.map((item) => [item.experience.id, item.score]),
     );
   });
 
-  it('produces score contributions that sum to the displayed score', () => {
-    const ranked = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION)[0];
+  it('produces weighted contributions that reconcile to the pre-rerank score', () => {
+    const ranked = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
 
     expect(ranked).toBeDefined();
+    if (!ranked) throw new Error('Expected at least one ranked experience.');
 
-    if (!ranked) {
-      throw new Error('Expected at least one ranked experience.');
-    }
+    const contributionTotal = Object.values(ranked.factors).reduce(
+      (sum, value) => sum + value,
+      0,
+    );
 
-    const contributionTotal = Object.values(ranked.factors).reduce((sum, value) => sum + value, 0);
-
-    expect(contributionTotal).toBeCloseTo(ranked.score, 8);
+    expect(contributionTotal).toBeCloseTo(ranked.explanation.weightedScore, 8);
+    expect(ranked.score).toBeCloseTo(ranked.explanation.finalScore, 8);
+    expect(ranked.score).toBeCloseTo(
+      ranked.explanation.weightedScore + ranked.explanation.diversityAdjustment,
+      8,
+    );
     expect(ranked.position).toBe(1);
   });
+
+  it('keeps context eligibility separate from ranking scores', () => {
+    const trending = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'trending', {
+      now: FIXED_NOW,
+    });
+    const hidden = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'hidden-gems', {
+      now: FIXED_NOW,
+    });
+    const recent = rankForContext(
+      experiences,
+      DEFAULT_RANKING_CONFIGURATION,
+      'recently-launched',
+      { now: FIXED_NOW },
+    );
+
+    expect(trending.every((item) => (item.experience.metrics.weeklyChange ?? 0) > 0)).toBe(true);
+    expect(
+      hidden.every(
+        (item) =>
+          item.experience.metrics.activePlayers <= 10_000 && item.experience.metrics.rating >= 88,
+      ),
+    ).toBe(true);
+    expect(
+      recent.every((item) => {
+        const age =
+          (FIXED_NOW.getTime() - Date.parse(item.experience.publishedAt)) / 86_400_000;
+        return age >= 0 && age <= 30;
+      }),
+    ).toBe(true);
+  });
+
+  it('rejects future-dated releases from Recently Launched', () => {
+    const future = { ...experiences[0]!, publishedAt: '2026-11-22T00:00:00.000Z' };
+    expect(getEligibility('recently-launched', future, FIXED_NOW).eligible).toBe(false);
+  });
+
+  it('applies genre constraints before ranking each context', () => {
+    const results = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'recommended', {
+      now: FIXED_NOW,
+      genre: 'Horror',
+    });
+
+    expect(
+      results.every(
+        (item) =>
+          item.experience.genre === 'Horror' ||
+          item.experience.tags.includes('Horror') ||
+          item.experience.subgenre.toLowerCase().includes('horror'),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns a stable empty result for empty candidate pools', () => {
+    expect(rankForContext([], DEFAULT_RANKING_CONFIGURATION, 'trending')).toEqual([]);
+  });
+
+  it('keeps scores bounded and produces a single featured selection', () => {
+    const featured = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'featured', {
+      now: FIXED_NOW,
+      limit: 1,
+    });
+
+    expect(featured).toHaveLength(1);
+    expect(featured[0]?.score).toBeGreaterThanOrEqual(0);
+    expect(featured[0]?.score).toBeLessThanOrEqual(100);
+  });
+
+  it('does not let an all-disabled configuration produce non-zero scores', () => {
+    const disabled = DEFAULT_RANKING_CONFIGURATION.signals.map((signal) => ({
+      ...signal,
+      enabled: false,
+      weight: 0,
+    }));
+    const ranked = rankForContext(
+      experiences,
+      { strategy: 'discovery', signals: disabled },
+      'recommended',
+      { now: FIXED_NOW, limit: 3 },
+    );
+
+    expect(ranked.every((item) => item.explanation.weightedScore === 0)).toBe(true);
+    expect(
+      ranked.every(
+        (item) =>
+          item.score === item.explanation.weightedScore + item.explanation.diversityAdjustment,
+      ),
+    ).toBe(true);
+  });
+
+  it('rejects invalid publication timestamps from Recently Launched', () => {
+    const invalid = { ...experiences[0]!, publishedAt: 'not-a-date' };
+    expect(getEligibility('recently-launched', invalid, FIXED_NOW).eligible).toBe(false);
+  });
+
+  it('sanitizes non-finite configured weights before normalization', () => {
+    const malformed = DEFAULT_RANKING_CONFIGURATION.signals.map((signal, index) => ({
+      ...signal,
+      weight: index === 0 ? Number.NaN : Number.POSITIVE_INFINITY,
+    }));
+    const normalized = normalizeSignals(malformed);
+
+    expect(normalized.every((signal) => Number.isFinite(signal.weight))).toBe(true);
+    expect(normalized.reduce((sum, signal) => sum + signal.weight, 0)).toBe(100);
+  });
+
+  it('rejects future publication timestamps from every discovery context', () => {
+    const future = { ...experiences[0]!, publishedAt: '2026-11-22T00:00:00.000Z' };
+    const contexts = [
+      'featured',
+      'trending',
+      'recommended',
+      'hidden-gems',
+      'recently-launched',
+    ] as const;
+
+    for (const context of contexts) {
+      expect(getEligibility(context, future, FIXED_NOW).eligible).toBe(false);
+    }
+  });
+
+  it('rejects malformed metric records before scoring', () => {
+    const malformed = {
+      ...experiences[0]!,
+      metrics: { ...experiences[0]!.metrics, activePlayers: -1 },
+    };
+
+    expect(getEligibility('recommended', malformed, FIXED_NOW).eligible).toBe(false);
+  });
+
+  it('separates catalog retrieval from context eligibility', () => {
+    const retrieved = retrieveCandidates(experiences, { genre: 'Horror' });
+    const eligible = filterEligibleCandidates(retrieved, 'trending', FIXED_NOW);
+
+    expect(retrieved.length).toBeGreaterThan(0);
+    expect(eligible.every((item) => (item.metrics.weeklyChange ?? 0) > 0)).toBe(true);
+    expect(
+      eligible.every(
+        (item) =>
+          item.genre === 'Horror' ||
+          item.tags.includes('Horror') ||
+          item.subgenre.toLowerCase().includes('horror'),
+      ),
+    ).toBe(true);
+  });
+
+  it('applies context multipliers before normalizing effective weights', () => {
+    const trending = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'trending', {
+      now: FIXED_NOW,
+    })[0];
+    const recommended = rankForContext(
+      experiences,
+      DEFAULT_RANKING_CONFIGURATION,
+      'recommended',
+      { now: FIXED_NOW },
+    )[0];
+
+    expect(trending).toBeDefined();
+    expect(recommended).toBeDefined();
+    if (!trending || !recommended) throw new Error('Expected context ranking fixtures.');
+
+    const trendingRelevance = trending.explanation.signals.find(
+      (signal) => signal.id === 'relevance',
+    );
+    const recommendedRelevance = recommended.explanation.signals.find(
+      (signal) => signal.id === 'relevance',
+    );
+
+    expect(trendingRelevance?.effectiveWeight).toBeGreaterThan(
+      recommendedRelevance?.effectiveWeight ?? 0,
+    );
+  });
+
 });

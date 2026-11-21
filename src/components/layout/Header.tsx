@@ -72,6 +72,7 @@ export function Header({
           <i />
         </button>
         <button
+          id="tune-discovery-trigger"
           className={`discovery-controls-trigger ${hasCustomRanking ? 'has-custom-ranking' : ''}`}
           onClick={onOpenDiscoveryControls}
           aria-label="Tune discovery ranking"

@@ -3,12 +3,15 @@ import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ExperienceArtwork } from './ExperienceArtwork';
+import type { RankedExperience } from '@/features/discovery/engine/ranking';
+import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 
 interface FeaturedExperienceProps {
   experience: Experience;
   isBookmarked: boolean;
   onToggleBookmark: (id: string) => void;
   onSelect: (experience: Experience) => void;
+  ranking?: RankedExperience;
 }
 
 export function FeaturedExperience({
@@ -16,6 +19,7 @@ export function FeaturedExperience({
   isBookmarked,
   onToggleBookmark,
   onSelect,
+  ranking,
 }: FeaturedExperienceProps) {
   return (
     <section className="featured-card" aria-label="Featured experience">
@@ -39,7 +43,7 @@ export function FeaturedExperience({
         <div className="genre-tags">
           <span>{experience.genre}</span>
           <span>{experience.subgenre}</span>
-          <span>Co-op</span>
+          <span>{experience.tags[0] ?? experience.genre}</span>
         </div>
         <h1>{experience.title}</h1>
         <p className="featured-creator">
@@ -57,6 +61,7 @@ export function FeaturedExperience({
             {formatCount(experience.metrics.reviewCount)} <small>reviews</small>
           </span>
         </div>
+        {ranking && <RankingWhyPopover ranking={ranking} />}
         <div className="featured-actions">
           <Button className="primary-button" onClick={() => onSelect(experience)}>
             <Gamepad2 size={17} /> Play on Roblox <Play size={13} fill="currentColor" />

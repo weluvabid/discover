@@ -1,5 +1,6 @@
 import { Bookmark, Compass, Gem, Layers3, TrendingUp, type LucideIcon } from 'lucide-react';
 import type { DiscoveryView, ExperienceGenre } from '@/types/experience';
+import { navigateTo } from '@/hooks/use-browser-location';
 import { Brand } from './Brand';
 
 interface NavigationItem {
@@ -18,30 +19,39 @@ const navigationItems: NavigationItem[] = [
 
 interface NavigationProps {
   activeView: DiscoveryView;
-  onNavigate: (view: DiscoveryView) => void;
+  selectedGenre: ExperienceGenre | 'All';
 }
 
 interface SidebarProps extends NavigationProps {
-  selectedGenre: ExperienceGenre | 'All';
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
 }
 
-export function Sidebar({ activeView, onNavigate, selectedGenre, onSelectGenre }: SidebarProps) {
+function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
+  const path = view === 'explore' ? '/' : `/${view}`;
+  return genre === 'All' ? path : `${path}?genre=${encodeURIComponent(genre)}`;
+}
+
+export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarProps) {
   return (
     <aside className="sidebar">
       <Brand />
       <nav className="side-nav" aria-label="Main navigation">
         <span className="nav-label">DISCOVER</span>
         {navigationItems.map(({ id, label, icon: Icon }) => (
-          <button
+          <a
             className={`nav-item ${activeView === id ? 'is-active' : ''}`}
             key={id}
-            onClick={() => onNavigate(id)}
+            href={getNavigationPath(id, selectedGenre)}
             aria-current={activeView === id ? 'page' : undefined}
+            onClick={(event) => {
+              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              navigateTo(getNavigationPath(id, selectedGenre));
+            }}
           >
             <Icon size={17} />
             <span>{label}</span>
-          </button>
+          </a>
         ))}
       </nav>
       <div className="sidebar-divider" />
@@ -75,19 +85,24 @@ export function Sidebar({ activeView, onNavigate, selectedGenre, onSelectGenre }
   );
 }
 
-export function MobileNavigation({ activeView, onNavigate }: NavigationProps) {
+export function MobileNavigation({ activeView, selectedGenre }: NavigationProps) {
   return (
     <nav className="mobile-nav" aria-label="Mobile navigation">
       {navigationItems.map(({ id, label, icon: Icon }) => (
-        <button
+        <a
           key={id}
+          href={getNavigationPath(id, selectedGenre)}
           className={`mobile-nav-item ${activeView === id ? 'is-active' : ''}`}
-          onClick={() => onNavigate(id)}
           aria-current={activeView === id ? 'page' : undefined}
+          onClick={(event) => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            navigateTo(getNavigationPath(id, selectedGenre));
+          }}
         >
           <Icon size={21} strokeWidth={activeView === id ? 2.4 : 1.9} />
           <span>{label}</span>
-        </button>
+        </a>
       ))}
     </nav>
   );

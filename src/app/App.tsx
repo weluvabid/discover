@@ -1,7 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import { GenreFilters } from '@/components/discovery/GenreFilters';
 import { Button } from '@/components/ui/button';
+import { GenreFilters } from '@/components/discovery/GenreFilters';
 import { Header } from '@/components/layout/Header';
 import { MobileNavigation, Sidebar } from '@/components/layout/Navigation';
 import { DiscoverView } from '@/components/pages/DiscoverView';
@@ -19,18 +19,28 @@ const DiscoveryControlsDialog = lazy(() =>
   })),
 );
 
-export default function App() {
-  const page = useDiscoverPage();
-  const hasSearch = Boolean(page.query.trim()) || page.genre !== 'All';
+interface AppProps {
+  initialLocation?: string;
+}
+
+export default function App({ initialLocation = '/' }: AppProps) {
+  const page = useDiscoverPage(initialLocation);
+  const controlsWereOpen = useRef(false);
+  useEffect(() => {
+    if (controlsWereOpen.current && !page.controlsOpen) {
+      document.getElementById('tune-discovery-trigger')?.focus();
+    }
+    controlsWereOpen.current = page.controlsOpen;
+  }, [page.controlsOpen]);
+  const hasSearch = Boolean(page.query.trim());
 
   return (
     <div className="app-shell">
       <Sidebar
         activeView={page.activeView}
-        onNavigate={page.navigate}
         selectedGenre={page.genre}
         onSelectGenre={(selected) => {
-          page.setActiveView('explore');
+          page.navigate('explore');
           page.setQuery('');
           page.setGenre(selected);
         }}
@@ -46,11 +56,6 @@ export default function App() {
           hasCustomRanking={page.hasCustomRanking}
         />
         <main className="page-content" id="main-content">
-          {page.activeView === 'explore' && (
-            <div className="mobile-filters">
-              <GenreFilters selected={page.genre} onSelect={page.setGenre} />
-            </div>
-          )}
           {hasSearch ? (
             <SearchResultsView
               query={page.query || page.genre}
@@ -65,6 +70,9 @@ export default function App() {
               bookmarks={page.bookmarks}
               savedExperiences={page.savedExperiences}
               recommendations={page.rankedRecommendations}
+              rankedSections={page.rankedSections}
+              genre={page.genre}
+              onGenreChange={page.setGenre}
               onToggleBookmark={page.toggleBookmark}
               onSelect={page.selectExperience}
               onNavigate={page.navigate}
@@ -72,7 +80,7 @@ export default function App() {
           )}
         </main>
       </div>
-      <MobileNavigation activeView={page.activeView} onNavigate={page.navigate} />
+      <MobileNavigation activeView={page.activeView} selectedGenre={page.genre} />
 
       {page.filterOpen && (
         <div className="filter-backdrop" role="presentation">

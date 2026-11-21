@@ -1,0 +1,7 @@
+---
+import DiscoverLayout from '@/layouts/DiscoverLayout.astro';
+import { DiscoverIsland } from '@/components/react/DiscoverIsland';
+---
+<DiscoverLayout title="Discover — Find your next world" description="Personalized Roblox experience discovery, powered by explainable recommendations.">
+  <DiscoverIsland initialLocation={`${Astro.url.pathname}${Astro.url.search}`} client:load />
+</DiscoverLayout>

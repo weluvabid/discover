@@ -2,6 +2,8 @@ import { Bookmark, Play, Sparkles, Star, TrendingUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
+import type { RankedExperience } from '@/features/discovery/engine/ranking';
+import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 
 interface ExperienceCardProps {
   experience: Experience;
@@ -9,6 +11,7 @@ interface ExperienceCardProps {
   isBookmarked: boolean;
   onToggleBookmark: (id: string) => void;
   onSelect: (experience: Experience) => void;
+  ranking?: RankedExperience;
 }
 
 export function ExperienceCard({
@@ -17,6 +20,7 @@ export function ExperienceCard({
   isBookmarked,
   onToggleBookmark,
   onSelect,
+  ranking,
 }: ExperienceCardProps) {
   return (
     <article className={`experience-card card-${variant}`}>
@@ -64,6 +68,7 @@ export function ExperienceCard({
             <Sparkles size={11} /> {experience.discoveryReason}
           </span>
         )}
+        {ranking && <RankingWhyPopover ranking={ranking} />}
         <div className="card-meta">
           <span className="active-count">
             <i /> {formatCount(experience.metrics.activePlayers)} active

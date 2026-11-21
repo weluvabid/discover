@@ -42,3 +42,13 @@ pnpm check
 ```
 
 This runs TypeScript, ESLint, Prettier, Vitest, and the production build.
+
+## Discovery architecture
+
+Explore is powered by one shared, explainable ranking engine with five separate contexts: Featured, Trending, Recommended, Hidden Gems, and Recently Launched. Context eligibility is evaluated before ranking; user preferences affect ordering within eligible candidate pools. Ranked results expose weighted signal contributions and any diversity reranking adjustment through the **Why this result?** popover.
+
+The client uses React Router routes for `/`, `/trending`, `/hidden-gems`, `/collections`, `/library`, and `/search?q=...`. Genre filters are reflected in the URL and constrain every Explore context. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
+
+## Frontend platform
+
+Discover uses Astro for filesystem routing and document composition, with the interactive discovery application hydrated as a single React island. ReUI is configured as the component source registry using the Base UI + Maia style. See [the frontend migration notes](docs/architecture/frontend-migration.md) for setup and the remaining ReUI conversion checkpoint.

@@ -1,5 +1,14 @@
-export type ExperienceGenre =
-  'Action RPG' | 'Exploration' | 'Co-op' | 'Racing' | 'Horror' | 'Simulation' | 'Puzzle';
+export const EXPERIENCE_GENRES = [
+  'Action RPG',
+  'Exploration',
+  'Co-op',
+  'Racing',
+  'Horror',
+  'Simulation',
+  'Puzzle',
+] as const;
+
+export type ExperienceGenre = (typeof EXPERIENCE_GENRES)[number];
 
 export interface ExperienceArtwork {
   thumbnail: string;

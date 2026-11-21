@@ -1,14 +1,6 @@
-import type { ExperienceGenre } from '@/types/experience';
+import { EXPERIENCE_GENRES, type ExperienceGenre } from '@/types/experience';
 
-const genres: Array<ExperienceGenre | 'All'> = [
-  'All',
-  'Action RPG',
-  'Horror',
-  'Co-op',
-  'Racing',
-  'Exploration',
-  'Simulation',
-];
+const genres: Array<ExperienceGenre | 'All'> = ['All', ...EXPERIENCE_GENRES];
 
 interface GenreFiltersProps {
   selected: ExperienceGenre | 'All';
