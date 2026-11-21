@@ -1,19 +1,22 @@
-/* Discovery Controls dialog. */
+/* Discovery Controls dialog: Base UI owns modal behavior and positioning. */
+.discovery-controls-overlay {
+  background: #03060bd9 !important;
+  backdrop-filter: blur(8px);
+}
 .discovery-controls-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   width: min(1160px, calc(100vw - 48px));
   height: min(850px, calc(100dvh - 48px));
   max-width: none;
   max-height: none;
-  margin: auto;
   overflow: hidden;
   border: 0;
   background: transparent;
   padding: 0;
   color: inherit;
-}
-.discovery-controls-dialog::backdrop {
-  background: #03060bd9;
-  backdrop-filter: blur(8px);
+  box-shadow: none;
 }
 .discovery-controls {
   display: flex;
@@ -61,13 +64,15 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-.controls-title-line h2 {
+.controls-title-line h2,
+.controls-dialog-title {
   margin: 0;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.025em;
 }
-.controls-heading p {
+.controls-heading p,
+.controls-dialog-description {
   margin: 3px 0 0;
   color: #9ba8ba;
   font-size: 11px;
@@ -227,19 +232,20 @@
   min-width: 0;
   align-items: flex-start;
   gap: 9px;
-  cursor: pointer;
+  cursor: default;
 }
-.signal-label input {
-  width: 14px;
-  height: 14px;
+.signal-switch {
   flex: 0 0 auto;
-  margin: 2px 0 0;
-  accent-color: #2563eb;
+  margin-top: 2px;
+  border: 1px solid #40516a;
+  background: #202b3b;
 }
-.signal-label label {
+.signal-switch[data-checked] {
+  background: #2563eb;
+}
+.signal-copy {
   display: grid;
   gap: 4px;
-  cursor: pointer;
 }
 .signal-label strong {
   font-size: 11px;
@@ -259,30 +265,26 @@
   font-weight: 700;
 }
 .signal-range {
-  display: block;
+  display: flex;
   width: 100%;
-  height: 5px;
   margin: 12px 0 2px;
-  appearance: none;
+  cursor: pointer;
+}
+.signal-range [data-slot="slider-control"] {
+  min-height: 18px;
+}
+.signal-range [data-slot="slider-track"] {
+  height: 5px;
   border-radius: 10px;
   background: #293345;
-  cursor: pointer;
-  accent-color: #3b82f6;
 }
-.signal-range::-webkit-slider-thumb {
+.signal-range [data-slot="slider-range"] {
+  background: #3b82f6;
+}
+.signal-range [data-slot="slider-thumb"] {
   width: 15px;
   height: 15px;
-  appearance: none;
   border: 2px solid white;
-  border-radius: 50%;
-  background: #3b82f6;
-  box-shadow: 0 0 0 3px #3b82f633;
-}
-.signal-range::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border: 2px solid white;
-  border-radius: 50%;
   background: #3b82f6;
   box-shadow: 0 0 0 3px #3b82f633;
 }

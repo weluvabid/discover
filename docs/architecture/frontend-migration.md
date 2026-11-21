@@ -28,3 +28,12 @@ The current environment has no network access and does not have pnpm installed, 
 2. Run `pnpm install:reui` to copy the ReUI Base UI primitives.
 3. Replace remaining bespoke controls with the copied ReUI components, preserving the existing application behaviour.
 4. Review the ReUI default rendering before changing font sizes, line heights, or spacing tokens.
+
+
+## Component system
+
+Discover uses the ReUI `base-maia` registry style with Base UI primitives. The generated shadcn-compatible components in `src/components/ui` are the shared foundation; feature components compose them and apply Discover-specific styling through `className` and feature-owned CSS.
+
+Use ReUI compositions when they provide a meaningful product-level interaction. Use the shared Base UI primitives when no suitable ReUI composition exists. Do not introduce Radix-based components or independent implementations of generic controls. All shared component styling utilities import `cn` from `@/lib/utils`.
+
+The Discovery Controls dialog and ranking explanation popover are migrated to the shared Dialog, Button, Switch, Slider, and Popover components. Their product-specific content and visual styling remain feature-owned.

@@ -1,75 +1,67 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { DEFAULT_RANKING_CONFIGURATION } from './engine/ranking';
 import { DiscoveryControlsDialog } from './DiscoveryControlsDialog';
 
-const originalShowModal = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
-const originalClose = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
-let showModalMock: ReturnType<typeof vi.fn>;
-let closeMock: ReturnType<typeof vi.fn>;
-
-beforeEach(() => {
-  showModalMock = vi.fn(function (this: HTMLDialogElement) {
-    this.setAttribute('open', '');
-  });
-  closeMock = vi.fn(function (this: HTMLDialogElement) {
-    this.removeAttribute('open');
-  });
-  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
-    configurable: true,
-    value: showModalMock,
-  });
-  Object.defineProperty(HTMLDialogElement.prototype, 'close', {
-    configurable: true,
-    value: closeMock,
-  });
-});
-
-afterEach(() => {
-  cleanup();
-
-  if (originalShowModal)
-    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', originalShowModal);
-  else Reflect.deleteProperty(HTMLDialogElement.prototype, 'showModal');
-
-  if (originalClose) Object.defineProperty(HTMLDialogElement.prototype, 'close', originalClose);
-  else Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
-});
+afterEach(() => cleanup());
 
 describe('DiscoveryControlsDialog', () => {
-  it('calls onClose from the dialog close control', () => {
+  it('calls onClose from the library dialog close control', () => {
     const onClose = vi.fn();
 
     render(
-      <StrictMode>
-        <DiscoveryControlsDialog
-          open
-          configuration={DEFAULT_RANKING_CONFIGURATION}
-          onClose={onClose}
-          onApply={vi.fn()}
-        />
-      </StrictMode>,
+      <DiscoveryControlsDialog
+        open
+        configuration={DEFAULT_RANKING_CONFIGURATION}
+        onClose={onClose}
+        onApply={vi.fn()}
+      />,
     );
+
     fireEvent.click(screen.getByRole('button', { name: 'Close discovery controls' }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('does not close itself during the StrictMode effect cleanup cycle', () => {
+  it('toggles a ranking signal through the Base UI switch', () => {
+    const onApply = vi.fn();
+
+    render(
+      <DiscoveryControlsDialog
+        open
+        configuration={DEFAULT_RANKING_CONFIGURATION}
+        onClose={vi.fn()}
+        onApply={onApply}
+      />,
+    );
+
+    const affinitySwitch = screen.getByRole('switch', { name: 'User affinity' });
+    expect(affinitySwitch).toHaveAttribute('aria-checked', 'true');
+
+    fireEvent.click(affinitySwitch);
+    fireEvent.click(screen.getByRole('button', { name: /Apply configuration/ }));
+
+    expect(onApply.mock.calls[0]?.[0].signals.find((signal) => signal.id === 'affinity')?.enabled)
+      .toBe(false);
+  });
+
+  it('applies the selected ranking strategy and closes the dialog', () => {
+    const onApply = vi.fn();
     const onClose = vi.fn();
 
     render(
-      <StrictMode>
-        <DiscoveryControlsDialog
-          open
-          configuration={DEFAULT_RANKING_CONFIGURATION}
-          onClose={onClose}
-          onApply={vi.fn()}
-        />
-      </StrictMode>,
+      <DiscoveryControlsDialog
+        open
+        configuration={DEFAULT_RANKING_CONFIGURATION}
+        onClose={onClose}
+        onApply={onApply}
+      />,
     );
-    expect(showModalMock).toHaveBeenCalledTimes(1);
-    expect(closeMock).not.toHaveBeenCalled();
-    expect(onClose).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: /Popularity-first Trending and active players/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Apply configuration/ }));
+
+    expect(onApply).toHaveBeenCalledTimes(1);
+    expect(onApply.mock.calls[0]?.[0].strategy).toBe('popularity');
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

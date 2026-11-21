@@ -1,6 +1,7 @@
-import { createPortal } from 'react-dom';
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { ChevronDown, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 
 const CONTEXT_LABELS = {
@@ -20,11 +21,6 @@ const STRATEGY_LABELS = {
 
 interface RankingWhyPopoverProps {
   ranking: RankedExperience;
-}
-
-interface PopoverPosition {
-  top: number;
-  left: number;
 }
 
 function getDisplayedContributions(
@@ -56,72 +52,23 @@ function getDisplayedContributions(
 
 export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState<PopoverPosition>({ top: 0, left: 0 });
-  const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLElement>(null);
-  const panelId = useId();
-
-  const updatePosition = useCallback(() => {
-    const rect = triggerRef.current?.getBoundingClientRect();
-
-    if (!rect) return;
-
-    const width = Math.min(360, window.innerWidth - 32);
-    const left = Math.max(16, Math.min(window.innerWidth - width - 16, rect.right - width));
-    const panelHeight = panelRef.current?.offsetHeight ?? 380;
-    const below = rect.bottom + 10;
-    const top =
-      below + panelHeight <= window.innerHeight - 16
-        ? below
-        : Math.max(16, rect.top - panelHeight - 10);
-
-    setPosition({ top, left });
-  }, []);
+  const popoverId = useId();
 
   useEffect(() => {
     if (!open) return;
 
-    window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
+    const closeWhenAnotherOpens = (event: Event) => {
+      const detail = (event as CustomEvent<string>).detail;
 
-    return () => {
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
-    };
-  }, [open, updatePosition]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    panelRef.current?.focus();
-
-    const closeWhenAnotherOpens = () => setOpen(false);
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (!(event.target instanceof Node)) return;
-
-      const insideTrigger = rootRef.current?.contains(event.target);
-      const insidePanel = panelRef.current?.contains(event.target);
-
-      if (!insideTrigger && !insidePanel) setOpen(false);
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-
-      setOpen(false);
-      triggerRef.current?.focus();
+      if (detail !== popoverId) setOpen(false);
     };
 
     window.addEventListener('discover:ranking-popover-open', closeWhenAnotherOpens);
-    document.addEventListener('pointerdown', closeOnOutsidePointer);
-    document.addEventListener('keydown', closeOnEscape);
 
     return () => {
       window.removeEventListener('discover:ranking-popover-open', closeWhenAnotherOpens);
-      document.removeEventListener('pointerdown', closeOnOutsidePointer);
-      document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [open]);
+  }, [open, popoverId]);
 
   const signals = [...ranking.explanation.signals].sort(
     (a, b) => Number(b.enabled) - Number(a.enabled) || b.contribution - a.contribution,
@@ -137,7 +84,7 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
   );
 
   return (
-    <div className="ranking-inspector" ref={rootRef}>
+    <div className="ranking-inspector">
       <div
         className="ranking-score"
         aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}
@@ -145,37 +92,39 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
         <strong>{ranking.score.toFixed(1)}</strong>
         <span>RANK SCORE</span>
       </div>
-      <button
-        ref={triggerRef}
-        className="ranking-why-trigger"
-        type="button"
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => {
-          if (open) {
-            setOpen(false);
-          } else {
-            updatePosition();
-            window.dispatchEvent(new Event('discover:ranking-popover-open'));
-            setOpen(true);
+      <Popover
+        open={open}
+        onOpenChange={(nextOpen) => {
+          if (nextOpen) {
+            window.dispatchEvent(
+              new CustomEvent('discover:ranking-popover-open', { detail: popoverId }),
+            );
           }
+
+          setOpen(nextOpen);
         }}
       >
-        <Info size={13} />
-        Why this result?
-        <ChevronDown size={14} className={open ? 'is-open' : ''} />
-      </button>
-      {open &&
-        createPortal(
-          <section
-            ref={panelRef}
+        <PopoverTrigger
+          render={
+            <Button
+              className="ranking-why-trigger"
+              variant="outline"
+              size="sm"
+              aria-label="Why this result?"
+            />
+          }
+        >
+          <Info size={13} />
+          Why this result?
+          <ChevronDown size={14} className={open ? 'is-open' : ''} />
+        </PopoverTrigger>
+          <PopoverContent
             className="ranking-why-popover"
-            id={panelId}
+            align="end"
+            side="bottom"
+            sideOffset={8}
             role="dialog"
-            tabIndex={-1}
             aria-label={`Why ${ranking.experience.title} ranked here`}
-            style={{ top: position.top, left: position.left }}
           >
             <div className="ranking-popover-heading">
               <div>
@@ -260,9 +209,8 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
                 ))}
               </div>
             )}
-          </section>,
-          document.body,
-        )}
+          </PopoverContent>
+      </Popover>
     </div>
   );
 }
