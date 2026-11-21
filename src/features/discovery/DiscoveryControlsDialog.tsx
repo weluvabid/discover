@@ -64,14 +64,14 @@ export function DiscoveryControlsDialog({
       }}
     >
       <DialogContent
-        className="flex max-h-[calc(100dvh-2rem)] w-[min(72rem,calc(100vw-2rem))] max-w-none flex-col gap-0 overflow-hidden border-0 bg-transparent p-0 shadow-none"
+        className="flex h-[min(88dvh,56rem)] max-h-[calc(100dvh-2rem)] w-[min(72rem,calc(100vw-2rem))] max-w-none flex-col gap-0 overflow-hidden border-0 bg-transparent p-0 shadow-none"
         overlayClassName="bg-background/85 backdrop-blur-sm"
         showCloseButton={false}
         aria-labelledby="discovery-controls-title"
         aria-describedby="discovery-controls-description"
       >
-        <section className="flex max-h-full flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
-          <header className="flex items-center justify-between gap-4 border-b border-border p-4 md:p-5">
+        <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
+          <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border p-4 md:p-5">
             <div className="flex min-w-0 items-center gap-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-secondary text-foreground">
                 <SlidersHorizontal size={19} />
@@ -109,7 +109,7 @@ export function DiscoveryControlsDialog({
             </div>
           </header>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
             <div className="flex flex-col gap-6 p-4 md:p-6">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -210,21 +210,16 @@ export function DiscoveryControlsDialog({
             </div>
           </div>
 
-          <footer className="flex flex-col gap-3 border-t border-border p-4 md:flex-row md:items-center md:justify-between md:px-6">
-            <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Info size={14} /> Apply changes to refresh your Explore recommendations.
-            </p>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              <Button className="w-full" variant="ghost" onClick={resetDraft}>
-                <RotateCcw size={13} /> Reset defaults
-              </Button>
-              <Button className="w-full" variant="outline" onClick={onClose}>
-                Discard draft
-              </Button>
-              <Button className="w-full" onClick={handleApply}>
-                Apply configuration <Check size={15} />
-              </Button>
-            </div>
+          <footer className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-border p-4 md:px-6">
+            <Button variant="ghost" size="sm" onClick={resetDraft}>
+              <RotateCcw size={13} /> Reset defaults
+            </Button>
+            <Button variant="outline" size="sm" onClick={onClose}>
+              Discard draft
+            </Button>
+            <Button size="sm" onClick={handleApply}>
+              Apply configuration <Check size={15} />
+            </Button>
           </footer>
         </section>
       </DialogContent>

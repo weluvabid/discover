@@ -1,4 +1,4 @@
-import { Menu, Search, SlidersHorizontal } from 'lucide-react';
+import { Menu, Search, Sparkles } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,8 +34,9 @@ export function Header({ query, onQueryChange, resultCount, onOpenDiscoveryContr
         <SidebarTrigger className="hidden md:inline-flex" />
         <div className="md:hidden"><Brand compact /></div>
         <div className="ml-auto flex items-center gap-2">
-          <Button id="tune-discovery-trigger" variant="outline" size="icon" onClick={onOpenDiscoveryControls} aria-label="Tune discovery preferences" title="Tune discovery" className="relative">
-            <SlidersHorizontal />
+          <Button id="tune-discovery-trigger" variant="outline" size="default" onClick={onOpenDiscoveryControls} aria-label="Tune discovery preferences" title="Tune discovery" className="relative gap-2">
+            <Sparkles aria-hidden="true" />
+            <span>Tune discovery</span>
             {hasCustomRanking && <span className="absolute right-1 top-1 size-1.5 rounded-full bg-foreground" />}
           </Button>
           <Button variant="outline" size="icon" className="md:hidden" onClick={toggleSidebar} aria-label="Open navigation menu" aria-expanded={isMobile ? openMobile : undefined}>

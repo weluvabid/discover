@@ -36,7 +36,7 @@ function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') 
 }
 
 export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarProps) {
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isMobile, setOpenMobile, state } = useSidebar();
 
   return (
     <ReUISidebar
@@ -46,7 +46,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
       className="bg-sidebar text-sidebar-foreground"
     >
       <SidebarHeader className="min-h-16 justify-center px-3">
-        <Brand />
+        <Brand compact={state === "collapsed" && !isMobile} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -88,7 +88,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarSeparator className="mx-3 w-auto" />
-        <SidebarGroup>
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>BROWSE GENRES</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

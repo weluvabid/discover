@@ -119,7 +119,7 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           <TooltipContent side="top">Why this result?</TooltipContent>
         </Tooltip>
         <PopoverContent
-          className="max-h-[calc(100dvh-2rem)] w-[min(28rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] gap-4 overflow-y-auto overscroll-contain border border-border bg-popover p-4 text-popover-foreground shadow-xl sm:w-[28rem]"
+          className="max-h-[min(80dvh,48rem)] w-[min(28rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] gap-4 overflow-y-auto overscroll-contain border border-border bg-popover p-4 text-popover-foreground shadow-xl sm:w-[28rem]"
           align="end"
           side="bottom"
           sideOffset={8}
@@ -127,24 +127,22 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           aria-label={`Why ${ranking.experience.title} ranked here`}
         >
           <div className="flex flex-col gap-1">
-            <div>
-              <span className="text-xs font-bold tracking-wider text-muted-foreground">RANKING EXPLANATION</span>
-              <strong>
-                {CONTEXT_LABELS[ranking.explanation.context]} ·{' '}
-                {STRATEGY_LABELS[ranking.explanation.strategy]}
-              </strong>
-            </div>
+            <span className="text-xs font-bold tracking-wider text-muted-foreground">RANKING EXPLANATION</span>
+            <strong className="text-base leading-snug">
+              {CONTEXT_LABELS[ranking.explanation.context]} ·{' '}
+              {STRATEGY_LABELS[ranking.explanation.strategy]}
+            </strong>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {ranking.explanation.context === 'recommended'
               ? 'This experience qualified for recommendations and was scored using your active discovery preferences.'
               : `This experience qualified for ${CONTEXT_LABELS[ranking.explanation.context]} and was ranked using your active discovery preferences.`}
           </p>
-          <dl className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-secondary/50 p-4 text-sm sm:grid-cols-2" aria-label="Score breakdown">
-            <div className="flex items-center justify-between gap-3"><dt className="text-muted-foreground">Weighted signals</dt><dd className="font-bold tabular-nums">{displayedWeightedScore.toFixed(1)}</dd></div>
-            <div className="flex items-center justify-between gap-3"><dt className="text-muted-foreground">Reranking penalty</dt><dd className="font-bold tabular-nums">{formatSigned(penalty)}</dd></div>
-            <div className="flex items-center justify-between gap-3"><dt className="text-muted-foreground">Applied adjustment</dt><dd className="font-bold tabular-nums">{formatSigned(displayedAdjustment)}</dd></div>
-            <div className="col-span-full flex items-center justify-between gap-3 border-t border-border pt-3"><dt className="font-semibold">Final Score</dt><dd className="text-lg font-bold tabular-nums">{displayedFinalScore.toFixed(1)}</dd></div>
+          <dl className="flex flex-col gap-3 rounded-xl border border-border bg-secondary/50 p-4 text-sm" aria-label="Score breakdown">
+            <div className="flex items-center justify-between gap-6"><dt className="text-muted-foreground">Weighted signals</dt><dd className="shrink-0 font-bold tabular-nums">{displayedWeightedScore.toFixed(1)}</dd></div>
+            <div className="flex items-center justify-between gap-6"><dt className="text-muted-foreground">Reranking penalty</dt><dd className="shrink-0 font-bold tabular-nums">{formatSigned(penalty)}</dd></div>
+            <div className="flex items-center justify-between gap-6"><dt className="text-muted-foreground">Applied adjustment</dt><dd className="shrink-0 font-bold tabular-nums">{formatSigned(displayedAdjustment)}</dd></div>
+            <div className="flex items-center justify-between gap-6 border-t border-border pt-3"><dt className="font-semibold">Final Score</dt><dd className="shrink-0 text-lg font-bold tabular-nums">{displayedFinalScore.toFixed(1)}</dd></div>
           </dl>
           <div className="flex flex-col gap-4">
             {signals.map((signal) => (
