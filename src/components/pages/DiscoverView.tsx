@@ -5,6 +5,7 @@ import { ExperienceSection } from '@/components/discovery/ExperienceSection';
 import { Button } from '@/components/ui/button';
 import { ExploreFilterBar } from '@/components/discovery/ExploreFilterBar';
 import { FeaturedExperience } from '@/components/experience/FeaturedExperience';
+import { FeaturedExperienceSkeleton } from '@/components/experience/FeaturedExperienceSkeleton';
 import { CollectionsView } from './CollectionsView';
 import { PageIntro } from './PageIntro';
 import type { DiscoveryPersona, DiscoveryView, Experience, ExperienceGenre } from '@/types/experience';
@@ -24,6 +25,7 @@ interface DiscoverViewProps {
   onToggleBookmark: (id: string) => void;
   onPlay: (experience: Experience) => void;
   onNavigate: (view: DiscoveryView) => void;
+  loading: boolean;
 }
 
 export function DiscoverView({
@@ -41,6 +43,7 @@ export function DiscoverView({
   onToggleBookmark,
   onPlay,
   onNavigate,
+  loading,
 }: DiscoverViewProps) {
   const rankingMaps = Object.fromEntries(
     Object.entries(rankedSections).map(([context, items]) => [
@@ -103,6 +106,7 @@ export function DiscoverView({
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
           onPlay={onPlay}
+          loading={loading}
         />
       </div>
     );
@@ -126,6 +130,7 @@ export function DiscoverView({
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
           onPlay={onPlay}
+          loading={loading}
         />
       </div>
     );
@@ -140,7 +145,9 @@ export function DiscoverView({
         icon={<Compass size={17} />}
       />
       <ExploreFilterBar genre={genre} onGenreChange={onGenreChange} personas={personas} persona={persona} onPersonaChange={onPersonaChange} />
-      {featured && (
+      {loading ? (
+        <FeaturedExperienceSkeleton />
+      ) : featured ? (
         <FeaturedExperience
           experience={featured.experience}
           ranking={featured}
@@ -148,7 +155,7 @@ export function DiscoverView({
           onToggleBookmark={onToggleBookmark}
           onPlay={onPlay}
         />
-      )}
+      ) : null}
       <ExperienceSection
         title="Trending for You"
         experiences={rankedSections.trending.map((item) => item.experience)}
@@ -157,6 +164,7 @@ export function DiscoverView({
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
         onPlay={onPlay}
+        loading={loading}
         action={
           <Button
             variant="ghost"
@@ -177,6 +185,7 @@ export function DiscoverView({
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
         onPlay={onPlay}
+        loading={loading}
       />
       <ExperienceSection
         title="Hidden Gems"
@@ -187,6 +196,7 @@ export function DiscoverView({
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
         onPlay={onPlay}
+        loading={loading}
       />
       <ExperienceSection
         title="Recently Launched"
@@ -197,6 +207,7 @@ export function DiscoverView({
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
         onPlay={onPlay}
+        loading={loading}
       />
       <div className="mt-10 flex items-start gap-2 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
         <Sparkles size={14} /> Play-style matches combine genre affinity with experience engagement

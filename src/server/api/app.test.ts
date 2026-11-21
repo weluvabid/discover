@@ -76,6 +76,37 @@ describe('Discover API handler', () => {
     expect((result.body as { results: Array<{ experience: { matchScore?: number } }> }).results[0]?.experience.matchScore).toBe(94);
   });
 
+  it('exposes live genre counts for valid distinct catalog records', async () => {
+    const result = await handleApiRequest(db, 'GET', new URL('http://localhost/api/genres'));
+
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject({
+      data: {
+        All: 1,
+        Simulation: 1,
+        'Action RPG': 0,
+      },
+    });
+  });
+
+  it('supports explicit search sorting without changing default relevance behavior', async () => {
+    const relevance = await handleApiRequest(
+      db,
+      'GET',
+      new URL('http://localhost/api/search?q=Sample'),
+    );
+    const players = await handleApiRequest(
+      db,
+      'GET',
+      new URL('http://localhost/api/search?q=Sample&sort=players'),
+    );
+
+    expect(relevance.status).toBe(200);
+    expect(players.status).toBe(200);
+    expect((relevance.body as { data: Array<{ id: string }> }).data[0]?.id).toBe('123456');
+    expect((players.body as { data: Array<{ id: string }> }).data[0]?.id).toBe('123456');
+  });
+
   it('exposes the available play styles for discovery matching', async () => {
     const result = await handleApiRequest(db, 'GET', new URL('http://localhost/api/personas'));
     const personas = (result.body as { data: Array<{ id: string; preferences: string[] }> }).data;

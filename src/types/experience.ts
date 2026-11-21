@@ -15,12 +15,12 @@ export const GENRE_OPTIONS: ReadonlyArray<{
   label: string;
   count?: string;
 }> = [
-  { value: 'Action RPG', label: 'Action & RPG', count: '1.4k' },
+  { value: 'Action RPG', label: 'Action & RPG' },
   { value: 'Exploration', label: 'Exploration' },
-  { value: 'Co-op', label: 'Survival & Co-op', count: '540' },
+  { value: 'Co-op', label: 'Survival & Co-op' },
   { value: 'Racing', label: 'Racing' },
-  { value: 'Horror', label: 'Psychological Horror', count: '680' },
-  { value: 'Simulation', label: 'Simulation & Sandbox', count: '920' },
+  { value: 'Horror', label: 'Psychological Horror' },
+  { value: 'Simulation', label: 'Simulation & Sandbox' },
   { value: 'Puzzle', label: 'Puzzle' },
 ];
 

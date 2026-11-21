@@ -1,4 +1,4 @@
-import { BadgeCheck, Bookmark, Heart, ThumbsUp } from 'lucide-react';
+import { BadgeCheck, Bookmark, Heart, ThumbsUp, ArrowUpRight } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -22,10 +22,10 @@ export function FeaturedExperience({
 }: FeaturedExperienceProps) {
   return (
     <section
-      className="grid min-w-0 overflow-hidden rounded-2xl border border-border bg-card md:min-h-80 md:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]"
+      className="grid min-w-0 overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]"
       aria-label="Featured experience"
     >
-      <div className="relative min-h-56 overflow-hidden bg-muted md:min-h-full">
+      <a href={`/games/?id=${encodeURIComponent(experience.id)}`} className="group relative aspect-video w-full self-center overflow-hidden bg-muted" aria-label={`Learn more about ${experience.title}`}>
         <ExperienceArtwork
           src={experience.artwork.hero ?? experience.artwork.thumbnail}
           alt={experience.artwork.alt}
@@ -41,8 +41,8 @@ export function FeaturedExperience({
           <ThumbsUp size={14} />
           {experience.metrics.rating}% Positive
         </span>
-      </div>
-      <div className="flex min-w-0 flex-col justify-center gap-4 p-5 md:p-7">
+      </a>
+      <div className="flex min-w-0 flex-col justify-center gap-3 p-5 md:p-6">
         <div className="flex flex-wrap gap-2">
           {[experience.genre, experience.subgenre, experience.tags[0] ?? experience.genre].map(
             (tag, index) => (
@@ -62,13 +62,20 @@ export function FeaturedExperience({
           By {experience.creator}
           {experience.creatorVerified && <BadgeCheck size={15} />}
         </p>
-        <p className="text-sm leading-relaxed text-muted-foreground">{experience.description}</p>
+        <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{experience.description}</p>
+        <a
+          href={`/games/?id=${encodeURIComponent(experience.id)}`}
+          className="inline-flex w-fit items-center gap-1 text-sm font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={`Read more about ${experience.title}`}
+        >
+          Read more <ArrowUpRight size={15} />
+        </a>
         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
           <span>{formatCount(experience.metrics.activePlayers)} playing now</span>
           <span>{experience.metrics.rating}% Positive</span>
           <span>{formatCount(experience.metrics.reviewCount)} reviews</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <ExperiencePlayButton onClick={() => onPlay(experience)} />
           <Button
             variant="outline"

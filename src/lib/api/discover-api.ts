@@ -9,6 +9,10 @@ export interface DiscoverApiError extends Error {
   status?: number;
 }
 
+export type SearchSort = 'relevance' | 'players' | 'rating' | 'reviews' | 'launched' | 'updated';
+
+export type GenreCounts = Record<'All' | 'Action RPG' | 'Exploration' | 'Co-op' | 'Racing' | 'Horror' | 'Simulation' | 'Puzzle', number>;
+
 export interface DiscoverPageResult {
   context: RankingContext;
   persona: string | null;
@@ -75,9 +79,10 @@ export function fetchDiscovery(
 export async function searchCatalog(
   query: string,
   genre: string,
+  sort: SearchSort = 'relevance',
   signal?: AbortSignal,
 ): Promise<Experience[]> {
-  const params = new URLSearchParams({ q: query });
+  const params = new URLSearchParams({ q: query, sort });
 
   if (genre !== 'All') params.set('genre', genre);
 
@@ -102,4 +107,8 @@ export function fetchCatalog(
 
 export function fetchPersonas(signal?: AbortSignal): Promise<{ data: DiscoveryPersona[] }> {
   return request<{ data: DiscoveryPersona[] }>('/personas', { signal });
+}
+
+export function fetchGenreCounts(signal?: AbortSignal): Promise<{ data: GenreCounts }> {
+  return request<{ data: GenreCounts }>('/genres', { signal });
 }

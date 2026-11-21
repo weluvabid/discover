@@ -1,4 +1,4 @@
-import { Bookmark, Sparkles, Star, TrendingUp } from 'lucide-react';
+import { ArrowUpRight, Bookmark, Sparkles, Star, TrendingUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 import { ExperiencePlayButton } from './ExperiencePlayButton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ExperienceCardProps {
   experience: Experience;
@@ -35,11 +36,10 @@ export function ExperienceCard({
 
   return (
     <article className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-ring/60">
-      <Button
-        variant="ghost"
-        className="relative block h-auto w-full overflow-hidden rounded-none bg-muted p-0 text-left hover:bg-muted"
-        onClick={() => onPlay(experience)}
-        aria-label={`Play ${experience.title} on Roblox`}
+      <a
+        href={`/games/?id=${encodeURIComponent(experience.id)}`}
+        className="relative block overflow-hidden bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+        aria-label={`Learn more about ${experience.title}`}
       >
         <ExperienceArtwork
           src={experience.artwork.thumbnail}
@@ -58,28 +58,53 @@ export function ExperienceCard({
             #{ranking.position}
           </span>
         )}
-      </Button>
+      </a>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex min-w-0 items-center gap-2">
-          <Button
-            variant="link"
-            className="h-auto min-w-0 justify-start truncate p-0 text-left text-base font-bold text-foreground no-underline hover:underline"
-            onClick={() => onPlay(experience)}
+          <a
+            href={`/games/?id=${encodeURIComponent(experience.id)}`}
+            className="min-w-0 truncate text-base font-bold text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {experience.title}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className="ml-auto shrink-0"
-            onClick={() => onToggleBookmark(experience.id)}
-            aria-label={
-              isBookmarked ? `Remove ${experience.title} from library` : `Save ${experience.title}`
-            }
-            aria-pressed={isBookmarked}
-          >
-            <Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'} />
-          </Button>
+          </a>
+          <div className="ml-auto flex shrink-0 items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => onToggleBookmark(experience.id)}
+                    aria-label={
+                      isBookmarked
+                        ? `Remove ${experience.title} from library`
+                        : `Save ${experience.title}`
+                    }
+                    aria-pressed={isBookmarked}
+                  />
+                }
+              >
+                <Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'} />
+              </TooltipTrigger>
+              <TooltipContent>
+                {isBookmarked ? 'Remove from library' : 'Save to library'}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <a
+                    href={`/games/?id=${encodeURIComponent(experience.id)}`}
+                    className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={`Learn more about ${experience.title}`}
+                  />
+                }
+              >
+                <ArrowUpRight size={16} />
+              </TooltipTrigger>
+              <TooltipContent>Learn more</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
         <p className="truncate text-sm text-muted-foreground">
           {experience.creator} <span aria-hidden="true">·</span> {experience.subgenre}
@@ -100,11 +125,13 @@ export function ExperienceCard({
             {experience.metrics.rating}%
           </span>
         </div>
-        <ExperiencePlayButton
-          onClick={() => onPlay(experience)}
-          label="Play on Roblox"
-          className="w-full"
-        />
+        <div className="flex items-center gap-2">
+          <ExperiencePlayButton
+            onClick={() => onPlay(experience)}
+            label="Play on Roblox"
+            className="min-w-0 flex-1"
+          />
+        </div>
         {ranking && (
           <div className="flex items-center justify-between gap-3 border-t border-border pt-3">
             <div className="flex items-baseline gap-2">

@@ -120,6 +120,7 @@ export function getCatalog(
     query?: string;
     genre?: string;
     persona?: string;
+    sort?: 'relevance' | 'players' | 'rating' | 'reviews' | 'launched' | 'updated';
   } = {},
 ): Experience[] {
   const limit = Math.min(10_000, Math.max(1, options.limit ?? 200));
@@ -128,13 +129,13 @@ export function getCatalog(
   const parameters: (string | number)[] = [];
 
   if (options.query) {
-    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')");
+    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\' OR genre LIKE ? ESCAPE '\\' OR subgenre LIKE ? ESCAPE '\\' OR tags_json LIKE ? ESCAPE '\\')");
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
 
-    parameters.push(query, query, query);
+    parameters.push(query, query, query, query, query, query);
   }
 
-  const queryOrder = options.query
+  const queryOrder = options.query && (!options.sort || options.sort === 'relevance')
     ? `CASE
          WHEN lower(title) = lower(?) THEN 0
          WHEN lower(title) LIKE lower(?) ESCAPE '\\' THEN 1
@@ -144,7 +145,7 @@ export function getCatalog(
          ELSE 5
        END,`
     : '';
-  const queryOrderParameters = options.query
+  const queryOrderParameters = options.query && (!options.sort || options.sort === 'relevance')
     ? [
         options.query,
         `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
@@ -156,11 +157,21 @@ export function getCatalog(
   const freshnessReferenceAt = db
     .prepare('SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL')
     .get() as { reference_at: string | null };
+  const sortOrder: Record<NonNullable<typeof options.sort>, string> = {
+    relevance: 'active_players DESC',
+    players: 'active_players DESC',
+    rating: 'rating DESC, review_count DESC',
+    reviews: 'review_count DESC, rating DESC',
+    launched: 'created_at DESC',
+    updated: 'COALESCE(source_updated_at, updated_at) DESC',
+  };
+  const selectedSort = options.sort ?? 'relevance';
+  const orderBy = `${queryOrder} ${sortOrder[selectedSort]}, universe_id`;
   const rows = db
     .prepare(
       `SELECT * FROM games
        WHERE ${conditions.join(' AND ')}
-       ORDER BY ${queryOrder} active_players DESC, universe_id
+       ORDER BY ${orderBy}
        LIMIT 10000`,
     )
     .all(...parameters, ...queryOrderParameters) as unknown as GameRow[];
@@ -179,10 +190,10 @@ export function getCatalogCount(
   const parameters: string[] = [];
 
   if (options.query) {
-    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')");
+    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\' OR genre LIKE ? ESCAPE '\\' OR subgenre LIKE ? ESCAPE '\\' OR tags_json LIKE ? ESCAPE '\\')");
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
 
-    parameters.push(query, query, query);
+    parameters.push(query, query, query, query, query, query);
   }
 
   const rows = db
@@ -192,6 +203,30 @@ export function getCatalogCount(
   if (!options.genre || options.genre === 'All') return rows.length;
 
   return rows.reduce((count, row) => count + (mapGenre(row.genre) === options.genre ? 1 : 0), 0);
+}
+
+export function getGenreCounts(db: DatabaseSync): Record<ExperienceGenre | 'All', number> {
+  const rows = db
+    .prepare("SELECT genre, COUNT(DISTINCT universe_id) AS count FROM games WHERE source_status = 'valid' GROUP BY genre")
+    .all() as Array<{ genre: string; count: number }>;
+  const counts: Record<ExperienceGenre | 'All', number> = {
+    All: 0,
+    'Action RPG': 0,
+    Exploration: 0,
+    'Co-op': 0,
+    Racing: 0,
+    Horror: 0,
+    Simulation: 0,
+    Puzzle: 0,
+  };
+
+  for (const row of rows) {
+    const genre = mapGenre(row.genre);
+    counts[genre] += row.count;
+    counts.All += row.count;
+  }
+
+  return counts;
 }
 
 export function getExperience(db: DatabaseSync, universeId: string): Experience | undefined {

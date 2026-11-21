@@ -1,0 +1,9 @@
+---
+import DiscoverLayout from '@/layouts/DiscoverLayout.astro';
+import { GameDetailIsland } from '@/components/pages/GameDetailIsland';
+const id = Astro.url.searchParams.get('id') ?? '';
+---
+
+<DiscoverLayout title="Experience — Discover" description="Explore experience details on Roblox Discover.">
+  <GameDetailIsland initialId={id} client:load />
+</DiscoverLayout>

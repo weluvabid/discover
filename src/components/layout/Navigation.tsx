@@ -28,6 +28,7 @@ interface SidebarProps {
   activeView: DiscoveryView;
   selectedGenre: ExperienceGenre | 'All';
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
+  genreCounts: Record<string, number>;
 }
 
 function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
@@ -36,7 +37,7 @@ function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') 
   return genre === 'All' ? path : `${path}?genre=${encodeURIComponent(genre)}`;
 }
 
-export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarProps) {
+export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts }: SidebarProps) {
   const { isMobile, setOpenMobile, state } = useSidebar();
 
   return (
@@ -96,7 +97,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
           <SidebarGroupLabel>BROWSE GENRES</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {GENRE_FILTER_OPTIONS.map(({ value, label, count }) => (
+              {GENRE_FILTER_OPTIONS.map(({ value, label }) => (
                 <SidebarMenuItem key={value}>
                   <SidebarMenuButton
                     isActive={selectedGenre === value}
@@ -108,9 +109,9 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                     }}
                   >
                     <span className="min-w-0 flex-1 truncate">{label}</span>
-                    {count && (
+                    {typeof genreCounts[value] === 'number' && (
                       <span className="ml-auto text-xs tabular-nums text-muted-foreground">
-                        {count}
+                        {genreCounts[value].toLocaleString('en')}
                       </span>
                     )}
                   </SidebarMenuButton>

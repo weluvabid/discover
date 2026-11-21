@@ -75,6 +75,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
       <Sidebar
         activeView={page.activeView}
         selectedGenre={page.genre}
+        genreCounts={page.genreCounts}
         onSelectGenre={(selected) => {
           page.selectGenre(selected);
         }}
@@ -96,16 +97,16 @@ export default function App({ initialLocation = '/' }: AppProps) {
               {page.error}
             </div>
           )}
-          {page.loading && !hasSearch && page.rankedSections.featured.length === 0 && (
-            <div role="status" className="text-sm text-muted-foreground">Loading discovery results…</div>
-          )}
           {hasSearch ? (
             <SearchResultsView
               query={page.query || page.genre}
               results={page.visibleResults}
+              sort={page.searchSort}
+              onSortChange={page.setSearchSort}
               bookmarks={page.bookmarks}
               onToggleBookmark={toggleBookmark}
               onPlay={launchExperience}
+              loading={page.searchLoading}
             />
           ) : (
             <DiscoverView
@@ -123,6 +124,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
               onToggleBookmark={toggleBookmark}
               onPlay={launchExperience}
               onNavigate={page.navigate}
+              loading={page.loading}
             />
           )}
         </main>

@@ -10,7 +10,7 @@ import {
 } from '@/features/discovery/engine/ranking';
 import { EXPERIENCE_GENRES, type ExperienceGenre } from '@/types/experience';
 import { seedPersonas } from '../ingestion/synthetic';
-import { getCatalog, getCatalogCount, getExperience } from '../ranking/catalog';
+import { getCatalog, getCatalogCount, getExperience, getGenreCounts } from '../ranking/catalog';
 
 const CONTEXTS = new Set<RankingContext>([
   'featured',
@@ -44,6 +44,10 @@ export async function handleApiRequest(
   ranker: DiscoveryRanker = rankForContext,
   observe?: (stage: 'catalog' | 'ranking', durationMs: number) => void,
 ): Promise<ApiResult> {
+  if (method === 'GET' && url.pathname === '/api/genres') {
+    return { status: 200, body: { data: getGenreCounts(db) } };
+  }
+
   if (method === 'GET' && url.pathname === '/api/health') {
     return {
       status: 200,
@@ -108,7 +112,14 @@ export async function handleApiRequest(
       status: 200,
       body: {
         data: query
-          ? getCatalog(db, { query, genre: url.searchParams.get('genre') ?? undefined, limit: 100 })
+          ? getCatalog(db, {
+              query,
+              genre: url.searchParams.get('genre') ?? undefined,
+              sort: (['relevance', 'players', 'rating', 'reviews', 'launched', 'updated'].includes(url.searchParams.get('sort') ?? '')
+                ? url.searchParams.get('sort')
+                : 'relevance') as 'relevance' | 'players' | 'rating' | 'reviews' | 'launched' | 'updated',
+              limit: 100,
+            })
           : [],
       },
     };

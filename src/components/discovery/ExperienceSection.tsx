@@ -3,6 +3,7 @@ import { Compass } from 'lucide-react';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import type { Experience } from '@/types/experience';
 import { ExperienceCard } from '@/components/experience/ExperienceCard';
+import { ExperienceCardSkeleton } from '@/components/experience/ExperienceCardSkeleton';
 import {
   Empty,
   EmptyContent,
@@ -27,6 +28,7 @@ interface ExperienceSectionProps {
   emptyIcon?: ReactNode;
   emptyAction?: ReactNode;
   rankingById?: Map<string, RankedExperience>;
+  loading?: boolean;
 }
 
 export function ExperienceSection({
@@ -43,11 +45,22 @@ export function ExperienceSection({
   emptyIcon = <Compass aria-hidden="true" />,
   emptyAction,
   rankingById,
+  loading = false,
 }: ExperienceSectionProps) {
   return (
     <section className="mt-8 min-w-0">
       <SectionHeader title={title} subtitle={subtitle} action={action} />
-      {experiences.length === 0 ? (
+      {loading ? (
+        <div
+          className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+          role="status"
+          aria-label={`Loading ${title.toLowerCase()}`}
+        >
+          {Array.from({ length: 4 }, (_, index) => (
+            <ExperienceCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : experiences.length === 0 ? (
         <Empty className="rounded-2xl border border-border bg-card py-12">
           <EmptyHeader>
             <EmptyMedia variant="icon">{emptyIcon}</EmptyMedia>

@@ -23,7 +23,7 @@ export function useDiscovery() {
 
     setLoading(true);
     setError(null);
-    searchCatalog(normalized, 'All', controller.signal)
+    searchCatalog(normalized, 'All', 'relevance', controller.signal)
       .then(setResults)
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
