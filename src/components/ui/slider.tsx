@@ -1,5 +1,5 @@
-import { Slider as SliderPrimitive } from "@base-ui/react/slider"
-import { cn } from "@/lib/utils"
+import { Slider as SliderPrimitive } from '@base-ui/react/slider';
+import { cn } from '@/lib/utils';
 
 function Slider({
   className,
@@ -9,17 +9,13 @@ function Slider({
   max = 100,
   ...props
 }: SliderPrimitive.Root.Props) {
-  const values = Array.isArray(value)
-    ? value
-    : Array.isArray(defaultValue)
-      ? defaultValue
-      : [min]
+  const values = Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min];
 
   return (
     <SliderPrimitive.Root
       className={cn(
-        "data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full",
-        className
+        'data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full',
+        className,
       )}
       data-slot="slider"
       defaultValue={defaultValue ?? [min]}
@@ -50,7 +46,7 @@ function Slider({
         </SliderPrimitive.Track>
       </SliderPrimitive.Control>
     </SliderPrimitive.Root>
-  )
+  );
 }
 
-export { Slider }
+export { Slider };

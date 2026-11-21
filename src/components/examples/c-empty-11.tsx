@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Empty,
   EmptyContent,
@@ -6,8 +6,8 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { BookmarkIcon } from "lucide-react"
+} from '@/components/ui/empty';
+import { BookmarkIcon } from 'lucide-react';
 
 export function Pattern() {
   return (
@@ -15,8 +15,7 @@ export function Pattern() {
       <Empty className="py-16">
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <BookmarkIcon
-            />
+            <BookmarkIcon />
           </EmptyMedia>
           <EmptyTitle>No bookmarks</EmptyTitle>
           <EmptyDescription>
@@ -30,5 +29,5 @@ export function Pattern() {
         </EmptyContent>
       </Empty>
     </div>
-  )
+  );
 }

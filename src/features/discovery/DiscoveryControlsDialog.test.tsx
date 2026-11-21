@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { DEFAULT_RANKING_CONFIGURATION } from './engine/ranking';
+import { DEFAULT_RANKING_CONFIGURATION, type RankingConfiguration } from './engine/ranking';
 import { DiscoveryControlsDialog } from './DiscoveryControlsDialog';
 
 afterEach(() => cleanup());
@@ -23,7 +23,7 @@ describe('DiscoveryControlsDialog', () => {
   });
 
   it('toggles a ranking signal through the Base UI switch', () => {
-    const onApply = vi.fn();
+    const onApply = vi.fn<(configuration: RankingConfiguration) => void>();
 
     render(
       <DiscoveryControlsDialog
@@ -35,17 +35,19 @@ describe('DiscoveryControlsDialog', () => {
     );
 
     const affinitySwitch = screen.getByRole('switch', { name: 'User affinity' });
+
     expect(affinitySwitch).toHaveAttribute('aria-checked', 'true');
 
     fireEvent.click(affinitySwitch);
     fireEvent.click(screen.getByRole('button', { name: /Apply configuration/ }));
 
-    expect(onApply.mock.calls[0]?.[0].signals.find((signal) => signal.id === 'affinity')?.enabled)
-      .toBe(false);
+    expect(
+      onApply.mock.calls[0]?.[0].signals.find((signal) => signal.id === 'affinity')?.enabled,
+    ).toBe(false);
   });
 
   it('applies the selected ranking strategy and closes the dialog', () => {
-    const onApply = vi.fn();
+    const onApply = vi.fn<(configuration: RankingConfiguration) => void>();
     const onClose = vi.fn();
 
     render(
@@ -57,7 +59,9 @@ describe('DiscoveryControlsDialog', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('tab', { name: /Popularity-first Trending and active players/ }));
+    fireEvent.click(
+      screen.getByRole('tab', { name: /Popularity-first Trending and active players/ }),
+    );
     fireEvent.click(screen.getByRole('button', { name: /Apply configuration/ }));
 
     expect(onApply).toHaveBeenCalledTimes(1);

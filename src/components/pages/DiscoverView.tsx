@@ -73,11 +73,7 @@ export function DiscoverView({
 
   if (activeView === 'collections') {
     return (
-      <CollectionsView
-        bookmarks={bookmarks}
-        onToggleBookmark={onToggleBookmark}
-        onPlay={onPlay}
-      />
+      <CollectionsView bookmarks={bookmarks} onToggleBookmark={onToggleBookmark} onPlay={onPlay} />
     );
   }
 
@@ -153,7 +149,12 @@ export function DiscoverView({
         onToggleBookmark={onToggleBookmark}
         onPlay={onPlay}
         action={
-          <Button variant="ghost" size="xs" className="text-muted-foreground hover:text-foreground" onClick={() => onNavigate('trending')}>
+          <Button
+            variant="ghost"
+            size="xs"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={() => onNavigate('trending')}
+          >
             View all ({rankedSections.trending.length}) <ChevronRight size={15} />
           </Button>
         }

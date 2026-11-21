@@ -13,12 +13,7 @@ import {
   searchExperiences,
 } from '@/features/search/utils/search-experiences';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import {
-  EXPERIENCE_GENRES,
-  type DiscoveryView,
-  type Experience,
-  type ExperienceGenre,
-} from '@/types/experience';
+import { EXPERIENCE_GENRES, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
 
 const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/': 'explore',
@@ -163,8 +158,11 @@ export function useDiscoverPage(initialLocation = '/') {
 
   const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
     const params = new URLSearchParams();
+
     if (next !== 'All') params.set('genre', next);
+
     const suffix = params.toString();
+
     navigateTo(`/${suffix ? `?${suffix}` : ''}`);
   }, []);
 

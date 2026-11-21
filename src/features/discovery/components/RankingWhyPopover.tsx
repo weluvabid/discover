@@ -61,10 +61,12 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
 
     const closeWhenAnotherOpens = (event: Event) => {
       const detail = (event as CustomEvent<string>).detail;
+
       if (detail !== popoverId) setOpen(false);
     };
 
     window.addEventListener('discover:ranking-popover-open', closeWhenAnotherOpens);
+
     return () => window.removeEventListener('discover:ranking-popover-open', closeWhenAnotherOpens);
   }, [open, popoverId]);
 
@@ -84,17 +86,27 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
   return (
     <div className="flex min-w-0 items-center justify-between gap-2">
       {showScore && (
-        <div className="flex items-baseline gap-2" aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}>
-          <strong className="text-lg font-bold tabular-nums text-foreground">{ranking.score.toFixed(1)}</strong>
-          <span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">RANK SCORE</span>
+        <div
+          className="flex items-baseline gap-2"
+          aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}
+        >
+          <strong className="text-lg font-bold tabular-nums text-foreground">
+            {ranking.score.toFixed(1)}
+          </strong>
+          <span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">
+            RANK SCORE
+          </span>
         </div>
       )}
       <Popover
         open={open}
         onOpenChange={(nextOpen) => {
           if (nextOpen) {
-            window.dispatchEvent(new CustomEvent('discover:ranking-popover-open', { detail: popoverId }));
+            window.dispatchEvent(
+              new CustomEvent('discover:ranking-popover-open', { detail: popoverId }),
+            );
           }
+
           setOpen(nextOpen);
         }}
       >
@@ -127,7 +139,9 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           aria-label={`Why ${ranking.experience.title} ranked here`}
         >
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-bold tracking-wider text-muted-foreground">RANKING EXPLANATION</span>
+            <span className="text-xs font-bold tracking-wider text-muted-foreground">
+              RANKING EXPLANATION
+            </span>
             <strong className="text-base leading-snug">
               {CONTEXT_LABELS[ranking.explanation.context]} ·{' '}
               {STRATEGY_LABELS[ranking.explanation.strategy]}
@@ -138,11 +152,32 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
               ? 'This experience qualified for recommendations and was scored using your active discovery preferences.'
               : `This experience qualified for ${CONTEXT_LABELS[ranking.explanation.context]} and was ranked using your active discovery preferences.`}
           </p>
-          <dl className="flex flex-col gap-3 rounded-xl border border-border bg-secondary/50 p-4 text-sm" aria-label="Score breakdown">
-            <div className="flex items-center justify-between gap-6"><dt className="text-muted-foreground">Weighted signals</dt><dd className="shrink-0 font-bold tabular-nums">{displayedWeightedScore.toFixed(1)}</dd></div>
-            <div className="flex items-center justify-between gap-6"><dt className="text-muted-foreground">Reranking penalty</dt><dd className="shrink-0 font-bold tabular-nums">{formatSigned(penalty)}</dd></div>
-            <div className="flex items-center justify-between gap-6"><dt className="text-muted-foreground">Applied adjustment</dt><dd className="shrink-0 font-bold tabular-nums">{formatSigned(displayedAdjustment)}</dd></div>
-            <div className="flex items-center justify-between gap-6 border-t border-border pt-3"><dt className="font-semibold">Final Score</dt><dd className="shrink-0 text-lg font-bold tabular-nums">{displayedFinalScore.toFixed(1)}</dd></div>
+          <dl
+            className="flex flex-col gap-3 rounded-xl border border-border bg-secondary/50 p-4 text-sm"
+            aria-label="Score breakdown"
+          >
+            <div className="flex items-center justify-between gap-6">
+              <dt className="text-muted-foreground">Weighted signals</dt>
+              <dd className="shrink-0 font-bold tabular-nums">
+                {displayedWeightedScore.toFixed(1)}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-6">
+              <dt className="text-muted-foreground">Reranking penalty</dt>
+              <dd className="shrink-0 font-bold tabular-nums">{formatSigned(penalty)}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-6">
+              <dt className="text-muted-foreground">Applied adjustment</dt>
+              <dd className="shrink-0 font-bold tabular-nums">
+                {formatSigned(displayedAdjustment)}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-6 border-t border-border pt-3">
+              <dt className="font-semibold">Final Score</dt>
+              <dd className="shrink-0 text-lg font-bold tabular-nums">
+                {displayedFinalScore.toFixed(1)}
+              </dd>
+            </div>
           </dl>
           <div className="flex flex-col gap-4">
             {signals.map((signal) => (
@@ -155,10 +190,15 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
                     {signal.label}
                     {signal.enabled ? '' : ' · disabled'}
                   </span>
-                  <strong className="tabular-nums">{(displayedContributions.get(signal.id) ?? 0).toFixed(1)} pts</strong>
+                  <strong className="tabular-nums">
+                    {(displayedContributions.get(signal.id) ?? 0).toFixed(1)} pts
+                  </strong>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                  <i className="block h-full rounded-full bg-muted-foreground" style={{ width: `${Math.max(0, Math.min(100, signal.contribution))}%` }} />
+                  <i
+                    className="block h-full rounded-full bg-muted-foreground"
+                    style={{ width: `${Math.max(0, Math.min(100, signal.contribution))}%` }}
+                  />
                 </div>
                 <small className="text-xs leading-relaxed text-muted-foreground">
                   {signal.normalizedScore.toFixed(0)} signal ×{' '}
@@ -172,14 +212,18 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
             <strong className="font-semibold">Eligibility</strong>
             {ranking.explanation.eligibilityReasons.map((reason) => (
-              <span key={reason} className="text-muted-foreground">✓ {reason}</span>
+              <span key={reason} className="text-muted-foreground">
+                ✓ {reason}
+              </span>
             ))}
           </div>
           {ranking.explanation.reasons.length > 0 && (
             <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
               <strong className="font-semibold">Top contributors</strong>
               {ranking.explanation.reasons.map((reason) => (
-                <span key={reason} className="text-muted-foreground">{reason}</span>
+                <span key={reason} className="text-muted-foreground">
+                  {reason}
+                </span>
               ))}
             </div>
           )}

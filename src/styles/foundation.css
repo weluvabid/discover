@@ -74,7 +74,9 @@
 :root {
   color-scheme: light;
   --font-sans: 'Atkinson Hyperlegible', 'Arial', 'Helvetica Neue', sans-serif;
-  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'DejaVu Sans Mono', monospace;
+  --font-mono:
+    ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'DejaVu Sans Mono',
+    monospace;
   --background: #fafaf8;
   --foreground: #20201e;
   --card: #ffffff;
@@ -194,7 +196,6 @@ input {
 button {
   color: inherit;
 }
-
 
 button:disabled {
   cursor: not-allowed;

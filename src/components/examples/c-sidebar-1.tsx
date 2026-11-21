@@ -1,13 +1,9 @@
-"use client"
+'use client';
 
-import { useState, type ReactNode } from "react"
-import { cn } from "cn"
+import { useState, type ReactNode } from 'react';
+import { cn } from 'cn';
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,15 +11,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import {
   Sidebar,
   SidebarContent,
@@ -52,31 +42,51 @@ import {
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, InboxIcon, RocketIcon, BarChart3Icon, FileTextIcon, LayersIcon, ChevronsUpDownIcon, CheckIcon, PlusIcon, FolderIcon, MoreHorizontalIcon, CopyIcon, ArchiveIcon, UserIcon, CreditCardIcon, BellIcon, LogOutIcon, AlertCircleIcon, CircleCheckIcon } from "lucide-react"
+} from '@/components/ui/sidebar';
+import {
+  LayoutDashboardIcon,
+  InboxIcon,
+  RocketIcon,
+  BarChart3Icon,
+  FileTextIcon,
+  LayersIcon,
+  ChevronsUpDownIcon,
+  CheckIcon,
+  PlusIcon,
+  FolderIcon,
+  MoreHorizontalIcon,
+  CopyIcon,
+  ArchiveIcon,
+  UserIcon,
+  CreditCardIcon,
+  BellIcon,
+  LogOutIcon,
+  AlertCircleIcon,
+  CircleCheckIcon,
+} from 'lucide-react';
 
 interface Workspace {
-  id: string
-  name: string
-  plan: string
-  initials: string
-  avatar: string
+  id: string;
+  name: string;
+  plan: string;
+  initials: string;
+  avatar: string;
 }
 
 interface NavItem {
-  id: string
-  label: string
-  icon: ReactNode
-  badge?: number
-  isActive?: boolean
+  id: string;
+  label: string;
+  icon: ReactNode;
+  badge?: number;
+  isActive?: boolean;
 }
 
 interface Deployment {
-  id: string
-  title: string
-  branch: string
-  time: string
-  failed?: boolean
+  id: string;
+  title: string;
+  branch: string;
+  time: string;
+  failed?: boolean;
 }
 
 // Demo data only: every link is `href="#"` and the faces come from the fixed
@@ -84,30 +94,27 @@ interface Deployment {
 // person, a real route or an invented endpoint.
 const WORKSPACES: Workspace[] = [
   {
-    id: "reui-labs",
-    name: "ReUI Labs",
-    plan: "Pro",
-    initials: "RL",
-    avatar:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=96&h=96&dpr=2&q=80",
+    id: 'reui-labs',
+    name: 'ReUI Labs',
+    plan: 'Pro',
+    initials: 'RL',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=96&h=96&dpr=2&q=80',
   },
   {
-    id: "acme",
-    name: "Acme Robotics",
-    plan: "Team",
-    initials: "AR",
-    avatar:
-      "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=96&h=96&dpr=2&q=80",
+    id: 'acme',
+    name: 'Acme Robotics',
+    plan: 'Team',
+    initials: 'AR',
+    avatar: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=96&h=96&dpr=2&q=80',
   },
   {
-    id: "personal",
-    name: "Personal",
-    plan: "Free",
-    initials: "PS",
-    avatar:
-      "https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?w=96&h=96&dpr=2&q=80",
+    id: 'personal',
+    name: 'Personal',
+    plan: 'Free',
+    initials: 'PS',
+    avatar: 'https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?w=96&h=96&dpr=2&q=80',
   },
-]
+];
 
 // Icons live in the data as JSX nodes with a STATIC name per library. That
 // shape is what `shadcn add` rewrites to whichever icon package the installer
@@ -115,92 +122,80 @@ const WORKSPACES: Workspace[] = [
 // rewrite and the row would render an empty box.
 const NAV: NavItem[] = [
   {
-    id: "overview",
-    label: "Overview",
-    icon: (
-      <LayoutDashboardIcon aria-hidden="true" />
-    ),
+    id: 'overview',
+    label: 'Overview',
+    icon: <LayoutDashboardIcon aria-hidden="true" />,
   },
   {
-    id: "inbox",
-    label: "Inbox",
+    id: 'inbox',
+    label: 'Inbox',
     badge: 12,
-    icon: (
-      <InboxIcon aria-hidden="true" />
-    ),
+    icon: <InboxIcon aria-hidden="true" />,
   },
   {
-    id: "deployments",
-    label: "Deployments",
+    id: 'deployments',
+    label: 'Deployments',
     isActive: true,
-    icon: (
-      <RocketIcon aria-hidden="true" />
-    ),
+    icon: <RocketIcon aria-hidden="true" />,
   },
   {
-    id: "analytics",
-    label: "Analytics",
-    icon: (
-      <BarChart3Icon aria-hidden="true" />
-    ),
+    id: 'analytics',
+    label: 'Analytics',
+    icon: <BarChart3Icon aria-hidden="true" />,
   },
   {
-    id: "logs",
-    label: "Logs",
+    id: 'logs',
+    label: 'Logs',
     badge: 3,
-    icon: (
-      <FileTextIcon aria-hidden="true" />
-    ),
+    icon: <FileTextIcon aria-hidden="true" />,
   },
   {
-    id: "storage",
-    label: "Storage",
-    icon: (
-      <LayersIcon aria-hidden="true" />
-    ),
+    id: 'storage',
+    label: 'Storage',
+    icon: <LayersIcon aria-hidden="true" />,
   },
-]
+];
 
 const PROJECTS = [
-  { id: "checkout", name: "Checkout API" },
-  { id: "design-system", name: "Design system" },
-  { id: "marketing", name: "Marketing site" },
-  { id: "edge-cache", name: "Edge cache" },
-]
+  { id: 'checkout', name: 'Checkout API' },
+  { id: 'design-system', name: 'Design system' },
+  { id: 'marketing', name: 'Marketing site' },
+  { id: 'edge-cache', name: 'Edge cache' },
+];
 
 const DEPLOYMENTS: Deployment[] = [
   {
-    id: "d-4821",
-    title: "Tighten the webhook retry window",
-    branch: "main",
-    time: "12m ago",
+    id: 'd-4821',
+    title: 'Tighten the webhook retry window',
+    branch: 'main',
+    time: '12m ago',
   },
   {
-    id: "d-4820",
-    title: "Split the pricing bundle",
-    branch: "release/2.8",
-    time: "1h ago",
+    id: 'd-4820',
+    title: 'Split the pricing bundle',
+    branch: 'release/2.8',
+    time: '1h ago',
   },
   {
-    id: "d-4819",
-    title: "Move invoices to the edge cache",
-    branch: "feat/edge",
-    time: "3h ago",
+    id: 'd-4819',
+    title: 'Move invoices to the edge cache',
+    branch: 'feat/edge',
+    time: '3h ago',
     failed: true,
   },
   {
-    id: "d-4818",
-    title: "Add locale fallbacks to search",
-    branch: "main",
-    time: "Yesterday",
+    id: 'd-4818',
+    title: 'Add locale fallbacks to search',
+    branch: 'main',
+    time: 'Yesterday',
   },
-]
+];
 
 const STATS = [
-  { id: "build", label: "Build time", value: "42s" },
-  { id: "success", label: "Success rate", value: "99.2%" },
-  { id: "prs", label: "Open PRs", value: "7" },
-]
+  { id: 'build', label: 'Build time', value: '42s' },
+  { id: 'success', label: 'Success rate', value: '99.2%' },
+  { id: 'prs', label: 'Open PRs', value: '7' },
+];
 
 // The ReUI mark, the same path data the App Shell Pro blocks use. An inline
 // SVG on `currentColor` rather than an <img> or an icon-package import: it
@@ -210,8 +205,8 @@ function BrandMark({ className }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cn(
-        "bg-sidebar-primary text-sidebar-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-md",
-        className
+        'bg-sidebar-primary text-sidebar-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-md',
+        className,
       )}
     >
       <svg
@@ -229,7 +224,7 @@ function BrandMark({ className }: { className?: string }) {
         />
       </svg>
     </span>
-  )
+  );
 }
 
 // Header switcher. The selected workspace is the example's only piece of
@@ -260,8 +255,8 @@ function WorkspaceSwitcher({
   workspace,
   onSelect,
 }: {
-  workspace: Workspace
-  onSelect: (workspace: Workspace) => void
+  workspace: Workspace;
+  onSelect: (workspace: Workspace) => void;
 }) {
   return (
     <SidebarMenu>
@@ -277,9 +272,7 @@ function WorkspaceSwitcher({
           >
             <BrandMark className="size-8 rounded-lg [&>svg]:size-4" />
             <span className="grid min-w-0 flex-1 text-left leading-tight">
-              <span className="truncate text-sm font-medium">
-                {workspace.name}
-              </span>
+              <span className="truncate text-sm font-medium">{workspace.name}</span>
               <span className="text-sidebar-foreground/70 truncate text-xs">
                 {workspace.plan} plan
               </span>
@@ -313,7 +306,7 @@ function WorkspaceSwitcher({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
 
 // Primary nav. The count badge is a SIBLING of the button, never a child:
@@ -331,22 +324,17 @@ function WorkspaceNav() {
         <SidebarMenu>
           {NAV.map((item) => (
             <SidebarMenuItem key={item.id}>
-              <SidebarMenuButton
-                render={<a href="#" />}
-                isActive={item.isActive}
-              >
+              <SidebarMenuButton render={<button type="button" />} isActive={item.isActive}>
                 {item.icon}
                 <span>{item.label}</span>
               </SidebarMenuButton>
-              {item.badge ? (
-                <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-              ) : null}
+              {item.badge ? <SidebarMenuBadge>{item.badge}</SidebarMenuBadge> : null}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }
 
 // Project rows, each with its own action menu. `showOnHover` only hides the
@@ -369,17 +357,14 @@ function ProjectNav() {
         <SidebarMenu>
           {PROJECTS.map((project) => (
             <SidebarMenuItem key={project.id}>
-              <SidebarMenuButton render={<a href="#" />}>
+              <SidebarMenuButton render={<button type="button" />}>
                 <FolderIcon aria-hidden="true" />
                 <span>{project.name}</span>
               </SidebarMenuButton>
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
-                    <SidebarMenuAction
-                      showOnHover
-                      aria-label={`Actions for ${project.name}`}
-                    />
+                    <SidebarMenuAction showOnHover aria-label={`Actions for ${project.name}`} />
                   }
                 >
                   <MoreHorizontalIcon aria-hidden="true" />
@@ -406,7 +391,7 @@ function ProjectNav() {
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }
 
 // Footer account menu. The label sits inside a DropdownMenuGroup in both
@@ -438,9 +423,7 @@ function AccountMenu() {
             </Avatar>
             <span className="grid min-w-0 flex-1 text-left leading-tight">
               <span className="truncate text-sm font-medium">Nadia Rahman</span>
-              <span className="text-sidebar-foreground/70 truncate text-xs">
-                nadia@reui.io
-              </span>
+              <span className="text-sidebar-foreground/70 truncate text-xs">nadia@reui.io</span>
             </span>
             <MoreHorizontalIcon className="ml-auto opacity-60" aria-hidden="true" />
           </DropdownMenuTrigger>
@@ -475,7 +458,7 @@ function AccountMenu() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
 
 // One run in the deployment list. Glyph and colour both carry the outcome
@@ -492,18 +475,14 @@ function DeploymentRow({ deployment }: { deployment: Deployment }) {
       ) : (
         <CircleCheckIcon className="text-success size-3.5 shrink-0" aria-hidden="true" />
       )}
-      <span className="sr-only">
-        {deployment.failed ? "Failed" : "Succeeded"}
-      </span>
+      <span className="sr-only">{deployment.failed ? 'Failed' : 'Succeeded'}</span>
       <span className="min-w-0 flex-1 truncate">{deployment.title}</span>
       <span className="text-muted-foreground hidden shrink-0 text-xs sm:inline">
         {deployment.branch}
       </span>
-      <span className="text-muted-foreground shrink-0 text-xs">
-        {deployment.time}
-      </span>
+      <span className="text-muted-foreground shrink-0 text-xs">{deployment.time}</span>
     </div>
-  )
+  );
 }
 
 // The app surface. Every box is a Card rather than a div with a border and a
@@ -568,7 +547,7 @@ function Workbench({ workspaceName }: { workspaceName: string }) {
         </Card>
       </div>
     </SidebarInset>
-  )
+  );
 }
 
 // The full anatomy in one screen: switcher, two labelled groups, footer
@@ -597,7 +576,7 @@ function Workbench({ workspaceName }: { workspaceName: string }) {
 // `min-h-svh`, and tailwind-merge only drops it when another `min-h-*` arrives
 // with it, so without the pair the example is viewport tall inside its frame.
 export function Pattern() {
-  const [workspace, setWorkspace] = useState<Workspace>(WORKSPACES[0])
+  const [workspace, setWorkspace] = useState<Workspace>(WORKSPACES[0]);
 
   return (
     <SidebarProvider className="relative h-dvh min-h-0 w-full overflow-hidden">
@@ -627,5 +606,5 @@ export function Pattern() {
 
       <Workbench workspaceName={workspace.name} />
     </SidebarProvider>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import {Check, RotateCcw, Sparkles, X} from 'lucide-react';
+import { Check, RotateCcw, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -59,7 +59,11 @@ export function DiscoveryControlsDialog({
 
   useEffect(() => {
     if (!open) return;
-    const selected = strategyListRef.current?.querySelector<HTMLElement>('[data-selected-strategy="true"]');
+
+    const selected = strategyListRef.current?.querySelector<HTMLElement>(
+      '[data-selected-strategy="true"]',
+    );
+
     if (selected && typeof selected.scrollIntoView === 'function') {
       selected.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
@@ -119,7 +123,10 @@ export function DiscoveryControlsDialog({
               </DialogClose>
             </div>
             <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <DialogTitle className="text-lg font-bold tracking-tight" id="discovery-controls-title">
+              <DialogTitle
+                className="text-lg font-bold tracking-tight"
+                id="discovery-controls-title"
+              >
                 Discovery Controls
               </DialogTitle>
               <span
@@ -143,7 +150,10 @@ export function DiscoveryControlsDialog({
               <section className="flex flex-col gap-3" aria-labelledby="ranking-strategies-heading">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h3 id="ranking-strategies-heading" className="text-xs font-bold tracking-wider text-muted-foreground">
+                    <h3
+                      id="ranking-strategies-heading"
+                      className="text-xs font-bold tracking-wider text-muted-foreground"
+                    >
                       RANKING STRATEGIES
                     </h3>
                     <p className="text-sm text-muted-foreground">Choose a starting point</p>
@@ -171,7 +181,9 @@ export function DiscoveryControlsDialog({
                           className="h-auto min-h-12 w-56 max-w-[80vw] min-w-0 flex-none flex-col items-start gap-1 overflow-hidden rounded-xl border border-border bg-secondary px-3 py-2 text-left whitespace-normal data-active:bg-accent data-active:text-foreground"
                         >
                           <strong className="block w-full truncate text-sm">{option.label}</strong>
-                          <span className="block w-full min-w-0 truncate text-xs text-muted-foreground">{option.description}</span>
+                          <span className="block w-full min-w-0 truncate text-xs text-muted-foreground">
+                            {option.description}
+                          </span>
                         </TabsTrigger>
                       ))}
                     </TabsList>
@@ -180,13 +192,17 @@ export function DiscoveryControlsDialog({
               </section>
 
               <section className="flex flex-col gap-3" aria-labelledby="ranking-signals-heading">
-                <h3 id="ranking-signals-heading" className="text-xs font-bold tracking-wider text-muted-foreground">
+                <h3
+                  id="ranking-signals-heading"
+                  className="text-xs font-bold tracking-wider text-muted-foreground"
+                >
                   RANKING SIGNALS
                 </h3>
 
                 <div className="grid gap-3">
                   {signalOrder.map((id) => {
                     const signal = draft.signals.find((item) => item.id === id);
+
                     if (!signal) return null;
 
                     const enabledCount = draft.signals.filter((item) => item.enabled).length;
@@ -208,7 +224,9 @@ export function DiscoveryControlsDialog({
                             onCheckedChange={(checked) => toggleDraftSignal(signal.id, checked)}
                           />
                           <div className="grid min-w-0 gap-1">
-                            <strong className="text-sm" id={`${switchId}-label`}>{signal.label}</strong>
+                            <strong className="text-sm" id={`${switchId}-label`}>
+                              {signal.label}
+                            </strong>
                             <small
                               className="text-xs leading-relaxed text-muted-foreground"
                               id={`${switchId}-description`}
@@ -227,7 +245,8 @@ export function DiscoveryControlsDialog({
                             disabled={!signal.enabled || enabledCount === 1}
                             aria-label={`${signal.label} weight`}
                             onValueChange={(values) => {
-                              const nextWeight = values[0];
+                              const nextWeight = typeof values === 'number' ? values : values[0];
+
                               if (nextWeight !== undefined) {
                                 updateDraftSignalWeight(signal.id, nextWeight);
                               }

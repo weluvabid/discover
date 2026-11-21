@@ -1,10 +1,6 @@
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { SparklesIcon } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { SparklesIcon } from 'lucide-react';
 
 export function Pattern() {
   return (
@@ -13,16 +9,12 @@ export function Pattern() {
         <PopoverTrigger
           render={
             <Button variant="outline" className="gap-2">
-              <SparklesIcon
-              />
+              <SparklesIcon />
               AI Assistant
             </Button>
           }
         />
-        <PopoverContent
-          className="w-80 gap-0 overflow-hidden p-0"
-          align="center"
-        >
+        <PopoverContent className="w-80 gap-0 overflow-hidden p-0" align="center">
           <div className="bg-primary/5 border-primary/10 border-b p-2">
             <div className="text-primary flex items-center gap-2 font-semibold">
               <SparklesIcon className="size-4" />
@@ -31,9 +23,8 @@ export function Pattern() {
           </div>
           <div className="space-y-3 p-2">
             <p className="text-muted-foreground leading-relaxed">
-              Our AI analyzes your workflow to provide tailored recommendations.
-              It helps you automate repetitive tasks and optimizes your design
-              process in real-time.
+              Our AI analyzes your workflow to provide tailored recommendations. It helps you
+              automate repetitive tasks and optimizes your design process in real-time.
             </p>
             <div className="grid grid-cols-2 items-center gap-2">
               <Button size="sm">Enable AI</Button>
@@ -45,5 +36,5 @@ export function Pattern() {
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

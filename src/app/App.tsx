@@ -26,6 +26,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
   const toggleBookmark = useCallback(
     (id: string) => {
       const wasBookmarked = page.bookmarks.includes(id);
+
       page.toggleBookmark(id);
       toast.success(wasBookmarked ? 'Removed from Library' : 'Added to Library');
     },
@@ -35,18 +36,23 @@ export default function App({ initialLocation = '/' }: AppProps) {
   const launchExperience = useCallback((experience: Experience) => {
     if (!experience.robloxUrl) {
       toast.error(`${experience.title} doesn't have a Roblox launch URL yet.`);
+
       return;
     }
 
     const launchUrl = resolveRobloxLaunchUrl(experience.robloxUrl);
+
     if (!launchUrl) {
       toast.error('This experience has an invalid Roblox launch URL.');
+
       return;
     }
 
     const launchWindow = window.open(launchUrl.toString(), '_blank');
+
     if (!launchWindow) {
       toast.error('Your browser blocked the Roblox launch. Allow pop-ups and try again.');
+
       return;
     }
 
@@ -80,7 +86,10 @@ export default function App({ initialLocation = '/' }: AppProps) {
           onOpenDiscoveryControls={() => page.setControlsOpen(true)}
           hasCustomRanking={page.hasCustomRanking}
         />
-        <main className="mx-auto w-full max-w-screen-2xl space-y-8 px-4 py-6 md:px-6 lg:px-8" id="main-content">
+        <main
+          className="mx-auto w-full max-w-screen-2xl space-y-8 px-4 py-6 md:px-6 lg:px-8"
+          id="main-content"
+        >
           {hasSearch ? (
             <SearchResultsView
               query={page.query || page.genre}

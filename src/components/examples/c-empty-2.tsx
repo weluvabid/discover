@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { ArrowUpRightIcon } from "lucide-react"
+} from '@/components/ui/empty';
+import { ArrowUpRightIcon } from 'lucide-react';
 
 export function Pattern() {
   return (
@@ -22,16 +22,14 @@ export function Pattern() {
           <Button>Try again</Button>
           <Button
             variant="link"
-            render={<a href="#" />}
+            render={<button type="button" />}
             className="text-muted-foreground"
             nativeButton={false}
           >
-            Learn more{" "}
-            <ArrowUpRightIcon
-            />
+            Learn more <ArrowUpRightIcon />
           </Button>
         </EmptyContent>
       </Empty>
     </div>
-  )
+  );
 }

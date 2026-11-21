@@ -12,7 +12,7 @@ Discover uses one deterministic ranking engine with independent discovery contex
 6. Explanation construction.
 7. Section rendering.
 
-Eligibility is deliberately separate from ranking. A strong score cannot make an experience qualify for Trending, Hidden Gems, or Recently Launched if it does not satisfy that context's eligibility rule.
+Eligibility is separate from ranking. A strong score cannot make an experience qualify for Trending, Hidden Gems, or Recently Launched if it does not satisfy that context's eligibility rule.
 
 ## Context eligibility
 
@@ -34,7 +34,7 @@ The weighted score is:
 
 `weightedScore = sum(normalizedSignal * effectiveWeight)`
 
-The second-stage reranker uses genre and tag Jaccard similarity to apply a bounded ordering penalty. The raw penalty and the applied score adjustment are exposed separately. If a score is already at zero, the score adjustment is floored at zero while the raw penalty still explains the ordering decision, so the explanation remains arithmetically honest:
+The second-stage reranker uses genre and tag Jaccard similarity to apply a bounded ordering penalty. The raw penalty and the applied score adjustment are exposed separately. If a score is already at zero, the score adjustment is floored at zero while the raw penalty still explains the ordering decision, so arithmetically:
 
 `finalScore = weightedScore + appliedDiversityAdjustment`
 
@@ -65,7 +65,7 @@ Multipliers are applied to the user's normalized signal weights, then the result
 | Popularity         |     0.80 |     0.50 |        1.00 |        0.25 |              0.50 |
 | Diversity          |     0.80 |     0.70 |        1.00 |        1.10 |              1.00 |
 
-These are deterministic product heuristics. They are intentionally visible in source so they can be challenged, benchmarked, and tuned against fixtures rather than treated as learned model weights.
+These are deterministic product heuristics.
 
 ## Benchmarking
 

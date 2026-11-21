@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState } from 'react';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandDialog,
@@ -11,11 +11,19 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@/components/ui/command"
-import { PlusIcon, FileTextIcon, UserPlusIcon, HouseIcon, InboxIcon, MoonIcon, LogOutIcon } from "lucide-react"
+} from '@/components/ui/command';
+import {
+  PlusIcon,
+  FileTextIcon,
+  UserPlusIcon,
+  HouseIcon,
+  InboxIcon,
+  MoonIcon,
+  LogOutIcon,
+} from 'lucide-react';
 
 export function Pattern() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -29,20 +37,17 @@ export function Pattern() {
             <CommandEmpty>No actions found.</CommandEmpty>
             <CommandGroup heading="Create">
               <CommandItem>
-                <PlusIcon
-                />
+                <PlusIcon />
                 <span>New Project</span>
                 <CommandShortcut>⌘N</CommandShortcut>
               </CommandItem>
               <CommandItem>
-                <FileTextIcon
-                />
+                <FileTextIcon />
                 <span>New Document</span>
                 <CommandShortcut>⌘⇧N</CommandShortcut>
               </CommandItem>
               <CommandItem>
-                <UserPlusIcon
-                />
+                <UserPlusIcon />
                 <span>Invite Member</span>
                 <CommandShortcut>⌘I</CommandShortcut>
               </CommandItem>
@@ -50,14 +55,12 @@ export function Pattern() {
             <CommandSeparator />
             <CommandGroup heading="Navigate">
               <CommandItem>
-                <HouseIcon
-                />
+                <HouseIcon />
                 <span>Go to Dashboard</span>
                 <CommandShortcut>⌘D</CommandShortcut>
               </CommandItem>
               <CommandItem>
-                <InboxIcon
-                />
+                <InboxIcon />
                 <span>Go to Inbox</span>
                 <CommandShortcut>⌘⇧I</CommandShortcut>
               </CommandItem>
@@ -65,14 +68,12 @@ export function Pattern() {
             <CommandSeparator />
             <CommandGroup heading="System">
               <CommandItem>
-                <MoonIcon
-                />
+                <MoonIcon />
                 <span>Toggle Dark Mode</span>
                 <CommandShortcut>⌘⇧D</CommandShortcut>
               </CommandItem>
               <CommandItem>
-                <LogOutIcon
-                />
+                <LogOutIcon />
                 <span>Sign Out</span>
                 <CommandShortcut>⌘Q</CommandShortcut>
               </CommandItem>
@@ -81,5 +82,5 @@ export function Pattern() {
         </Command>
       </CommandDialog>
     </>
-  )
+  );
 }

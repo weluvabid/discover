@@ -1,17 +1,13 @@
-import { useState } from "react"
+import { useState } from 'react';
 
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { SettingsIcon } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { SettingsIcon } from 'lucide-react';
 
 export function Pattern() {
-  const [volume, setVolume] = useState([75])
+  const [volume, setVolume] = useState([75]);
 
   return (
     <div className="flex min-h-[100px] items-center justify-center">
@@ -35,10 +31,11 @@ export function Pattern() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label>Volume</label>
+                <label htmlFor="volume-slider">Volume</label>
                 <span className="text-muted-foreground">{volume[0]}%</span>
               </div>
               <Slider
+                id="volume-slider"
                 value={volume}
                 onValueChange={(v) => setVolume(v as number[])}
                 max={100}
@@ -49,5 +46,5 @@ export function Pattern() {
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

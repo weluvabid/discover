@@ -32,6 +32,7 @@ interface SidebarProps {
 
 function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
   const path = view === 'explore' ? '/' : `/${view}`;
+
   return genre === 'All' ? path : `${path}?genre=${encodeURIComponent(genre)}`;
 }
 
@@ -46,7 +47,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
       className="bg-sidebar text-sidebar-foreground"
     >
       <SidebarHeader className="min-h-16 justify-center px-3 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0">
-        <Brand compact={state === "collapsed" && !isMobile} />
+        <Brand compact={state === 'collapsed' && !isMobile} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -59,6 +60,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                     render={
                       <a
                         href={getNavigationPath(id, selectedGenre)}
+                        aria-label={label}
                         aria-current={activeView === id ? 'page' : undefined}
                         onClick={(event) => {
                           if (
@@ -70,8 +72,10 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                           ) {
                             return;
                           }
+
                           event.preventDefault();
                           navigateTo(getNavigationPath(id, selectedGenre));
+
                           if (isMobile) setOpenMobile(false);
                         }}
                       />
@@ -99,11 +103,16 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                     tooltip={label}
                     onClick={() => {
                       onSelectGenre(value);
+
                       if (isMobile) setOpenMobile(false);
                     }}
                   >
                     <span className="min-w-0 flex-1 truncate">{label}</span>
-                    {count && <span className="ml-auto text-xs tabular-nums text-muted-foreground">{count}</span>}
+                    {count && (
+                      <span className="ml-auto text-xs tabular-nums text-muted-foreground">
+                        {count}
+                      </span>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
