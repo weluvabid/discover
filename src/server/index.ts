@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { handleApiRequest } from './api/app';
 import { openDatabase } from './db/database';
+import { hydrateFromTurso } from './turso-sync';
 
 const db = openDatabase();
 const port = Number(process.env.PORT ?? 8787);
@@ -59,10 +60,6 @@ const server = createServer(async (request, response) => {
   }
 });
 
-server.listen(port, host, () => {
-  process.stdout.write(`Discover API listening on http://${host}:${port}\n`);
-});
-
 const shutdown = () => {
   server.close(() => {
     db.close();
@@ -72,3 +69,21 @@ const shutdown = () => {
 
 process.once('SIGINT', shutdown);
 process.once('SIGTERM', shutdown);
+
+const start = async () => {
+  if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+    const result = await hydrateFromTurso(db);
+    process.stdout.write(`Hydrated API read model from Turso: ${JSON.stringify(result)}\n`);
+  }
+
+  server.listen(port, host, () => {
+    process.stdout.write(`Discover API listening on http://${host}:${port}\n`);
+  });
+};
+
+start().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : 'Unknown startup error';
+  process.stderr.write(`Discover API startup failed: ${message}\n`);
+  db.close();
+  process.exitCode = 1;
+});

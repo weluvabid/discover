@@ -225,3 +225,102 @@ export async function syncToTurso(
     lastSyncAt: latestSyncTime,
   };
 }
+
+
+function rowValue(value: { value?: string } | undefined): string | null {
+  return value?.value ?? null;
+}
+
+function sqliteValue(value: unknown): string | number | bigint | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint') {
+    return value;
+  }
+  if (typeof value === 'boolean') return value ? 1 : 0;
+  throw new Error(`Unsupported value in synchronized catalog: ${typeof value}`);
+}
+
+async function queryRows(endpoint: string, token: string, sql: string) {
+  const results = await pipeline(endpoint, token, [
+    { type: 'execute', stmt: { sql, want_rows: true } },
+  ]);
+  return results[0]?.response?.result?.rows ?? [];
+}
+
+/** Hydrates the API's local read model from the synchronized Turso catalog. */
+export async function hydrateFromTurso(
+  db: DatabaseSync,
+  options: { url?: string; authToken?: string } = {},
+) {
+  const databaseUrl = options.url ?? process.env.TURSO_DATABASE_URL;
+  const token = options.authToken ?? process.env.TURSO_AUTH_TOKEN;
+  if (!databaseUrl || !token) throw new Error('TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are required.');
+
+  const endpoint = endpointFor(databaseUrl);
+  const [gameRows, snapshotRows, personaRows] = await Promise.all([
+    queryRows(endpoint, token, 'SELECT payload_json FROM discover_games ORDER BY universe_id'),
+    queryRows(endpoint, token, 'SELECT payload_json FROM discover_metric_snapshots ORDER BY observed_at, universe_id'),
+    queryRows(endpoint, token, 'SELECT id,label,description,preferences_json FROM discover_personas ORDER BY id'),
+  ]);
+
+  const games = gameRows.map((row) => JSON.parse(rowValue(row[0]) ?? '{}') as Record<string, unknown>);
+  const snapshots = snapshotRows.map((row) => JSON.parse(rowValue(row[0]) ?? '{}') as Record<string, unknown>);
+  const personas = personaRows.map((row) => ({
+    id: rowValue(row[0]) ?? '',
+    label: rowValue(row[1]) ?? '',
+    description: rowValue(row[2]) ?? '',
+    preferences_json: rowValue(row[3]) ?? '{}',
+  }));
+
+  const gameColumns = [
+    'universe_id','place_id','title','description','creator','creator_id','creator_type','creator_verified',
+    'genre','subgenre','tags_json','age_recommendation','max_players','voice_chat','camera','artwork_url','hero_url',
+    'roblox_url','created_at','updated_at','source_created_at','source_updated_at','source_active_players',
+    'source_favorites','source_visits','source_likes','source_dislikes','source_date_fetched','source_rating',
+    'source_review_count','active_players','rating','review_count','average_playtime_minutes','weekly_change',
+    'd1_retention','d7_retention','d30_retention','repeat_play_rate','average_session_minutes','synthetic_seed',
+    'match_scores_json','source_status','first_seen_at','last_enriched_at','updated_local_at',
+  ];
+  const insertGame = db.prepare(
+    `INSERT INTO games (${gameColumns.join(',')}) VALUES (${gameColumns.map(() => '?').join(',')})
+     ON CONFLICT(universe_id) DO UPDATE SET ${gameColumns.filter((column) => column !== 'universe_id').map((column) => `${column}=excluded.${column}`).join(',')}`,
+  );
+  const insertSnapshot = db.prepare(
+    `INSERT OR IGNORE INTO game_metric_snapshots (universe_id,observed_at,active_players,visits,favorites,rating,review_count,weekly_change,source)
+     VALUES (?,?,?,?,?,?,?,?,?)`,
+  );
+  const insertPersona = db.prepare(
+    `INSERT INTO synthetic_personas(id,label,description,preferences_json) VALUES(?,?,?,?)
+     ON CONFLICT(id) DO UPDATE SET label=excluded.label,description=excluded.description,preferences_json=excluded.preferences_json`,
+  );
+
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    db.exec('DELETE FROM game_metric_snapshots; DELETE FROM games;');
+    for (const game of games) insertGame.run(...gameColumns.map((column) => sqliteValue(game[column])));
+    for (const snapshot of snapshots) {
+      insertSnapshot.run(
+        ...[
+          snapshot.universe_id,
+          snapshot.observed_at,
+          snapshot.active_players,
+          snapshot.visits,
+          snapshot.favorites,
+          snapshot.rating,
+          snapshot.review_count,
+          snapshot.weekly_change ?? 0,
+          snapshot.source,
+        ].map(sqliteValue),
+      );
+    }
+    for (const persona of personas) {
+      insertPersona.run(persona.id, persona.label, persona.description, persona.preferences_json);
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+
+  return { gamesHydrated: games.length, snapshotsHydrated: snapshots.length, personasHydrated: personas.length };
+}

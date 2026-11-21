@@ -1,19 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBrowserLocation, navigateTo } from '@/hooks/use-browser-location';
-import { experiences } from '@/data/mocks/experiences';
 import {
   DEFAULT_RANKING_CONFIGURATION,
   isDefaultRankingConfiguration,
-  rankForContext,
+  type RankedExperience,
   type RankingConfiguration,
   type RankingContext,
 } from '@/features/discovery/engine/ranking';
-import {
-  filterExperiencesByGenre,
-  searchExperiences,
-} from '@/features/search/utils/search-experiences';
+import { fetchCatalog, fetchDiscovery, fetchExperience, searchCatalog } from '@/lib/api/discover-api';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import { EXPERIENCE_GENRES, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
+import { EXPERIENCE_GENRES, type DiscoveryView, type Experience, type ExperienceGenre } from '@/types/experience';
+
+const CONTEXTS: RankingContext[] = [
+  'featured',
+  'trending',
+  'recommended',
+  'hidden-gems',
+  'recently-launched',
+];
+const EMPTY_RANKED_SECTIONS = Object.fromEntries(
+  CONTEXTS.map((context) => [context, []]),
+) as Record<RankingContext, RankedExperience[]>;
 
 const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/': 'explore',
@@ -22,7 +29,6 @@ const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/collections': 'collections',
   '/library': 'library',
 };
-
 const VIEW_TO_PATH: Record<DiscoveryView, string> = {
   explore: '/',
   trending: '/trending',
@@ -36,171 +42,146 @@ export function useDiscoverPage(initialLocation = '/') {
   const [pathname, search = ''] = browserLocation.split('?');
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
-
   const [controlsOpen, setControlsOpen] = useState(false);
-  const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(
-    DEFAULT_RANKING_CONFIGURATION,
-  );
-  const [rankingNow, setRankingNow] = useState(() => new Date());
+  const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(DEFAULT_RANKING_CONFIGURATION);
   const requestedGenre = searchParams.get('genre');
-  const genre: ExperienceGenre | 'All' =
-    requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
-      ? (requestedGenre as ExperienceGenre)
-      : 'All';
+  const genre: ExperienceGenre | 'All' = requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
+    ? (requestedGenre as ExperienceGenre)
+    : 'All';
   const query = searchParams.get('q') ?? '';
+  const { bookmarks, toggleBookmark } = useBookmarks();
+  const [rankedSections, setRankedSections] = useState(EMPTY_RANKED_SECTIONS);
+  const [visibleResults, setVisibleResults] = useState<Experience[]>([]);
+  const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
+  const [collectionCatalog, setCollectionCatalog] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (pathname === '/search' && !query.trim()) {
-      navigateTo('/', { replace: true });
-    }
+    if (pathname === '/search' && !query.trim()) navigateTo('/', { replace: true });
   }, [pathname, query]);
-
-  const { bookmarks, toggleBookmark } = useBookmarks();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [pathname]);
 
   useEffect(() => {
-    const refreshClock = () => {
-      if (document.visibilityState === 'visible') setRankingNow(new Date());
-    };
+    const controller = new AbortController();
+    let active = true;
+    setLoading(true);
+    setError(null);
 
-    window.addEventListener('focus', refreshClock);
-    document.addEventListener('visibilitychange', refreshClock);
+    Promise.all(CONTEXTS.map((context) =>
+      fetchDiscovery(context, rankingConfiguration, genre, controller.signal),
+    )).then((responses) => {
+      if (!active) return;
+      const next = Object.fromEntries(responses.map((response) => [response.context, response.results])) as Record<RankingContext, RankedExperience[]>;
+      const featuredId = next.featured[0]?.experience.id;
+      next.recommended = next.recommended
+        .filter((item) => item.experience.id !== featuredId)
+        .slice(0, 6)
+        .map((item, index) => ({ ...item, position: index + 1 }));
+      setRankedSections(next);
+    }).catch((cause: unknown) => {
+      if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+      setError(cause instanceof Error ? cause.message : 'Unable to load discovery results.');
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
 
     return () => {
-      window.removeEventListener('focus', refreshClock);
-      document.removeEventListener('visibilitychange', refreshClock);
+      active = false;
+      controller.abort();
     };
-  }, []);
+  }, [genre, rankingConfiguration]);
 
-  const updateQuery = useCallback(
-    (next: string) => {
-      const params = new URLSearchParams();
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    if (!query.trim()) {
+      setVisibleResults([]);
+      return () => controller.abort();
+    }
+    setVisibleResults([]);
+    setError(null);
+    searchCatalog(query, genre, controller.signal).then((results) => {
+      if (active) setVisibleResults(results);
+    }).catch((cause: unknown) => {
+      if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+      setError(cause instanceof Error ? cause.message : 'Search failed.');
+    });
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [genre, query]);
 
-      if (next.trim()) params.set('q', next);
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    if (bookmarks.length === 0) {
+      setSavedExperiences([]);
+      return () => controller.abort();
+    }
+    Promise.all(bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)))
+      .then((items) => { if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null)); });
+    return () => { active = false; controller.abort(); };
+  }, [bookmarks]);
 
-      if (genre !== 'All') params.set('genre', genre);
-
-      if (next.trim()) {
-        navigateTo(`/search?${params.toString()}`, { replace: true });
-      } else if (pathname === '/search') {
-        const suffix = params.toString();
-
-        navigateTo(`/${suffix ? `?${suffix}` : ''}`);
-      }
-    },
-    [genre, pathname],
-  );
-
-  const setGenre = useCallback(
-    (next: ExperienceGenre | 'All') => {
-      const params = new URLSearchParams(searchParams);
-      const targetPath = pathname === '/search' ? '/' : pathname;
-
-      if (pathname === '/search') params.delete('q');
-
-      if (next === 'All') params.delete('genre');
-      else params.set('genre', next);
-
-      const suffix = params.toString();
-
-      navigateTo(`${targetPath}${suffix ? `?${suffix}` : ''}`, { replace: true });
-    },
-    [pathname, searchParams],
-  );
-
-  const searchResults = useMemo(() => searchExperiences(query, experiences), [query]);
-  const visibleResults = useMemo(
-    () => filterExperiencesByGenre(searchResults, genre),
-    [genre, searchResults],
-  );
-
-  const rankedSections = useMemo(() => {
-    const contexts: RankingContext[] = [
-      'featured',
-      'trending',
-      'recommended',
-      'hidden-gems',
-      'recently-launched',
-    ];
-    const ranked = Object.fromEntries(
-      contexts.map((context) => [
-        context,
-        rankForContext(experiences, rankingConfiguration, context, {
-          now: rankingNow,
-          genre,
-          limit: context === 'featured' ? 1 : context === 'recommended' ? 7 : 8,
-        }),
-      ]),
-    ) as Record<RankingContext, ReturnType<typeof rankForContext>>;
-
-    const featuredId = ranked.featured[0]?.experience.id;
-
-    ranked.recommended = ranked.recommended
-      .filter((item) => item.experience.id !== featuredId)
-      .slice(0, 6)
-      .map((item, index) => ({ ...item, position: index + 1 }));
-
-    return ranked;
-  }, [genre, rankingConfiguration, rankingNow]);
+  useEffect(() => {
+    if (activeView !== 'collections') return;
+    const controller = new AbortController();
+    let active = true;
+    fetchCatalog(500, controller.signal)
+      .then((result) => { if (active) setCollectionCatalog(result.data); })
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        setError(cause instanceof Error ? cause.message : 'Unable to load collections.');
+      });
+    return () => { active = false; controller.abort(); };
+  }, [activeView]);
 
   const rankedRecommendations = useMemo(
     () => rankedSections.recommended.map((item) => item.experience),
     [rankedSections],
   );
-  const savedExperiences = useMemo(
-    () => experiences.filter((experience) => bookmarks.includes(experience.id)),
-    [bookmarks],
-  );
   const hasCustomRanking = !isDefaultRankingConfiguration(rankingConfiguration);
+
+  const updateQuery = useCallback((next: string) => {
+    const params = new URLSearchParams();
+    if (next.trim()) params.set('q', next);
+    if (genre !== 'All') params.set('genre', genre);
+    if (next.trim()) navigateTo(`/search?${params.toString()}`, { replace: true });
+    else if (pathname === '/search') navigateTo(`/${params.size ? `?${params}` : ''}`);
+  }, [genre, pathname]);
+
+  const setGenre = useCallback((next: ExperienceGenre | 'All') => {
+    const params = new URLSearchParams(searchParams);
+    const targetPath = pathname === '/search' ? '/' : pathname;
+    if (pathname === '/search') params.delete('q');
+    if (next === 'All') params.delete('genre');
+    else params.set('genre', next);
+    navigateTo(`${targetPath}${params.size ? `?${params}` : ''}`, { replace: true });
+  }, [pathname, searchParams]);
 
   const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
     const params = new URLSearchParams();
-
     if (next !== 'All') params.set('genre', next);
-
-    const suffix = params.toString();
-
-    navigateTo(`/${suffix ? `?${suffix}` : ''}`);
+    navigateTo(`/${params.size ? `?${params}` : ''}`);
   }, []);
 
-  const navigate = useCallback(
-    (view: DiscoveryView) => {
-      const params = new URLSearchParams();
-
-      if (genre !== 'All') params.set('genre', genre);
-
-      const serializedParams = params.toString();
-      const suffix = serializedParams ? `?${serializedParams}` : '';
-
-      navigateTo(`${VIEW_TO_PATH[view]}${suffix}`);
-    },
-    [genre],
-  );
+  const navigate = useCallback((view: DiscoveryView) => {
+    const params = new URLSearchParams();
+    if (genre !== 'All') params.set('genre', genre);
+    navigateTo(`${VIEW_TO_PATH[view]}${params.size ? `?${params}` : ''}`);
+  }, [genre]);
 
   const closeControls = useCallback(() => setControlsOpen(false), []);
 
   return {
-    activeView,
-    controlsOpen,
-    setControlsOpen,
-    rankingConfiguration,
-    setRankingConfiguration,
-    genre,
-    setGenre,
-    selectGenre,
-    bookmarks,
-    toggleBookmark,
-    query,
-    visibleResults,
-    rankedRecommendations,
-    rankedSections,
-    savedExperiences,
-    hasCustomRanking,
-    navigate,
-    closeControls,
-    setQuery: updateQuery,
+    activeView, controlsOpen, setControlsOpen, rankingConfiguration, setRankingConfiguration,
+    genre, setGenre, selectGenre, bookmarks, toggleBookmark, query, visibleResults,
+    rankedRecommendations, rankedSections, savedExperiences, collectionCatalog,
+    hasCustomRanking, navigate, closeControls, setQuery: updateQuery, loading, error,
   };
 }

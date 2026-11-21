@@ -91,6 +91,14 @@ export default function App({ initialLocation = '/' }: AppProps) {
           className="mx-auto w-full max-w-screen-2xl space-y-8 px-4 py-6 md:px-6 lg:px-8"
           id="main-content"
         >
+          {page.error && (
+            <div role="alert" className="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {page.error}
+            </div>
+          )}
+          {page.loading && !hasSearch && page.rankedSections.featured.length === 0 && (
+            <div role="status" className="text-sm text-muted-foreground">Loading discovery results…</div>
+          )}
           {hasSearch ? (
             <SearchResultsView
               query={page.query || page.genre}
@@ -104,6 +112,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
               activeView={page.activeView}
               bookmarks={page.bookmarks}
               savedExperiences={page.savedExperiences}
+              collectionExperiences={page.collectionCatalog}
               recommendations={page.rankedRecommendations}
               rankedSections={page.rankedSections}
               genre={page.genre}

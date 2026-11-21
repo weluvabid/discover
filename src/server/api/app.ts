@@ -90,7 +90,11 @@ export async function handleApiRequest(
 
     return {
       status: 200,
-      body: { data: query ? getCatalog(db, { query, limit: 100 }) : [] },
+      body: {
+        data: query
+          ? getCatalog(db, { query, genre: url.searchParams.get('genre') ?? undefined, limit: 100 })
+          : [],
+      },
     };
   }
 

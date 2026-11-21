@@ -51,8 +51,22 @@ Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/collections`
 
 ## Frontend platform
 
-Discover uses Astro for filesystem routing and document composition, with the interactive discovery application hydrated as a single React island. ReUI is the primary component ecosystem using the Base UI + Maia style. Shared primitives and selected ReUI compositions are integrated across discovery controls, ranking explanations, experience details, filters, navigation actions, and empty states. See [the frontend migration notes](docs/architecture/frontend-migration.md) for component ownership and setup.
+Discover uses Astro for filesystem routing and document composition, with the interactive discovery application hydrated as a single React island. ReUI is the primary component ecosystem using the Base UI + Maia style. Shared primitives and selected ReUI compositions are integrated across discovery controls, ranking explanations, experience details, filters, navigation actions, and empty states.
 
 ## Backend catalog pipeline
 
 See [Backend data pipeline](docs/architecture/backend-data-pipeline.md) for the SQLite schema, Roblox enrichment, deterministic synthetic metrics, Turso synchronization and API contract. Copy `.env.example` to `.env`, configure the Turso token only when you are ready to sync, then run `pnpm api:build` and `pnpm db:ingest -- --limit 100` for the first ingestion smoke test.
+
+
+## Frontend and API integration
+
+The static frontend calls the Discover API for catalog search and all five ranked discovery contexts. In local development, start the API and Astro in separate terminals:
+
+```bash
+pnpm api:dev
+pnpm dev
+```
+
+The API listens on `http://127.0.0.1:8787` by default. The frontend uses that origin automatically in Astro development. For a separately hosted frontend, bind the API process to `HOST=0.0.0.0`, set `PUBLIC_DISCOVER_API_URL` to the API origin including `/api` (for example, `https://api.example.com/api`) at build time and configure the API's `CORS_ORIGIN` for the frontend origin.
+
+When `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are present, the API hydrates its local SQLite read model from the synchronized Turso catalog before accepting requests. This keeps ranking computation local to the API process while Turso remains the remote catalog source. Run `pnpm db:sync` after local ingestion changes, then restart the API to refresh its read model.

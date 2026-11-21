@@ -1,34 +1,22 @@
 import { Sparkles } from 'lucide-react';
 import { ExperienceCard } from '@/components/experience/ExperienceCard';
-import { getMockExperience } from '@/data/mocks/catalog';
 import type { Experience } from '@/types/experience';
 import { PageIntro } from './PageIntro';
 
 interface CollectionsViewProps {
+  experiences: Experience[];
   bookmarks: string[];
   onToggleBookmark: (id: string) => void;
   onPlay: (experience: Experience) => void;
 }
 
-const collections = [
-  {
-    title: 'Into the Unknown',
-    description: 'Atmospheric worlds made for curious explorers.',
-    ids: ['deep-descent', 'pinecrest-deep-wilds', 'liminal-protocols'],
-  },
-  {
-    title: 'Play Together',
-    description: 'Bring your crew. These worlds are better together.',
-    ids: ['threshold-corridor', 'vanguard-cyber-drift', 'neon-ronin'],
-  },
-  {
-    title: 'Think Different',
-    description: 'Unusual mechanics and clever worlds worth exploring.',
-    ids: ['clockwork-citadel', 'orbit-mechanics', 'singularity-genesis'],
-  },
+const collectionDefinitions = [
+  { title: 'Into the Unknown', description: 'Atmospheric worlds made for curious explorers.', genre: 'Exploration' },
+  { title: 'Play Together', description: 'Bring your crew. These worlds are better together.', genre: 'Co-op' },
+  { title: 'Think Different', description: 'Unusual mechanics and clever worlds worth exploring.', genre: 'Puzzle' },
 ] as const;
 
-export function CollectionsView({ bookmarks, onToggleBookmark, onPlay }: CollectionsViewProps) {
+export function CollectionsView({ experiences, bookmarks, onToggleBookmark, onPlay }: CollectionsViewProps) {
   return (
     <div className="min-w-0">
       <PageIntro
@@ -37,8 +25,8 @@ export function CollectionsView({ bookmarks, onToggleBookmark, onPlay }: Collect
         description="A few good places to start, picked by the Discover team."
         icon={<Sparkles size={17} />}
       />
-      {collections.map((collection) => {
-        const items = collection.ids.map(getMockExperience);
+      {collectionDefinitions.map((collection) => {
+        const items = experiences.filter((experience) => experience.genre === collection.genre).slice(0, 3);
 
         return (
           <section className="mt-8 space-y-4" key={collection.title}>

@@ -13,6 +13,7 @@ interface DiscoverViewProps {
   activeView: DiscoveryView;
   bookmarks: string[];
   savedExperiences: Experience[];
+  collectionExperiences: Experience[];
   recommendations: Experience[];
   rankedSections: Record<RankingContext, RankedExperience[]>;
   genre: ExperienceGenre | 'All';
@@ -26,6 +27,7 @@ export function DiscoverView({
   activeView,
   bookmarks,
   savedExperiences,
+  collectionExperiences,
   recommendations,
   rankedSections,
   genre,
@@ -73,7 +75,7 @@ export function DiscoverView({
 
   if (activeView === 'collections') {
     return (
-      <CollectionsView bookmarks={bookmarks} onToggleBookmark={onToggleBookmark} onPlay={onPlay} />
+      <CollectionsView experiences={collectionExperiences} bookmarks={bookmarks} onToggleBookmark={onToggleBookmark} onPlay={onPlay} />
     );
   }
 

@@ -112,21 +112,19 @@ export function getCatalog(
     parameters.push(query, query, query);
   }
 
-  if (options.genre && options.genre !== 'All') {
-    conditions.push('genre = ?');
-    parameters.push(options.genre);
-  }
-
   const rows = db
     .prepare(
       `SELECT * FROM games
        WHERE ${conditions.join(' AND ')}
        ORDER BY active_players DESC, universe_id
-       LIMIT ? OFFSET ?`,
+       LIMIT 10000`,
     )
-    .all(...parameters, limit, offset) as unknown as GameRow[];
+    .all(...parameters) as unknown as GameRow[];
+  const experiences = rows
+    .map((row) => toExperience(row, options.persona))
+    .filter((experience) => !options.genre || options.genre === 'All' || experience.genre === options.genre);
 
-  return rows.map((row) => toExperience(row, options.persona));
+  return experiences.slice(offset, offset + limit);
 }
 
 export function getCatalogCount(db: DatabaseSync): number {
