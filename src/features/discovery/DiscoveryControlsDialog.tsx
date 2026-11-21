@@ -75,17 +75,10 @@ export function DiscoveryControlsDialog({
       dialog.showModal();
     }
 
-    const handleClose = () => onClose();
-
-    dialog.addEventListener('close', handleClose);
-
-    return () => {
-      dialog.removeEventListener('close', handleClose);
-
-      if (dialog.open) {
-        dialog.close();
-      }
-    };
+    // Removing an open <dialog> from the DOM closes it natively. Calling
+    // dialog.close() from effect cleanup is unsafe under React StrictMode:
+    // its queued `close` event can be observed by the next effect setup and
+    // immediately dismiss the newly opened dialog.
   }, [onClose, open]);
 
   if (!open) {
