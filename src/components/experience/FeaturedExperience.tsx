@@ -25,6 +25,7 @@ export function FeaturedExperience({
           alt={experience.artwork.alt}
           className="featured-art"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="featured-shade" />
         <span className="featured-label">

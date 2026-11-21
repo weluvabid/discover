@@ -3,12 +3,20 @@ import { experiences } from '@/data/mocks/experiences';
 import {
   DEFAULT_RANKING_CONFIGURATION,
   normalizeSignals,
+  isDefaultRankingConfiguration,
   rankExperiences,
   toggleSignal,
   updateSignalWeight,
 } from './ranking';
 
 describe('discovery ranking', () => {
+  it('identifies the default ranking without serializing the configuration', () => {
+    expect(isDefaultRankingConfiguration(DEFAULT_RANKING_CONFIGURATION)).toBe(true);
+    expect(
+      isDefaultRankingConfiguration({ ...DEFAULT_RANKING_CONFIGURATION, strategy: 'balanced' }),
+    ).toBe(false);
+  });
+
   it('keeps enabled weights normalized to 100%', () => {
     const signals = updateSignalWeight(DEFAULT_RANKING_CONFIGURATION.signals, 'affinity', 42);
 
@@ -49,7 +57,9 @@ describe('discovery ranking', () => {
 
     expect(ranked).toBeDefined();
 
-    if (!ranked) throw new Error('Expected at least one ranked experience.');
+    if (!ranked) {
+      throw new Error('Expected at least one ranked experience.');
+    }
 
     const contributionTotal = Object.values(ranked.factors).reduce((sum, value) => sum + value, 0);
 

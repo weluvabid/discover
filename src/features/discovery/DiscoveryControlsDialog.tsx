@@ -1,15 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import './styles/controls.css';
+import './styles/controls-responsive.css';
+import { useEffect, useRef } from 'react';
 import { Check, ChevronDown, ChevronUp, Info, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
-import { experiences, featuredExperience } from '@/data/mocks/experiences';
+import { useRankingDraft } from '@/features/discovery/hooks/use-ranking-draft';
 import {
-  createPreset,
-  rankExperiences,
-  toggleSignal,
-  updateSignalWeight,
   type RankingConfiguration,
   type RankingSignalId,
   type RankingStrategyId,
-} from './ranking';
+} from './engine/ranking';
 
 interface DiscoveryControlsDialogProps {
   open: boolean;
@@ -24,10 +22,6 @@ const strategyOptions: { id: RankingStrategyId; label: string; description: stri
   { id: 'personalized', label: 'Personalized', description: 'Player affinity focus' },
   { id: 'discovery', label: 'Discovery-first', description: 'Hidden gems and novelty' },
 ];
-
-const discoveryCandidates = experiences.filter(
-  (experience) => experience.id !== featuredExperience.id,
-);
 
 const signalOrder: RankingSignalId[] = [
   'affinity',
@@ -53,17 +47,33 @@ export function DiscoveryControlsDialog({
   onApply,
 }: DiscoveryControlsDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [draft, setDraft] = useState(configuration);
-  const [mobileTab, setMobileTab] = useState<'signals' | 'preview'>('signals');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [dirty, setDirty] = useState(false);
+  const {
+    draft,
+    dirty,
+    mobileTab,
+    setMobileTab,
+    expandedId,
+    setExpandedId,
+    preview,
+    baselinePositions,
+    totalWeight,
+    distribution,
+    selectStrategy,
+    toggleDraftSignal,
+    updateDraftSignalWeight,
+    resetDraft,
+  } = useRankingDraft(configuration);
 
   useEffect(() => {
     const dialog = dialogRef.current;
 
-    if (!open || !dialog) return;
+    if (!open || !dialog) {
+      return;
+    }
 
-    if (!dialog.open) dialog.showModal();
+    if (!dialog.open) {
+      dialog.showModal();
+    }
 
     const handleClose = () => onClose();
 
@@ -72,36 +82,19 @@ export function DiscoveryControlsDialog({
     return () => {
       dialog.removeEventListener('close', handleClose);
 
-      if (dialog.open) dialog.close();
+      if (dialog.open) {
+        dialog.close();
+      }
     };
   }, [onClose, open]);
 
-  const preview = useMemo(() => rankExperiences(discoveryCandidates, draft).slice(0, 5), [draft]);
-  const baseline = useMemo(
-    () => rankExperiences(discoveryCandidates, configuration),
-    [configuration],
-  );
-  const baselinePositions = useMemo(
-    () => new Map(baseline.map((item) => [item.experience.id, item.position])),
-    [baseline],
-  );
-  const totalWeight = draft.signals.reduce((sum, signal) => sum + signal.weight, 0);
-  const distribution = useMemo(() => getDistribution(preview), [preview]);
-
-  if (!open) return null;
-
-  const updateDraft = (next: RankingConfiguration) => {
-    setDraft(next);
-    setDirty(true);
-  };
+  if (!open) {
+    return null;
+  }
 
   const handleApply = () => {
     onApply(draft);
     onClose();
-  };
-
-  const handleReset = () => {
-    updateDraft(createPreset('discovery'));
   };
 
   return (
@@ -139,7 +132,7 @@ export function DiscoveryControlsDialog({
                 onChange={(event) => {
                   const strategy = event.target.value as RankingStrategyId;
 
-                  updateDraft(createPreset(strategy));
+                  selectStrategy(strategy);
                 }}
                 aria-label="Ranking strategy"
               >
@@ -195,7 +188,7 @@ export function DiscoveryControlsDialog({
                 <button
                   key={option.id}
                   className={`strategy-option ${draft.strategy === option.id ? 'is-selected' : ''}`}
-                  onClick={() => updateDraft(createPreset(option.id))}
+                  onClick={() => selectStrategy(option.id)}
                 >
                   <strong>{option.label}</strong>
                   <span>{option.description}</span>
@@ -229,12 +222,7 @@ export function DiscoveryControlsDialog({
                           signal.enabled &&
                           draft.signals.filter((item) => item.enabled).length === 1
                         }
-                        onChange={(event) =>
-                          updateDraft({
-                            ...draft,
-                            signals: toggleSignal(draft.signals, signal.id, event.target.checked),
-                          })
-                        }
+                        onChange={(event) => toggleDraftSignal(signal.id, event.target.checked)}
                       />
                       <label htmlFor={`signal-enabled-${signal.id}`}>
                         <strong>{signal.label}</strong>
@@ -255,14 +243,7 @@ export function DiscoveryControlsDialog({
                     }
                     aria-label={`${signal.label} weight`}
                     onChange={(event) =>
-                      updateDraft({
-                        ...draft,
-                        signals: updateSignalWeight(
-                          draft.signals,
-                          signal.id,
-                          Number(event.target.value),
-                        ),
-                      })
+                      updateDraftSignalWeight(signal.id, Number(event.target.value))
                     }
                   />
                 </div>
@@ -378,7 +359,7 @@ export function DiscoveryControlsDialog({
             applied.
           </p>
           <div className="controls-footer-actions">
-            <button className="reset-controls" onClick={handleReset}>
+            <button className="reset-controls" onClick={resetDraft}>
               <RotateCcw size={13} /> Reset defaults
             </button>
             <button className="discard-controls" onClick={onClose}>
@@ -396,30 +377,4 @@ export function DiscoveryControlsDialog({
 
 function formatActive(value: number) {
   return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : String(value);
-}
-
-function getDistribution(items: ReturnType<typeof rankExperiences>) {
-  const buckets = new Map<string, number>();
-
-  for (const item of items) {
-    const genre = item.experience.genre;
-    const label =
-      genre === 'Horror'
-        ? 'Horror'
-        : genre === 'Action RPG'
-          ? 'Action / RPG'
-          : genre === 'Simulation'
-            ? 'Simulation'
-            : genre === 'Exploration'
-              ? 'Adventure'
-              : genre;
-
-    buckets.set(label, (buckets.get(label) ?? 0) + 1);
-  }
-
-  return [...buckets.entries()]
-    .map(
-      ([label, count]) => [label, Math.round((count / Math.max(1, items.length)) * 100)] as const,
-    )
-    .sort((a, b) => b[1] - a[1]);
 }

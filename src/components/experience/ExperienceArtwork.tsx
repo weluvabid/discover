@@ -5,6 +5,7 @@ interface ExperienceArtworkProps {
   alt: string;
   className?: string;
   loading?: 'eager' | 'lazy';
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
 export function ExperienceArtwork({
@@ -12,6 +13,7 @@ export function ExperienceArtwork({
   alt,
   className = '',
   loading = 'lazy',
+  fetchPriority = 'auto',
 }: ExperienceArtworkProps) {
   const [failed, setFailed] = useState(false);
 
@@ -22,7 +24,10 @@ export function ExperienceArtwork({
           src={src}
           alt={alt}
           loading={loading}
+          fetchPriority={fetchPriority}
           decoding="async"
+          width={1280}
+          height={720}
           onError={() => setFailed(true)}
         />
       ) : (

@@ -106,7 +106,9 @@ function distributeIntegerWeights<T extends { id: RankingSignalId; weight: numbe
 export function normalizeSignals(signals: RankingSignal[]): RankingSignal[] {
   const enabled = signals.filter((signal) => signal.enabled);
 
-  if (enabled.length === 0) return signals.map((signal) => ({ ...signal, weight: 0 }));
+  if (enabled.length === 0) {
+    return signals.map((signal) => ({ ...signal, weight: 0 }));
+  }
 
   const normalized = distributeIntegerWeights(enabled, 100);
 
@@ -124,7 +126,9 @@ export function updateSignalWeight(
   const enabled = signals.filter((signal) => signal.enabled);
   const target = enabled.find((signal) => signal.id === id);
 
-  if (!target) return signals;
+  if (!target) {
+    return signals;
+  }
 
   if (enabled.length === 1)
     return signals.map((signal) => (signal.id === id ? { ...signal, weight: 100 } : signal));
@@ -134,7 +138,9 @@ export function updateSignalWeight(
   const redistributed = distributeIntegerWeights(others, 100 - bounded);
 
   return signals.map((signal) => {
-    if (!signal.enabled) return { ...signal, weight: 0 };
+    if (!signal.enabled) {
+      return { ...signal, weight: 0 };
+    }
 
     return signal.id === id
       ? { ...signal, weight: bounded }
@@ -227,4 +233,21 @@ export function rankExperiences(
     })
     .sort((a, b) => b.score - a.score || a.experience.id.localeCompare(b.experience.id))
     .map((item, index) => ({ ...item, position: index + 1 }));
+}
+
+export function isDefaultRankingConfiguration(configuration: RankingConfiguration): boolean {
+  return (
+    configuration.strategy === DEFAULT_RANKING_CONFIGURATION.strategy &&
+    configuration.signals.length === DEFAULT_RANKING_CONFIGURATION.signals.length &&
+    configuration.signals.every((signal, index) => {
+      const baseline = DEFAULT_RANKING_CONFIGURATION.signals[index];
+
+      return (
+        baseline !== undefined &&
+        signal.id === baseline.id &&
+        signal.weight === baseline.weight &&
+        signal.enabled === baseline.enabled
+      );
+    })
+  );
 }

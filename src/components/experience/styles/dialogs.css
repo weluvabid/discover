@@ -1,0 +1,136 @@
+.dialog-backdrop,
+.filter-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: #03060bd9;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+.experience-dialog {
+  position: relative;
+  width: min(100%, 560px);
+  max-height: min(90vh, 760px);
+  overflow: auto;
+  border: 1px solid #354155;
+  border-radius: 12px;
+  background: #111720;
+  box-shadow: 0 25px 80px #000b;
+}
+.dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid #ffffff35;
+  border-radius: 7px;
+  background: #090d15c9;
+  color: white;
+  cursor: pointer;
+}
+.dialog-art {
+  width: 100%;
+  aspect-ratio: 16 / 8;
+}
+.dialog-body {
+  padding: 20px 22px 22px;
+}
+.dialog-genre {
+  color: #60a5fa;
+  font-size: 9px;
+  font-weight: 700;
+}
+.dialog-genre span {
+  padding: 0 4px;
+  color: #61718a;
+}
+.dialog-body h2 {
+  margin: 8px 0 4px;
+  font-size: 23px;
+  letter-spacing: -0.04em;
+}
+.dialog-creator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: #9eacbf;
+  font-size: 10px;
+}
+.dialog-creator svg {
+  color: #60a5fa;
+}
+.dialog-description {
+  margin: 16px 0;
+  color: #c0cad8;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.dialog-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  border-top: 1px solid var(--stroke);
+  border-bottom: 1px solid var(--stroke);
+  padding: 13px 0;
+  color: #8f9db0;
+  font-size: 9px;
+}
+.dialog-stats strong {
+  display: block;
+  margin-bottom: 3px;
+  color: white;
+  font-size: 15px;
+}
+.dialog-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0;
+}
+.dialog-play {
+  width: 100%;
+}
+.dialog-note {
+  margin: 10px 0 0;
+  color: #718096;
+  font-size: 9px;
+  text-align: center;
+}
+.filter-sheet {
+  width: min(100%, 420px);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  background: #111720;
+  padding: 18px;
+  box-shadow: 0 25px 80px #000b;
+}
+.filter-sheet-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.filter-sheet-heading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+.filter-sheet > p {
+  margin: 8px 0 15px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.filter-sheet .genre-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.filter-apply {
+  width: 100%;
+  margin-top: 18px;
+}

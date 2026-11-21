@@ -1,0 +1,467 @@
+@media (min-width: 1500px) {
+  .page-content {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+  .featured-card {
+    min-height: 390px;
+  }
+  .featured-copy {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+}
+@media (max-width: 1100px) {
+  .sidebar {
+    width: 160px;
+  }
+  .main-column {
+    margin-left: 160px;
+  }
+  .page-content {
+    padding-right: 17px;
+    padding-left: 17px;
+  }
+  .grid-trending,
+  .grid-recent {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .grid-recommended {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .featured-card {
+    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  }
+  .featured-copy {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}
+@media (max-width: 760px) {
+  .sidebar {
+    display: none;
+  }
+  .main-column {
+    margin-left: 0;
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+  .topbar {
+    position: relative;
+    display: grid;
+    height: auto;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    border-bottom: 0;
+    padding: 12px 15px 8px;
+  }
+  .mobile-brand {
+    display: block;
+  }
+  .mobile-brand .brand {
+    padding: 0;
+  }
+  .mobile-brand .brand-mark {
+    width: 31px;
+    height: 31px;
+  }
+  .mobile-brand .brand-copy strong {
+    font-size: 17px;
+  }
+  .mobile-brand .brand-copy small {
+    display: none;
+  }
+  .search-field {
+    width: 100%;
+    height: 40px;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    border-radius: 9px;
+    padding: 0 12px;
+  }
+  .search-field input {
+    font-size: 12px;
+  }
+  .search-field kbd {
+    display: none;
+  }
+  .header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 8px;
+  }
+  .header-actions .icon-button {
+    width: 31px;
+    height: 31px;
+    border: 0;
+    background: transparent;
+  }
+  .header-actions .saved-shortcut {
+    display: none;
+  }
+  .discovery-controls-trigger {
+    width: 31px;
+    min-height: 31px;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+  .discovery-controls-trigger span,
+  .discovery-controls-trigger i {
+    display: none;
+  }
+  .avatar-button img {
+    width: 31px;
+    height: 31px;
+  }
+  .mobile-filter {
+    display: grid !important;
+  }
+  .page-content {
+    width: 100%;
+    padding: 0 15px 25px;
+  }
+  .mobile-filters {
+    display: block;
+    overflow: hidden;
+    margin: 1px -15px 13px;
+    padding: 0 15px 2px;
+  }
+  .genre-filters {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .genre-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .genre-chip {
+    min-height: 30px;
+    flex: 0 0 auto;
+    border: 1px solid #293242;
+    border-radius: 20px;
+    background: #11151c;
+    padding: 0 12px;
+    color: #b5c0d0;
+    cursor: pointer;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .genre-chip.is-selected {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: white;
+  }
+  .featured-card {
+    display: block;
+    min-height: 405px;
+    border-radius: 11px;
+  }
+  .featured-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .featured-art img {
+    object-position: center;
+  }
+  .featured-shade {
+    background: linear-gradient(0deg, #06090ff2 0%, #06090f9c 43%, #06090f15 100%);
+  }
+  .featured-label,
+  .featured-rating {
+    top: 12px;
+    font-size: 8px;
+  }
+  .featured-label {
+    left: 11px;
+  }
+  .featured-rating {
+    right: 11px;
+  }
+  .featured-copy {
+    position: relative;
+    min-height: 405px;
+    justify-content: flex-end;
+    border-left: 0;
+    background: transparent;
+    padding: 160px 14px 15px;
+  }
+  .genre-tags {
+    margin-bottom: 8px;
+  }
+  .genre-tags span {
+    font-size: 8px;
+  }
+  .featured-copy h1 {
+    max-width: 420px;
+    font-size: clamp(23px, 6vw, 29px);
+  }
+  .featured-creator {
+    margin-top: 7px;
+    font-size: 10px;
+  }
+  .featured-description {
+    display: none;
+  }
+  .featured-stats {
+    gap: 10px;
+    margin-top: 11px;
+    font-size: 9px;
+  }
+  .featured-actions {
+    margin-top: 12px;
+  }
+  .featured-actions .primary-button {
+    flex: 1;
+    min-height: 43px;
+    font-size: 11px;
+  }
+  .featured-save {
+    width: 43px;
+    height: 43px;
+  }
+  .discovery-section {
+    margin-top: 25px;
+  }
+  .section-heading {
+    margin-bottom: 11px;
+  }
+  .section-title-wrap h2 {
+    font-size: 14px;
+  }
+  .section-title-wrap p {
+    font-size: 9px;
+  }
+  .grid-trending,
+  .grid-recent {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    margin-right: -15px;
+    padding-right: 15px;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+  .grid-trending::-webkit-scrollbar,
+  .grid-recent::-webkit-scrollbar {
+    display: none;
+  }
+  .grid-trending .experience-card,
+  .grid-recent .experience-card {
+    width: min(72vw, 260px);
+    flex: 0 0 min(72vw, 260px);
+    scroll-snap-align: start;
+  }
+  .grid-recommended {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .card-content {
+    padding: 8px;
+  }
+  .card-title {
+    font-size: 10px;
+  }
+  .card-creator {
+    font-size: 8px;
+  }
+  .card-meta {
+    margin-top: 8px;
+  }
+  .active-count,
+  .rating {
+    font-size: 8px;
+  }
+  .card-play-button {
+    height: 27px;
+    margin-top: 8px;
+    font-size: 8px;
+  }
+  .card-recommended .card-content {
+    padding: 8px;
+  }
+  .card-recommended .card-play-button {
+    height: 28px;
+  }
+  .hidden-gems-section .section-title-wrap p {
+    max-width: 275px;
+  }
+  .section-note {
+    font-size: 8px;
+  }
+  .hidden-gem-list {
+    gap: 8px;
+  }
+  .hidden-gem-row {
+    min-height: 82px;
+    gap: 9px;
+    padding: 8px;
+  }
+  .gem-art-button {
+    width: 58px;
+    height: 58px;
+  }
+  .gem-title {
+    font-size: 10px;
+  }
+  .gem-info p {
+    font-size: 8px;
+  }
+  .gem-reason {
+    max-width: 100%;
+    font-size: 8px;
+  }
+  .gem-rating,
+  .gem-players,
+  .gem-arrow {
+    display: none;
+  }
+  .gem-play {
+    width: 32px;
+    height: 32px;
+  }
+  .discovery-footnote {
+    align-items: flex-start;
+    font-size: 8px;
+    line-height: 1.5;
+  }
+  .mobile-nav {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-top: 1px solid #293140;
+    background: #0b0d11f5;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    backdrop-filter: blur(18px);
+  }
+  .mobile-nav-item {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border: 0;
+    background: transparent;
+    padding: 2px 0;
+    color: #8997ab;
+    cursor: pointer;
+  }
+  .mobile-nav-item span {
+    overflow: hidden;
+    max-width: 100%;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mobile-nav-item.is-active {
+    color: #60a5fa;
+  }
+  .alternate-view {
+    padding-top: 9px;
+  }
+  .page-intro {
+    margin-bottom: 21px;
+  }
+  .page-intro h1 {
+    font-size: 27px;
+  }
+  .page-intro p {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .alternate-view .grid-recommended {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .collection-heading {
+    align-items: flex-start;
+  }
+  .collection-heading h2 {
+    font-size: 13px;
+  }
+  .collection-heading p {
+    max-width: 260px;
+    font-size: 9px;
+    line-height: 1.5;
+  }
+  .collection-heading > span {
+    font-size: 8px;
+    white-space: nowrap;
+  }
+  .dialog-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+  .experience-dialog {
+    width: 100%;
+    max-height: 90dvh;
+    border-radius: 14px 14px 0 0;
+  }
+  .dialog-art {
+    aspect-ratio: 16 / 9;
+  }
+  .dialog-body {
+    padding: 16px;
+  }
+  .dialog-body h2 {
+    font-size: 20px;
+  }
+  .dialog-stats {
+    justify-content: space-between;
+    gap: 9px;
+  }
+  .filter-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+  .filter-sheet {
+    width: 100%;
+    border-radius: 14px 14px 0 0;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 380px) {
+  .page-content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .mobile-filters {
+    margin-right: -12px;
+    margin-left: -12px;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .featured-card {
+    min-height: 385px;
+  }
+  .featured-copy {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .featured-stats {
+    gap: 8px;
+  }
+  .grid-recommended {
+    gap: 7px;
+  }
+  .gem-art-button {
+    width: 51px;
+    height: 55px;
+  }
+  .gem-info {
+    gap: 3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
