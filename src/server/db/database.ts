@@ -14,3 +14,17 @@ export function openDatabase(
 
   return db;
 }
+
+
+/**
+ * Opens an existing catalog without creating directories, applying schema, or
+ * acquiring a write-capable connection. Intended for diagnostics/benchmarks.
+ */
+export function openDatabaseReadOnly(
+  path = process.env.DATABASE_PATH ?? resolve(process.cwd(), 'data/roblox-games.db'),
+): DatabaseSync {
+  return new DatabaseSync(path, {
+    readOnly: true,
+    enableForeignKeyConstraints: true,
+  });
+}

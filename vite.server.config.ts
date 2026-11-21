@@ -23,6 +23,7 @@ export default defineConfig({
         server: 'src/server/index.ts',
         'ingest-catalog': 'scripts/ingest-catalog.ts',
         'sync-turso': 'scripts/sync-turso.ts',
+        'benchmark-api': 'scripts/benchmark-api.ts',
       },
       external: (id) => builtins.has(id),
       output: {
