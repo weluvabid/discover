@@ -1,11 +1,2 @@
 @import 'tailwindcss';
 @import './foundation.css';
-@import '../components/layout/styles/layout.css';
-@import '../components/experience/styles/featured.css';
-@import '../components/discovery/styles/discovery-content.css';
-@import '../components/experience/styles/dialogs.css';
-@import './responsive.css';
-@import '../components/layout/styles/navigation.css';
-@import './discover-theme.css';
-
-@import './final-layout-overrides.css';

@@ -44,7 +44,7 @@ export function DiscoverView({
 
   if (activeView === 'library') {
     return (
-      <div className="alternate-view">
+      <div className="min-w-0">
         <PageIntro
           eyebrow="YOUR COLLECTION"
           title="Library"
@@ -83,7 +83,7 @@ export function DiscoverView({
 
   if (activeView === 'trending') {
     return (
-      <div className="alternate-view">
+      <div className="min-w-0">
         <PageIntro
           eyebrow="WHAT PLAYERS LOVE"
           title="Trending now"
@@ -105,7 +105,7 @@ export function DiscoverView({
 
   if (activeView === 'hidden-gems') {
     return (
-      <div className="alternate-view">
+      <div className="min-w-0">
         <PageIntro
           eyebrow="OFF THE BEATEN PATH"
           title="Hidden gems"
@@ -153,7 +153,7 @@ export function DiscoverView({
         onToggleBookmark={onToggleBookmark}
         onSelect={onSelect}
         action={
-          <Button variant="ghost" size="xs" className="text-action" onClick={() => onNavigate('trending')}>
+          <Button variant="ghost" size="xs" className="text-muted-foreground hover:text-foreground" onClick={() => onNavigate('trending')}>
             View all ({rankedSections.trending.length}) <ChevronRight size={15} />
           </Button>
         }
@@ -188,7 +188,7 @@ export function DiscoverView({
         onToggleBookmark={onToggleBookmark}
         onSelect={onSelect}
       />
-      <div className="discovery-footnote">
+      <div className="mt-10 flex items-start gap-2 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
         <Sparkles size={14} /> Recommendations are generated from sample player preferences and
         experience signals.
       </div>

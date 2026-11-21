@@ -1,27 +1,41 @@
 # Discover visual system
 
-Discover follows the neutral theme foundation established by Iris and PixelFlow.
-The React application uses the same Atkinson Hyperlegible font files already bundled
-with the project and mirrors Iris's semantic theme tokens so the UI remains compatible
-with the installed Base UI / shadcn component layer.
+Discover uses Iris as its typography and neutral-theme reference, Tailwind CSS 4
+for component composition, and the installed ReUI/Base UI components for shared
+interaction primitives.
 
 ## Ownership
 
-- Iris is the reference for typography, neutral semantic colours, radii and shadows.
-- Discover owns product-specific tokens and application composition.
-- `--roblox-blue` is reserved for Roblox launch actions; ordinary navigation,
-  selection, ranking metadata, badges and focus states remain monochrome.
-- Experience artwork retains its original colours and is not globally desaturated
-  or tinted by the design system.
-- ReUI / Base UI components own generic interaction and accessibility behaviour.
-  Feature styles may customize their appearance through semantic tokens.
+- Iris owns the typography and semantic light/dark colour foundations.
+- Discover owns product-specific semantic tokens, including `--roblox-blue`, which
+  is reserved for Roblox launch actions.
+- Tailwind utilities own component layout, spacing, sizing, responsive behaviour,
+  and state styling.
+- ReUI/Base UI owns generic controls, interaction behaviour, positioning,
+  focus management, and accessibility primitives.
+- Discover React components own product-specific compositions and data presentation.
+- Experience artwork retains its original colours.
+
+## CSS policy
+
+`src/styles/foundation.css` is the only application-authored stylesheet. It is
+limited to font-face declarations, Tailwind theme integration, semantic theme
+variables, document defaults, and the product-specific Roblox action token.
+
+Do not add component or feature stylesheets. Do not add authored CSS margin or
+padding declarations, pixel-based spacing declarations, or bespoke responsive
+layout rules. Express those concerns with Tailwind utilities in the component.
+Use the existing ReUI components rather than rebuilding generic controls.
+
+Dynamic values that are data rather than layout (for example, a ranking signal
+bar width) may remain inline styles. They must not be used to implement spacing
+or component layout.
 
 ## Theme tokens
 
-The neutral light and dark palettes mirror `@weluvabid/iris`'s `src/styles/theme.css`.
-Discover defaults to dark mode. The existing bundled Atkinson Hyperlegible Regular
-and Bold assets are retained to avoid duplicating font payloads.
+The neutral light and dark palettes mirror `@weluvabid/iris`'s public theme
+contract. Discover defaults to dark mode. The bundled Atkinson Hyperlegible
+Regular and Bold assets are retained to avoid duplicate font payloads.
 
-If Iris changes its public theme contract, update `src/styles/foundation.css` from
-the upstream Iris theme and review the Discover-specific overrides in
-`src/styles/discover-theme.css`.
+When Iris changes its theme contract, update `src/styles/foundation.css` from the
+upstream Iris theme and review only Discover-specific semantic tokens.

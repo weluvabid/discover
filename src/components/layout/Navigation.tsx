@@ -43,9 +43,9 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
       id="discover-navigation"
       collapsible="icon"
       mobileSide="right"
-      className="discover-sidebar"
+      className="bg-sidebar text-sidebar-foreground"
     >
-      <SidebarHeader className="discover-sidebar-header">
+      <SidebarHeader className="min-h-16 justify-center px-3">
         <Brand />
       </SidebarHeader>
       <SidebarContent>
@@ -103,7 +103,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
                     }}
                   >
                     <span className="min-w-0 flex-1 truncate">{label}</span>
-                    {count && <span className="discover-genre-count">{count}</span>}
+                    {count && <span className="ml-auto text-xs tabular-nums text-muted-foreground">{count}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

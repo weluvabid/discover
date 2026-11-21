@@ -7,105 +7,24 @@ import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { RankingWhyPopover } from '@/features/discovery/components/RankingWhyPopover';
 import { ExperiencePlayButton } from './ExperiencePlayButton';
 
-interface ExperienceCardProps {
-  experience: Experience;
-  variant?: 'trending' | 'recommended' | 'recent';
-  isBookmarked: boolean;
-  onToggleBookmark: (id: string) => void;
-  onSelect: (experience: Experience) => void;
-  ranking?: RankedExperience;
-}
+interface ExperienceCardProps { experience: Experience; variant?: 'trending' | 'recommended' | 'recent'; isBookmarked: boolean; onToggleBookmark: (id: string) => void; onSelect: (experience: Experience) => void; ranking?: RankedExperience }
 
-export function ExperienceCard({
-  experience,
-  variant = 'trending',
-  isBookmarked,
-  onToggleBookmark,
-  onSelect,
-  ranking,
-}: ExperienceCardProps) {
-  const overlayLabel =
-    variant === 'trending' && experience.metrics.weeklyChange !== undefined
-      ? `+${experience.metrics.weeklyChange}%`
-      : variant === 'recommended' && experience.matchScore !== undefined
-        ? `${experience.matchScore}% MATCH`
-        : variant === 'recent'
-          ? 'NEW'
-          : null;
-
+export function ExperienceCard({ experience, variant = 'trending', isBookmarked, onToggleBookmark, onSelect, ranking }: ExperienceCardProps) {
+  const overlayLabel = variant === 'trending' && experience.metrics.weeklyChange !== undefined ? `+${experience.metrics.weeklyChange}%` : variant === 'recommended' && experience.matchScore !== undefined ? `${experience.matchScore}% MATCH` : variant === 'recent' ? 'NEW' : null;
   return (
-    <article className="experience-card">
-      <Button
-        variant="ghost"
-        className="card-art-button"
-        onClick={() => onSelect(experience)}
-        aria-label={`View ${experience.title}`}
-      >
-        <ExperienceArtwork src={experience.artwork.thumbnail} alt={experience.artwork.alt} />
-        {overlayLabel && (
-          <span className="experience-art-badge">
-            {variant === 'trending' && <TrendingUp size={13} aria-hidden="true" />}
-            {variant === 'recommended' && <Sparkles size={13} aria-hidden="true" />}
-            {overlayLabel}
-          </span>
-        )}
-        {ranking && <span className="experience-rank-badge">#{ranking.position}</span>}
+    <article className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-ring/60">
+      <Button variant="ghost" className="relative block h-auto w-full overflow-hidden rounded-none bg-muted p-0 text-left hover:bg-muted" onClick={() => onSelect(experience)} aria-label={`View ${experience.title}`}>
+        <ExperienceArtwork src={experience.artwork.thumbnail} alt={experience.artwork.alt} className="aspect-video w-full" />
+        {overlayLabel && <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/85 px-2.5 py-1.5 text-xs font-bold text-foreground shadow-sm backdrop-blur">{variant === 'trending' && <TrendingUp size={13} />}{variant === 'recommended' && <Sparkles size={13} />}{overlayLabel}</span>}
+        {ranking && <span className="absolute right-3 top-3 rounded-lg border border-border bg-background/85 px-2 py-1 text-xs font-bold text-foreground backdrop-blur">#{ranking.position}</span>}
       </Button>
-
-      <div className="card-content">
-        <div className="card-title-row">
-          <Button variant="ghost" className="card-title" onClick={() => onSelect(experience)}>
-            {experience.title}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className={`bookmark-button ${isBookmarked ? 'is-bookmarked' : ''}`}
-            onClick={() => onToggleBookmark(experience.id)}
-            aria-label={
-              isBookmarked
-                ? `Remove ${experience.title} from library`
-                : `Save ${experience.title}`
-            }
-            aria-pressed={isBookmarked}
-          >
-            <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} />
-          </Button>
-        </div>
-
-        <p className="card-creator">
-          {experience.creator} <span>·</span> {experience.subgenre}
-        </p>
-
-        {variant === 'recommended' && experience.discoveryReason && (
-          <span className="recommendation-reason">
-            <Sparkles size={12} aria-hidden="true" /> {experience.discoveryReason}
-          </span>
-        )}
-
-        <div className="card-meta">
-          <span className="active-count">
-            <i /> {formatCount(experience.metrics.activePlayers)} active
-          </span>
-          <span className="rating">
-            <Star size={12} fill="currentColor" /> {experience.metrics.rating}%
-          </span>
-        </div>
-
-        <ExperiencePlayButton
-          onClick={() => onSelect(experience)}
-          label="Play on Roblox"
-        />
-
-        {ranking && (
-          <div className="card-ranking-meta">
-            <div className="card-ranking-score">
-              <strong>{ranking.score.toFixed(1)}</strong>
-              <small>RANK SCORE</small>
-              <RankingWhyPopover ranking={ranking} showScore={false} />
-            </div>
-          </div>
-        )}
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="flex min-w-0 items-center gap-2"><Button variant="link" className="h-auto min-w-0 justify-start truncate p-0 text-left text-base font-bold text-foreground no-underline hover:underline" onClick={() => onSelect(experience)}>{experience.title}</Button><Button variant="ghost" size="icon-sm" className="ml-auto shrink-0" onClick={() => onToggleBookmark(experience.id)} aria-label={isBookmarked ? `Remove ${experience.title} from library` : `Save ${experience.title}`} aria-pressed={isBookmarked}><Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'}/></Button></div>
+        <p className="truncate text-sm text-muted-foreground">{experience.creator} <span aria-hidden="true">·</span> {experience.subgenre}</p>
+        {variant === 'recommended' && experience.discoveryReason && <p className="flex items-center gap-2 truncate rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground"><Sparkles size={13} className="shrink-0"/>{experience.discoveryReason}</p>}
+        <div className="mt-auto flex items-center justify-between gap-3 pt-2 text-xs text-muted-foreground"><span className="inline-flex items-center gap-2"><span className="size-1.5 rounded-full bg-muted-foreground"/>{formatCount(experience.metrics.activePlayers)} active</span><span className="inline-flex items-center gap-1"><Star size={13} fill="currentColor"/>{experience.metrics.rating}%</span></div>
+        <ExperiencePlayButton onClick={() => onSelect(experience)} label="Play on Roblox" className="w-full"/>
+        {ranking && <div className="flex items-center justify-between gap-3 border-t border-border pt-3"><div className="flex items-baseline gap-2"><strong className="text-lg tabular-nums text-foreground">{ranking.score.toFixed(1)}</strong><span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">RANK SCORE</span></div><RankingWhyPopover ranking={ranking} showScore={false}/></div>}
       </div>
     </article>
   );

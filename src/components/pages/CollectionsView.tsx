@@ -30,7 +30,7 @@ const collections = [
 
 export function CollectionsView({ bookmarks, onToggleBookmark, onSelect }: CollectionsViewProps) {
   return (
-    <div className="alternate-view">
+    <div className="min-w-0">
       <PageIntro
         eyebrow="CURATED WORLDS"
         title="Collections"
@@ -41,15 +41,15 @@ export function CollectionsView({ bookmarks, onToggleBookmark, onSelect }: Colle
         const items = collection.ids.map(getMockExperience);
 
         return (
-          <section className="collection-block" key={collection.title}>
-            <div className="collection-heading">
+          <section className="mt-8 space-y-4" key={collection.title}>
+            <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h2>{collection.title}</h2>
-                <p>{collection.description}</p>
+                <h2 className="text-lg font-bold">{collection.title}</h2>
+                <p className="text-sm text-muted-foreground">{collection.description}</p>
               </div>
-              <span>{items.length} experiences</span>
+              <span className="text-xs text-muted-foreground">{items.length} experiences</span>
             </div>
-            <div className="experience-grid grid-recommended">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {items.map((experience) => (
                 <ExperienceCard
                   key={experience.id}

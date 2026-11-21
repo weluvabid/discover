@@ -35,7 +35,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
   const hasSearch = Boolean(page.query.trim());
 
   return (
-    <SidebarProvider className="app-shell">
+    <SidebarProvider className="min-h-svh w-full [--sidebar-width:11rem]">
       <Sidebar
         activeView={page.activeView}
         selectedGenre={page.genre}
@@ -43,7 +43,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
           page.selectGenre(selected);
         }}
       />
-      <div className="main-column">
+      <div className="min-w-0 flex-1">
         <Header
           query={page.query}
           onQueryChange={page.setQuery}
@@ -51,7 +51,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
           onOpenDiscoveryControls={() => page.setControlsOpen(true)}
           hasCustomRanking={page.hasCustomRanking}
         />
-        <main className="page-content" id="main-content">
+        <main className="mx-auto w-full max-w-screen-2xl space-y-8 px-4 py-6 md:px-6 lg:px-8" id="main-content">
           {hasSearch ? (
             <SearchResultsView
               query={page.query || page.genre}

@@ -13,74 +13,41 @@ interface HeaderProps {
   hasCustomRanking: boolean;
 }
 
-export function Header({
-  query,
-  onQueryChange,
-  resultCount,
-  onOpenDiscoveryControls,
-  hasCustomRanking,
-}: HeaderProps) {
+export function Header({ query, onQueryChange, resultCount, onOpenDiscoveryControls, hasCustomRanking }: HeaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isMobile, openMobile, toggleSidebar } = useSidebar();
 
   useEffect(() => {
-    function handleShortcut(event: KeyboardEvent) {
+    const handleShortcut = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         inputRef.current?.focus();
       }
-    }
-
+    };
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, []);
 
   return (
-    <div className="header-shell">
-      <header className="topbar">
-        <SidebarTrigger className="discover-sidebar-trigger desktop-sidebar-trigger" />
-        <div className="mobile-brand">
-          <Brand compact />
-        </div>
-        <div className="header-actions">
-          <Button
-            id="tune-discovery-trigger"
-            variant="outline"
-            className={`discovery-controls-trigger ${hasCustomRanking ? 'has-custom-ranking' : ''}`}
-            onClick={onOpenDiscoveryControls}
-            aria-label="Tune discovery preferences"
-            title="Tune discovery"
-          >
-            <SlidersHorizontal size={18} />
-            <span className="discovery-controls-label">
-              {hasCustomRanking ? 'Custom ranking' : 'Tune discovery'}
-            </span>
-            {hasCustomRanking && <i />}
+    <div className="sticky top-0 z-40 border-b border-border/80 bg-background/90 px-4 py-3 backdrop-blur-xl md:static md:flex md:items-center md:gap-4 md:px-6">
+      <header className="flex min-h-10 items-center justify-between gap-3 md:contents">
+        <SidebarTrigger className="hidden md:inline-flex" />
+        <div className="md:hidden"><Brand compact /></div>
+        <div className="ml-auto flex items-center gap-2">
+          <Button id="tune-discovery-trigger" variant="outline" size="icon" onClick={onOpenDiscoveryControls} aria-label="Tune discovery preferences" title="Tune discovery" className="relative">
+            <SlidersHorizontal />
+            {hasCustomRanking && <span className="absolute right-1 top-1 size-1.5 rounded-full bg-foreground" />}
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="mobile-menu-trigger"
-            onClick={toggleSidebar}
-            aria-label="Open navigation menu"
-            aria-expanded={isMobile ? openMobile : undefined}
-          >
-            <Menu size={21} />
+          <Button variant="outline" size="icon" className="md:hidden" onClick={toggleSidebar} aria-label="Open navigation menu" aria-expanded={isMobile ? openMobile : undefined}>
+            <Menu />
           </Button>
         </div>
       </header>
-      <label className="search-field">
+      <label className="mt-3 flex h-11 w-full min-w-0 items-center gap-3 rounded-xl border border-input bg-card px-3 text-muted-foreground focus-within:border-ring md:mt-0 md:max-w-xl">
         <Search size={18} aria-hidden="true" />
-        <Input
-          ref={inputRef}
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Search experiences, creators, and tags..."
-          aria-label="Search experiences, creators, and tags"
-          className="header-search-input h-full min-h-0 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:border-0 focus-visible:ring-0"
-        />
-        <kbd>⌘ K</kbd>
-        {query && <span className="search-count">{resultCount} results</span>}
+        <Input ref={inputRef} value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Search experiences, creators, and tags..." aria-label="Search experiences, creators, and tags" className="h-full min-h-0 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0" />
+        <kbd className="hidden shrink-0 rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground md:inline">⌘ K</kbd>
+        {query && <span className="shrink-0 text-xs text-muted-foreground">{resultCount} results</span>}
       </label>
     </div>
   );

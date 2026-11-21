@@ -19,7 +19,7 @@ export function SearchResultsView({
   onSelect,
 }: SearchResultsViewProps) {
   return (
-    <div className="alternate-view search-results-view">
+    <div className="min-w-0">
       <PageIntro
         eyebrow="DISCOVERY SEARCH"
         title="Search results"

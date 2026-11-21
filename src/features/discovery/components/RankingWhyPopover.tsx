@@ -82,11 +82,11 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
   const formatSigned = (value: number) => `${value > 0 ? '+' : ''}${value.toFixed(1)}`;
 
   return (
-    <div className="ranking-inspector">
+    <div className="flex min-w-0 items-center justify-between gap-2">
       {showScore && (
-        <div className="ranking-score" aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}>
-          <strong>{ranking.score.toFixed(1)}</strong>
-          <span>RANK SCORE</span>
+        <div className="flex items-baseline gap-2" aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}>
+          <strong className="text-lg font-bold tabular-nums text-foreground">{ranking.score.toFixed(1)}</strong>
+          <span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">RANK SCORE</span>
         </div>
       )}
       <Popover
@@ -104,7 +104,7 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
               <PopoverTrigger
                 render={
                   <Button
-                    className="ranking-why-trigger"
+                    className="size-7 rounded-full text-muted-foreground"
                     variant="ghost"
                     size="icon-sm"
                     aria-label="Why this result?"
@@ -119,62 +119,50 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           <TooltipContent side="top">Why this result?</TooltipContent>
         </Tooltip>
         <PopoverContent
-          className="ranking-why-popover"
+          className="max-h-[calc(100dvh-2rem)] w-[min(28rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] gap-4 overflow-y-auto overscroll-contain border border-border bg-popover p-4 text-popover-foreground shadow-xl sm:w-[28rem]"
           align="end"
           side="bottom"
           sideOffset={8}
           role="dialog"
           aria-label={`Why ${ranking.experience.title} ranked here`}
         >
-          <div className="ranking-popover-heading">
+          <div className="flex flex-col gap-1">
             <div>
-              <span>RANKING EXPLANATION</span>
+              <span className="text-xs font-bold tracking-wider text-muted-foreground">RANKING EXPLANATION</span>
               <strong>
                 {CONTEXT_LABELS[ranking.explanation.context]} ·{' '}
                 {STRATEGY_LABELS[ranking.explanation.strategy]}
               </strong>
             </div>
           </div>
-          <p className="ranking-popover-summary">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             {ranking.explanation.context === 'recommended'
               ? 'This experience qualified for recommendations and was scored using your active discovery preferences.'
               : `This experience qualified for ${CONTEXT_LABELS[ranking.explanation.context]} and was ranked using your active discovery preferences.`}
           </p>
-          <dl className="ranking-score-reconciliation" aria-label="Score breakdown">
-            <div>
-              <dt>Weighted signals</dt>
-              <dd>{displayedWeightedScore.toFixed(1)}</dd>
-            </div>
-            <div>
-              <dt>Reranking penalty</dt>
-              <dd>{formatSigned(penalty)}</dd>
-            </div>
-            <div>
-              <dt>Applied adjustment</dt>
-              <dd>{formatSigned(displayedAdjustment)}</dd>
-            </div>
-            <div className="is-final">
-              <dt>Final Score</dt>
-              <dd>{displayedFinalScore.toFixed(1)}</dd>
-            </div>
+          <dl className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-secondary/50 p-4 text-sm sm:grid-cols-2" aria-label="Score breakdown">
+            <div className="flex items-center justify-between gap-3"><dt className="text-muted-foreground">Weighted signals</dt><dd className="font-bold tabular-nums">{displayedWeightedScore.toFixed(1)}</dd></div>
+            <div className="flex items-center justify-between gap-3"><dt className="text-muted-foreground">Reranking penalty</dt><dd className="font-bold tabular-nums">{formatSigned(penalty)}</dd></div>
+            <div className="flex items-center justify-between gap-3"><dt className="text-muted-foreground">Applied adjustment</dt><dd className="font-bold tabular-nums">{formatSigned(displayedAdjustment)}</dd></div>
+            <div className="col-span-full flex items-center justify-between gap-3 border-t border-border pt-3"><dt className="font-semibold">Final Score</dt><dd className="text-lg font-bold tabular-nums">{displayedFinalScore.toFixed(1)}</dd></div>
           </dl>
-          <div className="ranking-contributions">
+          <div className="flex flex-col gap-4">
             {signals.map((signal) => (
               <div
-                className={`ranking-contribution ${signal.enabled ? '' : 'is-disabled'}`}
+                className={`flex flex-col gap-2 ${signal.enabled ? '' : 'opacity-50'}`}
                 key={signal.id}
               >
-                <div>
-                  <span>
+                <div className="flex items-center justify-between gap-3 text-sm">
+                  <span className="text-muted-foreground">
                     {signal.label}
                     {signal.enabled ? '' : ' · disabled'}
                   </span>
-                  <strong>{(displayedContributions.get(signal.id) ?? 0).toFixed(1)} pts</strong>
+                  <strong className="tabular-nums">{(displayedContributions.get(signal.id) ?? 0).toFixed(1)} pts</strong>
                 </div>
-                <div className="ranking-contribution-track">
-                  <i style={{ width: `${Math.max(0, Math.min(100, signal.contribution))}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-secondary">
+                  <i className="block h-full rounded-full bg-muted-foreground" style={{ width: `${Math.max(0, Math.min(100, signal.contribution))}%` }} />
                 </div>
-                <small>
+                <small className="text-xs leading-relaxed text-muted-foreground">
                   {signal.normalizedScore.toFixed(0)} signal ×{' '}
                   {(signal.configuredWeight * 100).toFixed(0)}% preference ×{' '}
                   {signal.contextMultiplier.toFixed(2)} context factor →{' '}
@@ -183,17 +171,17 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
               </div>
             ))}
           </div>
-          <div className="ranking-eligibility">
-            <strong>Eligibility</strong>
+          <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
+            <strong className="font-semibold">Eligibility</strong>
             {ranking.explanation.eligibilityReasons.map((reason) => (
-              <span key={reason}>✓ {reason}</span>
+              <span key={reason} className="text-muted-foreground">✓ {reason}</span>
             ))}
           </div>
           {ranking.explanation.reasons.length > 0 && (
-            <div className="ranking-reasons">
-              <strong>Top contributors</strong>
+            <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
+              <strong className="font-semibold">Top contributors</strong>
               {ranking.explanation.reasons.map((reason) => (
-                <span key={reason}>{reason}</span>
+                <span key={reason} className="text-muted-foreground">{reason}</span>
               ))}
             </div>
           )}

@@ -121,18 +121,6 @@
 
   /* Discover product tokens layered over Iris's neutral foundation. */
   --roblox-blue: #0866ff;
-  --canvas: var(--background);
-  --surface: var(--card);
-  --surface-raised: var(--popover);
-  --surface-hover: var(--accent);
-  --stroke: var(--border);
-  --stroke-soft: color-mix(in srgb, var(--border) 72%, transparent);
-  --text: var(--foreground);
-  --dim: color-mix(in srgb, var(--muted-foreground) 72%, transparent);
-  --blue: var(--roblox-blue);
-  --blue-bright: var(--roblox-blue);
-  --cyan: var(--muted-foreground);
-  --green: var(--muted-foreground);
 }
 
 .dark {
