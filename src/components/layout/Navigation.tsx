@@ -45,7 +45,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre }: SidebarPro
       mobileSide="right"
       className="bg-sidebar text-sidebar-foreground"
     >
-      <SidebarHeader className="min-h-16 justify-center px-3">
+      <SidebarHeader className="min-h-16 justify-center px-3 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0">
         <Brand compact={state === "collapsed" && !isMobile} />
       </SidebarHeader>
       <SidebarContent>

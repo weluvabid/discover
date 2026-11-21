@@ -42,6 +42,11 @@ export function useRankingDraft(configuration: RankingConfiguration) {
     setDirty(true);
   }
 
+  function discardDraft() {
+    setDraft(configuration);
+    setDirty(false);
+  }
+
   return {
     draft,
     dirty,
@@ -50,5 +55,6 @@ export function useRankingDraft(configuration: RankingConfiguration) {
     toggleDraftSignal,
     updateDraftSignalWeight,
     resetDraft,
+    discardDraft,
   };
 }

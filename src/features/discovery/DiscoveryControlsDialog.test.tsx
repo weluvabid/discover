@@ -57,7 +57,7 @@ describe('DiscoveryControlsDialog', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /Popularity-first Trending and active players/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /Popularity-first Trending and active players/ }));
     fireEvent.click(screen.getByRole('button', { name: /Apply configuration/ }));
 
     expect(onApply).toHaveBeenCalledTimes(1);

@@ -4,7 +4,7 @@ interface BrandProps { compact?: boolean }
 
 export function Brand({ compact = false }: BrandProps) {
   return (
-    <a className="flex min-w-0 items-center gap-2.5 px-1" href="/" aria-label="Discover home">
+    <a className={`flex min-w-0 items-center gap-2.5 px-1 ${compact ? 'w-full justify-center px-0' : ''}`} href="/" aria-label="Discover home">
       <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-secondary text-foreground">
         <Gamepad2 size={compact ? 24 : 19} strokeWidth={2.3} />
       </span>
