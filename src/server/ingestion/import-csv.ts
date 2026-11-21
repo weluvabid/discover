@@ -18,6 +18,7 @@ const now = () => new Date().toISOString();
 
 function genreFor(value: string): string {
   const normalized = String(value ?? '').trim();
+
   return !normalized || normalized.toLowerCase() === 'n/a' ? 'Other' : normalized;
 }
 
@@ -25,11 +26,17 @@ function mapGenre(value: string): string {
   const genre = genreFor(value);
 
   if (/horror|survival/i.test(genre)) return 'Horror';
+
   if (/race|sports/i.test(genre)) return 'Racing';
+
   if (/roleplay|co-op|coop|party/i.test(genre)) return 'Co-op';
+
   if (/simulation|shopping|avatar/i.test(genre)) return 'Simulation';
+
   if (/obby|platform|puzzle|casual/i.test(genre)) return 'Puzzle';
+
   if (/adventure|explor/i.test(genre)) return 'Exploration';
+
   if (/action|rpg|shooter|fight/i.test(genre)) return 'Action RPG';
 
   return 'Simulation';
@@ -79,9 +86,11 @@ function normalizeRow(record: {
 }): RawRow | null {
   const values = record.values;
   const ids = extractRobloxIds(values.GameLink ?? '');
+
   if (!ids) return null;
 
   const active = parseCompactCount(values.Active ?? '');
+
   if (active === null || active < 0) return null;
 
   return {
@@ -126,7 +135,8 @@ function insertRaw(db: DatabaseSync, row: RawRow): 'inserted' | 'updated' {
   const timestamp = now();
   const tags = [...new Set([mapGenre(row.genre), row.genre].filter(Boolean))];
 
-  db.prepare(`
+  db.prepare(
+    `
     INSERT INTO games (
       universe_id, place_id, title, creator, genre, subgenre, age_recommendation,
       max_players, voice_chat, camera, roblox_url, created_at, updated_at,
@@ -158,7 +168,8 @@ function insertRaw(db: DatabaseSync, row: RawRow): 'inserted' | 'updated' {
       source_rating = excluded.source_rating,
       source_review_count = excluded.source_review_count,
       updated_local_at = excluded.updated_local_at
-  `).run(
+  `,
+  ).run(
     row.universeId,
     row.placeId,
     row.title,
@@ -192,11 +203,13 @@ function insertRaw(db: DatabaseSync, row: RawRow): 'inserted' | 'updated' {
     JSON.stringify(tags),
   );
 
-  db.prepare(`
+  db.prepare(
+    `
     INSERT OR IGNORE INTO game_metric_snapshots (
       universe_id, observed_at, active_players, visits, favorites, rating, review_count, source
     ) VALUES (?,?,?,?,?,?,?,'csv-2024')
-  `).run(
+  `,
+  ).run(
     row.universeId,
     row.dateFetched ?? '2024-11-05T00:00:00.000Z',
     row.active,
@@ -219,6 +232,7 @@ function enrichOne(
     db.prepare(
       "UPDATE games SET source_status = 'unavailable', updated_local_at = ? WHERE universe_id = ?",
     ).run(now(), row.universeId);
+
     return 'unavailable';
   }
 
@@ -249,7 +263,8 @@ function enrichOne(
   const tags = [...new Set([genre, game.genre || row.genre, row.genre].filter(Boolean))];
   const enrichedAt = now();
 
-  db.prepare(`
+  db.prepare(
+    `
     UPDATE games SET
       title = ?, description = ?, creator = ?, creator_id = ?, creator_type = ?,
       creator_verified = ?, genre = ?, subgenre = ?, max_players = ?, artwork_url = ?,
@@ -259,7 +274,8 @@ function enrichOne(
       match_scores_json = ?, source_status = 'valid', last_enriched_at = ?,
       updated_local_at = ?, tags_json = ?
     WHERE universe_id = ?
-  `).run(
+  `,
+  ).run(
     game.name || row.title,
     game.description ?? '',
     game.creator?.name || row.creator,
@@ -290,12 +306,14 @@ function enrichOne(
     row.universeId,
   );
 
-  db.prepare(`
+  db.prepare(
+    `
     INSERT OR IGNORE INTO game_metric_snapshots (
       universe_id, observed_at, active_players, visits, favorites, rating, review_count,
       weekly_change, source
     ) VALUES (?,?,?,?,?,?,?,0,'roblox-api')
-  `).run(
+  `,
+  ).run(
     row.universeId,
     enrichedAt,
     activePlayers,
@@ -304,11 +322,13 @@ function enrichOne(
     sourceRating,
     reviewCount,
   );
-  db.prepare(`
+  db.prepare(
+    `
     INSERT OR IGNORE INTO game_metric_snapshots (
       universe_id, observed_at, active_players, rating, review_count, weekly_change, source
     ) VALUES (?,?,?,?,?,?, 'synthetic')
-  `).run(
+  `,
+  ).run(
     row.universeId,
     enrichedAt,
     activePlayers,
@@ -393,6 +413,7 @@ export async function importCatalog(db: DatabaseSync, options: ImportOptions = {
       try {
         for (const row of batch) {
           const result = insertRaw(db, row);
+
           if (result === 'inserted') stats.rowsInserted += 1;
           else stats.rowsUpdated += 1;
         }
@@ -406,7 +427,9 @@ export async function importCatalog(db: DatabaseSync, options: ImportOptions = {
       const rows = batch.splice(0);
       const uniqueRows = rows.filter((row) => {
         if (enrichedUniverseIds.has(row.universeId)) return false;
+
         enrichedUniverseIds.add(row.universeId);
+
         return true;
       });
 
@@ -434,6 +457,7 @@ export async function importCatalog(db: DatabaseSync, options: ImportOptions = {
               error instanceof Error ? error.message : 'Roblox metadata request failed',
             );
           }
+
           continue;
         }
 
@@ -482,6 +506,7 @@ export async function importCatalog(db: DatabaseSync, options: ImportOptions = {
 
     for await (const record of parseCsv(response.body)) {
       if (stats.rowsSeen >= limit) break;
+
       stats.rowsSeen += 1;
 
       const row = normalizeRow(record);
@@ -505,17 +530,20 @@ export async function importCatalog(db: DatabaseSync, options: ImportOptions = {
       }
 
       batch.push(row);
+
       if (batch.length >= 50) await flush();
     }
 
     await flush();
 
-    db.prepare(`
+    db.prepare(
+      `
       UPDATE ingestion_runs SET
         status = 'completed', finished_at = ?, rows_seen = ?, rows_valid = ?,
         rows_invalid = ?, rows_unavailable = ?, rows_inserted = ?, rows_updated = ?
       WHERE id = ?
-    `).run(
+    `,
+    ).run(
       now(),
       stats.rowsSeen,
       stats.rowsValid,
@@ -528,12 +556,14 @@ export async function importCatalog(db: DatabaseSync, options: ImportOptions = {
 
     return stats;
   } catch (error) {
-    db.prepare(`
+    db.prepare(
+      `
       UPDATE ingestion_runs SET
         status = 'failed', finished_at = ?, rows_seen = ?, rows_valid = ?,
         rows_invalid = ?, rows_unavailable = ?, rows_inserted = ?, rows_updated = ?, error = ?
       WHERE id = ?
-    `).run(
+    `,
+    ).run(
       now(),
       stats.rowsSeen,
       stats.rowsValid,

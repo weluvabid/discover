@@ -6,6 +6,7 @@ const args = process.argv.slice(2);
 
 function argumentValue(name: string): string | undefined {
   const index = args.indexOf(name);
+
   return index >= 0 ? args[index + 1] : undefined;
 }
 
@@ -31,6 +32,7 @@ try {
 
   if (args.includes('--sync')) {
     const syncStats = await syncToTurso(db);
+
     process.stdout.write(`Turso sync completed:\n${JSON.stringify(syncStats, null, 2)}\n`);
   }
 } catch (error) {

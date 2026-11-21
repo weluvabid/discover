@@ -9,6 +9,7 @@ export function openDatabase(
   mkdirSync(dirname(path), { recursive: true });
 
   const db = new DatabaseSync(path, { enableForeignKeyConstraints: true });
+
   db.exec(schema);
 
   return db;

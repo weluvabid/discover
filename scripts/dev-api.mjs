@@ -27,10 +27,12 @@ process.once('SIGTERM', shutdown);
 
 buildWatcher.once('exit', (code) => {
   if (code && code !== 0) process.exitCode = code;
+
   apiServer.kill('SIGTERM');
 });
 
 apiServer.once('exit', (code) => {
   if (code && code !== 0) process.exitCode = code;
+
   buildWatcher.kill('SIGTERM');
 });

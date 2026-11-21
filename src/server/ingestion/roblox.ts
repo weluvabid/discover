@@ -25,8 +25,7 @@ export interface RobloxThumbnail {
   imageUrl?: string;
 }
 
-const wait = (milliseconds: number) =>
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
+const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   let lastError: unknown;
@@ -40,9 +39,10 @@ async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
 
       if (response.status === 429 || response.status >= 500) {
         const retryAfter = Number(response.headers.get('retry-after'));
-        const delay = Number.isFinite(retryAfter) && retryAfter > 0
-          ? retryAfter * 1000
-          : Math.min(8000, 500 * 2 ** attempt);
+        const delay =
+          Number.isFinite(retryAfter) && retryAfter > 0
+            ? retryAfter * 1000
+            : Math.min(8000, 500 * 2 ** attempt);
 
         await wait(delay);
         continue;

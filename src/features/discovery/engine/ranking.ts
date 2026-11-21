@@ -357,8 +357,7 @@ function rawSignals(
   const rating = clamp(experience.metrics.rating / 100);
   const playtime = clamp(experience.metrics.averagePlaytimeMinutes / 60);
   const hasSyntheticEngagement =
-    experience.metrics.d7Retention !== undefined &&
-    experience.metrics.repeatPlayRate !== undefined;
+    experience.metrics.d7Retention !== undefined && experience.metrics.repeatPlayRate !== undefined;
   const retention = clamp(
     (experience.metrics.d1Retention ?? 0.35) * 0.25 +
       (experience.metrics.d7Retention ?? 0.2) * 0.5 +

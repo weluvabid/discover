@@ -21,6 +21,7 @@ const server = createServer(async (request, response) => {
   if (request.method === 'OPTIONS') {
     response.writeHead(204);
     response.end();
+
     return;
   }
 

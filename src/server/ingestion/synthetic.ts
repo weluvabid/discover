@@ -102,6 +102,7 @@ function randomFor(seed: number, salt: string): () => number {
   return () => {
     state = (state + 0x6d2b79f5) >>> 0;
     let value = state;
+
     value = Math.imul(value ^ (value >>> 15), value | 1);
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
 
@@ -109,8 +110,7 @@ function randomFor(seed: number, salt: string): () => number {
   };
 }
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const GENRE_AFFINITY: Record<string, ExperienceGenre[]> = {
   'Action RPG': ['Action RPG'],
@@ -148,8 +148,7 @@ export function generateSyntheticMetrics(input: {
   const genre = GENRE_AFFINITY[input.genre] ? input.genre : 'Other';
 
   const averageSessionMinutes =
-    Math.round(clamp((10 + quality * 24 + demand * 8) * (0.82 + random() * 0.36), 4, 90) * 10) /
-    10;
+    Math.round(clamp((10 + quality * 24 + demand * 8) * (0.82 + random() * 0.36), 4, 90) * 10) / 10;
   const averagePlaytimeMinutes =
     Math.round(averageSessionMinutes * (1.25 + quality * 0.85) * 10) / 10;
   const d1Retention = clamp(

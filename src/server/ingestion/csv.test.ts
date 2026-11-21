@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  extractRobloxIds,
-  parseCompactCount,
-  parseCsv,
-  parseSourceDate,
-} from './csv';
+import { extractRobloxIds, parseCompactCount, parseCsv, parseSourceDate } from './csv';
 
 async function* parseChunks(chunks: string[]) {
   const stream = new ReadableStream<Uint8Array>({
@@ -12,6 +7,7 @@ async function* parseChunks(chunks: string[]) {
       for (const chunk of chunks) {
         controller.enqueue(new TextEncoder().encode(chunk));
       }
+
       controller.close();
     },
   });

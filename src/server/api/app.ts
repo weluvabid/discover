@@ -16,14 +16,7 @@ const CONTEXTS = new Set<RankingContext>([
   'hidden-gems',
   'recently-launched',
 ]);
-const SIGNAL_IDS = [
-  'affinity',
-  'quality',
-  'relevance',
-  'freshness',
-  'popularity',
-  'diversity',
-];
+const SIGNAL_IDS = ['affinity', 'quality', 'relevance', 'freshness', 'popularity', 'diversity'];
 
 type ApiResult = {
   status: number;
@@ -55,7 +48,13 @@ export async function handleApiRequest(
     const limit = Number(url.searchParams.get('limit') ?? 100);
     const offset = Number(url.searchParams.get('offset') ?? 0);
 
-    if (!Number.isInteger(limit) || !Number.isInteger(offset) || limit < 1 || limit > 500 || offset < 0) {
+    if (
+      !Number.isInteger(limit) ||
+      !Number.isInteger(offset) ||
+      limit < 1 ||
+      limit > 500 ||
+      offset < 0
+    ) {
       return { status: 400, body: { error: 'Invalid pagination.' } };
     }
 
@@ -151,9 +150,7 @@ export async function handleApiRequest(
     const configuration: RankingConfiguration = {
       strategy: strategy as RankingConfiguration['strategy'],
       signals:
-        validSignals && input.signals
-          ? input.signals
-          : DEFAULT_RANKING_CONFIGURATION.signals,
+        validSignals && input.signals ? input.signals : DEFAULT_RANKING_CONFIGURATION.signals,
     };
     const results = rankForContext(catalog, configuration, context, {
       limit,

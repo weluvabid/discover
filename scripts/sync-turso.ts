@@ -5,6 +5,7 @@ const db = openDatabase();
 
 try {
   const stats = await syncToTurso(db);
+
   process.stdout.write(`Turso sync completed:\n${JSON.stringify(stats, null, 2)}\n`);
 } catch (error) {
   console.error('Turso sync failed:', error);

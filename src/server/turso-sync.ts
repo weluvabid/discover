@@ -19,12 +19,15 @@ type HranaResult = {
 
 function hranaValue(value: unknown): HranaValue {
   if (value === null || value === undefined) return { type: 'null' };
+
   if (typeof value === 'number') {
     return Number.isInteger(value)
       ? { type: 'integer', value: String(value) }
       : { type: 'float', value };
   }
+
   if (typeof value === 'bigint') return { type: 'integer', value: value.toString() };
+
   if (typeof value === 'boolean') {
     return { type: 'integer', value: value ? '1' : '0' };
   }
@@ -60,9 +63,8 @@ async function pipeline(
   token: string,
   requests: Array<Record<string, unknown>>,
 ): Promise<HranaResult[]> {
-  const finalRequests = requests.at(-1)?.type === 'close'
-    ? requests
-    : [...requests, { type: 'close' }];
+  const finalRequests =
+    requests.at(-1)?.type === 'close' ? requests : [...requests, { type: 'close' }];
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -98,9 +100,11 @@ export async function syncToTurso(
   const token = options.authToken ?? process.env.TURSO_AUTH_TOKEN;
 
   if (!databaseUrl) throw new Error('TURSO_DATABASE_URL is required.');
+
   if (!token) throw new Error('TURSO_AUTH_TOKEN is required.');
 
   const batchSize = options.batchSize ?? 50;
+
   if (!Number.isSafeInteger(batchSize) || batchSize < 1 || batchSize > 500) {
     throw new Error('Turso batch size must be an integer from 1 to 500.');
   }
@@ -135,8 +139,7 @@ export async function syncToTurso(
     },
   ]);
   const cursor =
-    cursorResults[0]?.response?.result?.rows?.[0]?.[0]?.value ??
-    '1970-01-01T00:00:00.000Z';
+    cursorResults[0]?.response?.result?.rows?.[0]?.[0]?.value ?? '1970-01-01T00:00:00.000Z';
 
   const personas = db.prepare('SELECT * FROM synthetic_personas').all() as Record<
     string,
@@ -154,10 +157,14 @@ export async function syncToTurso(
   }
 
   const games = db
-    .prepare('SELECT * FROM games WHERE updated_local_at > ? ORDER BY updated_local_at, universe_id')
+    .prepare(
+      'SELECT * FROM games WHERE updated_local_at > ? ORDER BY updated_local_at, universe_id',
+    )
     .all(cursor) as Record<string, unknown>[];
   const snapshots = db
-    .prepare('SELECT * FROM game_metric_snapshots WHERE observed_at > ? ORDER BY observed_at, universe_id')
+    .prepare(
+      'SELECT * FROM game_metric_snapshots WHERE observed_at > ? ORDER BY observed_at, universe_id',
+    )
     .all(cursor) as Record<string, unknown>[];
   let gamesSynced = 0;
   let snapshotsSynced = 0;

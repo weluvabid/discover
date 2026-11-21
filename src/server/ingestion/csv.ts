@@ -4,9 +4,7 @@ export interface CsvRecord {
 }
 
 /** Streaming CSV reader supporting quoted commas, escaped quotes and multiline cells. */
-export async function* parseCsv(
-  stream: ReadableStream<Uint8Array>,
-): AsyncGenerator<CsvRecord> {
+export async function* parseCsv(stream: ReadableStream<Uint8Array>): AsyncGenerator<CsvRecord> {
   const reader = stream.getReader();
   const decoder = new TextDecoder('utf-8');
   let field = '';
@@ -23,14 +21,13 @@ export async function* parseCsv(
 
     if (!headers) {
       headers = values.map((value) => value.trim());
+
       return null;
     }
 
     return {
       rowNumber,
-      values: Object.fromEntries(
-        headers.map((key, index) => [key, values[index] ?? '']),
-      ),
+      values: Object.fromEntries(headers.map((key, index) => [key, values[index] ?? ''])),
     };
   };
 
@@ -40,6 +37,7 @@ export async function* parseCsv(
 
       if (first) {
         first = false;
+
         if (character === '\uFEFF') continue;
       }
 
@@ -55,6 +53,7 @@ export async function* parseCsv(
         } else {
           field += character;
         }
+
         continue;
       }
 
@@ -76,13 +75,16 @@ export async function* parseCsv(
           field = '';
           afterQuote = false;
           const record = emit(row);
+
           row = [];
+
           if (record) yield record;
         } else if (character !== '\r' && !/\s/.test(character)) {
           throw new Error(
             `Malformed CSV: unexpected character after quote at row ${rowNumber + 1}.`,
           );
         }
+
         continue;
       }
 
@@ -95,7 +97,9 @@ export async function* parseCsv(
         row.push(field);
         field = '';
         const record = emit(row);
+
         row = [];
+
         if (record) yield record;
       } else if (character !== '\r') {
         field += character;
@@ -106,6 +110,7 @@ export async function* parseCsv(
   try {
     while (true) {
       const { done, value } = await reader.read();
+
       if (done) break;
 
       for (const record of process(decoder.decode(value, { stream: true }))) {
@@ -124,12 +129,14 @@ export async function* parseCsv(
     if (field.length > 0 || row.length > 0 || afterQuote) {
       row.push(field);
       const record = emit(row);
+
       if (record) yield record;
     }
 
     completed = true;
   } finally {
     if (!completed) await reader.cancel().catch(() => undefined);
+
     reader.releaseLock();
   }
 }
@@ -140,6 +147,7 @@ export function parseCompactCount(raw: string): number | null {
   if (!value || /^(n\/a|na|null|-)$/i.test(value)) return null;
 
   const match = value.match(/^([\d.]+)\s*([KMB])?$/i);
+
   if (!match) return /^\d+$/.test(value) ? Number(value) : null;
 
   const suffix = (match[2] ?? '').toUpperCase();
@@ -149,9 +157,7 @@ export function parseCompactCount(raw: string): number | null {
   return Number.isSafeInteger(Math.round(result)) ? Math.round(result) : null;
 }
 
-export function extractRobloxIds(
-  rawUrl: string,
-): { placeId: string; universeId: string } | null {
+export function extractRobloxIds(rawUrl: string): { placeId: string; universeId: string } | null {
   try {
     const url = new URL(rawUrl.trim().replaceAll('&amp;', '&'));
     const isRobloxHost = /(^|\.)roblox\.com$/i.test(url.hostname);
@@ -175,6 +181,7 @@ export function extractRobloxIds(
 
 export function parseSourceDate(raw: string): string | null {
   const value = raw.trim();
+
   if (!value) return null;
 
   const match = value.match(
@@ -186,6 +193,7 @@ export function parseSourceDate(raw: string): string | null {
     const meridiem = match[6]?.toUpperCase();
 
     if (meridiem === 'PM' && hour < 12) hour += 12;
+
     if (meridiem === 'AM' && hour === 12) hour = 0;
 
     const date = new Date(
@@ -202,5 +210,6 @@ export function parseSourceDate(raw: string): string | null {
   }
 
   const date = new Date(value);
+
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }

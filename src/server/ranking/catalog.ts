@@ -39,11 +39,17 @@ interface GameRow {
 
 function mapGenre(value: string): ExperienceGenre {
   if (GENRES.includes(value as ExperienceGenre)) return value as ExperienceGenre;
+
   if (/horror|survival/i.test(value)) return 'Horror';
+
   if (/race|sport/i.test(value)) return 'Racing';
+
   if (/action|rpg|shooter|fight/i.test(value)) return 'Action RPG';
+
   if (/adventure|explor/i.test(value)) return 'Exploration';
+
   if (/roleplay|coop|co-op|party/i.test(value)) return 'Co-op';
+
   if (/puzzle|obby|platform/i.test(value)) return 'Puzzle';
 
   return 'Simulation';
@@ -102,6 +108,7 @@ export function getCatalog(
   if (options.query) {
     conditions.push('(title LIKE ? OR creator LIKE ? OR description LIKE ?)');
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
+
     parameters.push(query, query, query);
   }
 
