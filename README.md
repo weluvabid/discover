@@ -52,3 +52,7 @@ Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/collections`
 ## Frontend platform
 
 Discover uses Astro for filesystem routing and document composition, with the interactive discovery application hydrated as a single React island. ReUI is the primary component ecosystem using the Base UI + Maia style. Shared primitives and selected ReUI compositions are integrated across discovery controls, ranking explanations, experience details, filters, navigation actions, and empty states. See [the frontend migration notes](docs/architecture/frontend-migration.md) for component ownership and setup.
+
+## Backend catalog pipeline
+
+See [Backend data pipeline](docs/architecture/backend-data-pipeline.md) for the SQLite schema, Roblox enrichment, deterministic synthetic metrics, Turso synchronization and API contract. Copy `.env.example` to `.env`, configure the Turso token only when you are ready to sync, then run `pnpm api:build` and `pnpm db:ingest -- --limit 100` for the first ingestion smoke test.

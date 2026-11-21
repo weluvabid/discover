@@ -42,6 +42,12 @@ export interface ExperienceMetrics {
   reviewCount: number;
   averagePlaytimeMinutes: number;
   weeklyChange?: number;
+  /** Deterministic simulated metrics; these are not Roblox telemetry. */
+  averageSessionMinutes?: number;
+  d1Retention?: number;
+  d7Retention?: number;
+  d30Retention?: number;
+  repeatPlayRate?: number;
 }
 
 export interface Experience {

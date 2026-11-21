@@ -10,7 +10,7 @@
   },
   "scripts": {
     "benchmark:ranking": "node --experimental-strip-types scripts/benchmark-ranking.mjs",
-    "build": "astro check && astro build",
+    "build": "astro check && astro build && pnpm api:build",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
     "dev": "astro dev --host 0.0.0.0",
     "format": "prettier --write .",
@@ -23,7 +23,13 @@
     "preview": "astro preview --host 0.0.0.0",
     "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
     "test:watch": "NODE_OPTIONS=--no-experimental-webstorage vitest",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "api:dev": "node scripts/dev-api.mjs",
+    "api:start": "node --env-file-if-exists=.env dist-server/server.mjs",
+    "db:ingest": "pnpm api:build && node --env-file-if-exists=.env dist-server/ingest-catalog.mjs",
+    "db:sync": "pnpm api:build && node --env-file-if-exists=.env dist-server/sync-turso.mjs",
+    "db:ingest:sample": "pnpm api:build && node --env-file-if-exists=.env dist-server/ingest-catalog.mjs --limit 100 --no-enrich",
+    "api:build": "vite build --config vite.server.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -61,6 +67,7 @@
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.1",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "vite": "^8.3.8"
   }
 }

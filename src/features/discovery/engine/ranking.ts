@@ -354,14 +354,29 @@ function rawSignals(
 ): Record<RankingSignalId, number> {
   const age = ageInDays(experience, now);
   const match = clamp((experience.matchScore ?? 72) / 100);
-  const quality = clamp(experience.metrics.rating / 100);
+  const rating = clamp(experience.metrics.rating / 100);
   const playtime = clamp(experience.metrics.averagePlaytimeMinutes / 60);
+  const hasSyntheticEngagement =
+    experience.metrics.d7Retention !== undefined &&
+    experience.metrics.repeatPlayRate !== undefined;
+  const retention = clamp(
+    (experience.metrics.d1Retention ?? 0.35) * 0.25 +
+      (experience.metrics.d7Retention ?? 0.2) * 0.5 +
+      (experience.metrics.d30Retention ?? 0.1) * 0.25,
+  );
+  const repeatPlay = clamp(experience.metrics.repeatPlayRate ?? 0.4);
+  const session = clamp(
+    (experience.metrics.averageSessionMinutes ?? experience.metrics.averagePlaytimeMinutes) / 60,
+  );
+  const quality = hasSyntheticEngagement
+    ? clamp(rating * 0.35 + playtime * 0.2 + retention * 0.25 + repeatPlay * 0.15 + session * 0.05)
+    : rating;
   const popularity = clamp(Math.log10(Math.max(0, experience.metrics.activePlayers) + 1) / 5);
   const tags = clamp(experience.tags.length / 12);
 
   return {
     affinity: clamp(match * 0.78 + tags * 0.22),
-    quality: clamp(quality * 0.65 + playtime * 0.35),
+    quality: hasSyntheticEngagement ? quality : clamp(rating * 0.65 + playtime * 0.35),
     relevance: clamp(match * 0.7 + clamp(experience.description.length / 500) * 0.3),
     freshness: Number.isFinite(age) ? clamp(Math.exp(-age / 180)) : 0,
     popularity,

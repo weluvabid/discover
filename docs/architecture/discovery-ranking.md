@@ -50,7 +50,7 @@ Ranking accepts an injected `Date`. The Explore page captures one clock value fo
 
 ## Current data boundary
 
-The catalog and affinity inputs are mock data. `matchScore` is a deterministic sample affinity signal, not a value learned from real Roblox player events. The engine is structured so retrieval and signal providers can be replaced without coupling those changes to the React presentation layer.
+The browser still uses the mock catalog until the API integration phase. The backend catalog is populated from a pinned Roblox discovery CSV and enriched through public Roblox metadata endpoints. `matchScore` is a deterministic synthetic persona-affinity input, not a value learned from real player events. For enriched records, the existing quality signal also consumes synthetic D1/D7/D30 retention, repeat-play rate and average session duration; mock records without those fields retain the original rating/playtime calculation. The six-signal interface, context eligibility and ranking strategies remain shared between both data sources.
 
 ## Context ranking profiles
 

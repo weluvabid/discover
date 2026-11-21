@@ -33,3 +33,8 @@ out/
 
 # Astro
 .astro/
+# Local Roblox catalog database
+/data/*.db
+/data/*.db-shm
+/data/*.db-wal
+/dist-server/

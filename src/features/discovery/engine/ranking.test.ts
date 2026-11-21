@@ -76,6 +76,41 @@ describe('discovery ranking', () => {
     expect(ranked.position).toBe(1);
   });
 
+  it('uses deterministic synthetic retention and repeat-play inputs in engagement quality', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const lowEngagement = {
+      ...fixture,
+      metrics: {
+        ...fixture.metrics,
+        d1Retention: 0.12,
+        d7Retention: 0.04,
+        d30Retention: 0.01,
+        repeatPlayRate: 0.08,
+        averageSessionMinutes: 8,
+      },
+    };
+    const highEngagement = {
+      ...fixture,
+      metrics: {
+        ...fixture.metrics,
+        d1Retention: 0.48,
+        d7Retention: 0.32,
+        d30Retention: 0.2,
+        repeatPlayRate: 0.62,
+        averageSessionMinutes: 38,
+      },
+    };
+    const low = rankExperiences([lowEngagement], DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
+    const high = rankExperiences([highEngagement], DEFAULT_RANKING_CONFIGURATION, FIXED_NOW)[0];
+
+    expect(low).toBeDefined();
+    expect(high).toBeDefined();
+    expect(high?.factors.quality).toBeGreaterThan(low?.factors.quality ?? 0);
+  });
+
   it('keeps context eligibility separate from ranking scores', () => {
     const trending = rankForContext(experiences, DEFAULT_RANKING_CONFIGURATION, 'trending', {
       now: FIXED_NOW,
