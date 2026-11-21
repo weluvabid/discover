@@ -71,7 +71,9 @@ export default defineConfig(
       'prefer-template': 'error',
       quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // UI primitives intentionally export related helpers alongside components.
+      // Keep Fast Refresh's advisory rule out of the project-wide warning output.
+      'react-refresh/only-export-components': 'off',
     },
   },
   {

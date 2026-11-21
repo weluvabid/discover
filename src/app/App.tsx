@@ -22,15 +22,16 @@ interface AppProps {
 export default function App({ initialLocation = '/' }: AppProps) {
   const page = useDiscoverPage(initialLocation);
   const controlsWereOpen = useRef(false);
+  const { bookmarks, toggleBookmark: toggleBookmarkAction } = page;
 
   const toggleBookmark = useCallback(
     (id: string) => {
-      const wasBookmarked = page.bookmarks.includes(id);
+      const wasBookmarked = bookmarks.includes(id);
 
-      page.toggleBookmark(id);
+      toggleBookmarkAction(id);
       toast.success(wasBookmarked ? 'Removed from Library' : 'Added to Library');
     },
-    [page.bookmarks, page.toggleBookmark],
+    [bookmarks, toggleBookmarkAction],
   );
 
   const launchExperience = useCallback((experience: Experience) => {
