@@ -29,6 +29,7 @@ interface ExperienceSectionProps {
   emptyAction?: ReactNode;
   rankingById?: Map<string, RankedExperience>;
   loading?: boolean;
+  hideHeader?: boolean;
 }
 
 export function ExperienceSection({
@@ -46,10 +47,11 @@ export function ExperienceSection({
   emptyAction,
   rankingById,
   loading = false,
+  hideHeader = false,
 }: ExperienceSectionProps) {
   return (
     <section className="mt-8 min-w-0">
-      <SectionHeader title={title} subtitle={subtitle} action={action} />
+      {!hideHeader && <SectionHeader title={title} subtitle={subtitle} action={action} />}
       {loading ? (
         <div
           className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"

@@ -11,7 +11,7 @@ describe('shared layout rendering contract', () => {
     expect(foundation).not.toMatch(/html\s*\{[^}]*scroll-behavior/s);
   });
 
-  it('enables Astro client-side page transitions', () => {
+  it('keeps the Safari body-scrolling contract while enabling page transitions', () => {
     expect(layout).toContain("import { ClientRouter } from 'astro:transitions';");
     expect(layout).toContain('<ClientRouter />');
   });

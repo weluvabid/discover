@@ -24,7 +24,7 @@ export function GenreFilters({ selected, onSelect }: GenreFiltersProps) {
           <TabsTrigger
             key={genre.value}
             value={genre.value}
-            className="h-10 flex-none rounded-xl border border-border bg-card px-4 text-muted-foreground data-active:border-ring data-active:bg-secondary data-active:text-foreground"
+            className="h-9 flex-none rounded-xl border border-border bg-card px-3 text-sm text-muted-foreground data-active:border-primary/60 data-active:bg-primary/15 data-active:text-foreground sm:h-10 sm:px-4 sm:text-base"
           >
             {genre.label}
           </TabsTrigger>

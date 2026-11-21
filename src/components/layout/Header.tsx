@@ -51,7 +51,7 @@ export function Header({
             onClick={onOpenDiscoveryControls}
             aria-label="Tune discovery preferences"
             title="Tune discovery"
-            className="relative gap-2"
+            className="tune-discovery-glow relative gap-2"
           >
             <Sparkles aria-hidden="true" />
             <span>Tune discovery</span>
@@ -79,7 +79,7 @@ export function Header({
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Search experiences, creators, and tags..."
           aria-label="Search experiences, creators, and tags"
-          className="h-full min-h-0 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+          className="h-full min-h-0 border-0 bg-transparent px-0 text-sm shadow-none placeholder:text-sm focus-visible:ring-0"
         />
         <kbd className="hidden shrink-0 rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground md:inline">
           ⌘ K

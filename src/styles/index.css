@@ -14,3 +14,28 @@
     animation-duration: 0s;
   }
 }
+
+/* A restrained spectral edge makes the primary discovery control discoverable. */
+.tune-discovery-glow {
+  isolation: isolate;
+  border-color: color-mix(in srgb, var(--border) 72%, transparent);
+}
+.tune-discovery-glow::before {
+  position: absolute;
+  z-index: -1;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 210deg, #8b5cf6, #3b82f6, #06b6d4, #ec4899, #8b5cf6);
+  content: '';
+  opacity: 0.18;
+  filter: blur(9px);
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+.tune-discovery-glow:hover::before,
+.tune-discovery-glow:focus-visible::before {
+  opacity: 0.38;
+  filter: blur(11px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tune-discovery-glow::before { transition: none; }
+}

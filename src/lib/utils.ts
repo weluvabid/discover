@@ -17,3 +17,10 @@ export function formatSignedPercent(value: number): string {
   const sign = value > 0 ? '+' : value < 0 ? '−' : '';
   return `${sign}${Math.abs(value).toFixed(1)}%`;
 }
+
+export function getRankScoreClass(score: number): string {
+  if (!Number.isFinite(score)) return 'text-muted-foreground';
+  if (score >= 80) return 'text-emerald-500';
+  if (score >= 60) return 'text-amber-500';
+  return 'text-rose-500';
+}

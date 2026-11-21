@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getRankScoreClass } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
 
@@ -24,31 +25,16 @@ interface RankingWhyPopoverProps {
   showScore?: boolean;
 }
 
-function getDisplayedContributions(
-  signals: RankedExperience['explanation']['signals'],
-  weightedScore: number,
-): Map<string, number> {
-  const displayed = new Map<string, number>(
-    signals.map((signal) => [signal.id, Number(signal.contribution.toFixed(1))]),
-  );
-  const targetTotal = Number(weightedScore.toFixed(1));
-  const displayedTotal = [...displayed.values()].reduce((sum, value) => sum + value, 0);
-  const correction = Number((targetTotal - displayedTotal).toFixed(1));
-  const strongest = signals
-    .filter((signal) => signal.enabled)
-    .reduce<RankedExperience['explanation']['signals'][number] | undefined>(
-      (best, signal) => (!best || signal.contribution > best.contribution ? signal : best),
-      undefined,
-    );
-
-  if (strongest && correction !== 0) {
-    displayed.set(
-      strongest.id,
-      Number(((displayed.get(strongest.id) ?? 0) + correction).toFixed(1)),
-    );
+function getSignalColor(id: string): string {
+  switch (id) {
+    case 'quality': return 'bg-blue-500';
+    case 'relevance': return 'bg-violet-500';
+    case 'affinity': return 'bg-emerald-500';
+    case 'diversity': return 'bg-amber-500';
+    case 'freshness': return 'bg-cyan-500';
+    case 'popularity': return 'bg-slate-500';
+    default: return 'bg-muted-foreground';
   }
-
-  return displayed;
 }
 
 export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopoverProps) {
@@ -73,10 +59,6 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
   const signals = [...ranking.explanation.signals].sort(
     (a, b) => Number(b.enabled) - Number(a.enabled) || b.contribution - a.contribution,
   );
-  const displayedContributions = getDisplayedContributions(
-    signals,
-    ranking.explanation.weightedScore,
-  );
   const displayedWeightedScore = Number(ranking.explanation.weightedScore.toFixed(1));
   const displayedFinalScore = Number(ranking.score.toFixed(1));
   const displayedAdjustment = Number((displayedFinalScore - displayedWeightedScore).toFixed(1));
@@ -90,7 +72,7 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
           className="flex items-baseline gap-2"
           aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}
         >
-          <strong className="text-lg font-bold tabular-nums text-foreground">
+          <strong className={`text-lg font-bold tabular-nums ${getRankScoreClass(ranking.score)}`}>
             {ranking.score.toFixed(1)}
           </strong>
           <span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">
@@ -172,40 +154,76 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
             </div>
             <div className="flex items-center justify-between gap-6 border-t border-border pt-3">
               <dt className="font-semibold">Final Score</dt>
-              <dd className="shrink-0 text-lg font-bold tabular-nums">
+              <dd className={`shrink-0 text-lg font-bold tabular-nums ${getRankScoreClass(ranking.score)}`}>
                 {displayedFinalScore.toFixed(1)}
               </dd>
             </div>
           </dl>
-          <div className="flex flex-col gap-4">
-            {signals.map((signal) => (
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1.5">
+              <strong className="text-sm font-semibold">Signal composition</strong>
               <div
-                className={`flex flex-col gap-2 ${signal.enabled ? '' : 'opacity-50'}`}
-                key={signal.id}
+                className="flex h-3 w-full overflow-hidden rounded-full bg-secondary"
+                role="img"
+                aria-label="Effective ranking signal weights"
               >
-                <div className="flex items-center justify-between gap-3 text-sm">
-                  <span className="text-muted-foreground">
-                    {signal.label}
-                    {signal.enabled ? '' : ' · disabled'}
-                  </span>
-                  <strong className="tabular-nums">
-                    {(displayedContributions.get(signal.id) ?? 0).toFixed(1)} pts
-                  </strong>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                  <i
-                    className="block h-full rounded-full bg-muted-foreground"
-                    style={{ width: `${Math.max(0, Math.min(100, signal.contribution))}%` }}
-                  />
-                </div>
-                <small className="text-xs leading-relaxed text-muted-foreground">
-                  {signal.normalizedScore.toFixed(0)} signal ×{' '}
-                  {(signal.configuredWeight * 100).toFixed(0)}% preference ×{' '}
-                  {signal.contextMultiplier.toFixed(2)} context factor →{' '}
-                  {(signal.effectiveWeight * 100).toFixed(1)}% effective weight
-                </small>
+                {signals
+                  .filter((signal) => signal.enabled && signal.effectiveWeight > 0)
+                  .map((signal) => {
+                    const width = Math.max(0, Math.min(100, signal.effectiveWeight * 100));
+                    return (
+                      <span
+                        key={signal.id}
+                        className={`h-full ${getSignalColor(signal.id)}`}
+                        style={{ width: `${width}%` }}
+                      />
+                    );
+                  })}
               </div>
-            ))}
+            </div>
+            <div className="flex flex-col gap-2">
+              {signals.map((signal) => (
+                <div
+                  className={`flex items-center gap-2 ${signal.enabled ? '' : 'opacity-45'}`}
+                  key={signal.id}
+                >
+                  <span
+                    className={`size-2.5 shrink-0 rounded-full ${getSignalColor(signal.id)}`}
+                    aria-hidden="true"
+                  />
+                  <span className="min-w-0 flex-1 text-sm text-muted-foreground">
+                    {signal.label}
+                  </span>
+                  <strong className="shrink-0 text-sm tabular-nums">
+                    {(signal.effectiveWeight * 100).toFixed(1)}%
+                  </strong>
+                  <Popover>
+                    <PopoverTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          aria-label={`How ${signal.label} is calculated`}
+                        />
+                      }
+                    >
+                      <Info size={14} aria-hidden="true" />
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-[min(20rem,calc(100vw-2rem))] gap-2 text-sm">
+                      <strong className="font-semibold">{signal.label}</strong>
+                      <p className="text-muted-foreground">
+                        {signal.normalizedScore.toFixed(0)} signal ×{' '}
+                        {(signal.configuredWeight * 100).toFixed(0)}% preference ×{' '}
+                        {signal.contextMultiplier.toFixed(2)} context factor
+                      </p>
+                      <p className="font-medium tabular-nums">
+                        {(signal.effectiveWeight * 100).toFixed(1)}% effective weight
+                      </p>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="flex flex-col gap-2 border-t border-border pt-3 text-sm">
             <strong className="font-semibold">Eligibility</strong>

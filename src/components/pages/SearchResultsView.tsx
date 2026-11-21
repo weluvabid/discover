@@ -2,8 +2,23 @@ import { Compass } from 'lucide-react';
 import { ExperienceSection } from '@/components/discovery/ExperienceSection';
 import type { Experience } from '@/types/experience';
 import { PageIntro } from './PageIntro';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { SearchSort } from '@/lib/api/discover-api';
+
+const SORT_LABELS: Record<SearchSort, string> = {
+  relevance: 'Relevance',
+  players: 'Most players',
+  rating: 'Highest rated',
+  reviews: 'Most reviewed',
+  launched: 'Recently launched',
+  updated: 'Recently updated',
+};
 
 interface SearchResultsViewProps {
   query: string;
@@ -30,15 +45,29 @@ export function SearchResultsView({
     <div className="min-w-0">
       <PageIntro
         eyebrow="DISCOVERY SEARCH"
-        title="Search results"
+        title={
+          <>
+            Search results{' '}
+            <span
+              aria-live="polite"
+              className="ml-2 align-middle text-sm font-medium text-muted-foreground sm:text-base"
+            >
+              ·{' '}
+              {loading
+                ? 'Searching…'
+                : results.length === 100
+                  ? 'Top 100 matches'
+                  : `${results.length} matching experiences`}
+            </span>
+          </>
+        }
         description={`Showing matches for “${query}”.`}
         icon={<Compass size={17} />}
       />
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">{loading ? "Searching experiences…" : results.length === 100 ? "Top 100 matches" : `${results.length} matching experiences`}</p>
+      <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
         <Select value={sort} onValueChange={(value) => onSortChange(value as SearchSort)}>
           <SelectTrigger aria-label="Sort search results" className="w-48">
-            <SelectValue placeholder="Sort by" />
+            <SelectValue>{SORT_LABELS[sort]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="relevance">Relevance</SelectItem>
@@ -60,6 +89,7 @@ export function SearchResultsView({
         emptyTitle="No matching experiences"
         emptyMessage="Try another title, creator or genre."
         loading={loading}
+        hideHeader
       />
     </div>
   );

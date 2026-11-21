@@ -242,7 +242,7 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
                 <p className="text-xs text-muted-foreground">Playing now</p>
               </div>
               <div className="rounded-xl bg-secondary/60 p-3">
-                <Star size={16} className="text-muted-foreground" />
+                <Star size={16} className="fill-amber-400 text-amber-400" />
                 <p className="mt-2 text-lg font-bold tabular-nums">{experience.metrics.rating}%</p>
                 <p className="text-xs text-muted-foreground">Positive</p>
               </div>

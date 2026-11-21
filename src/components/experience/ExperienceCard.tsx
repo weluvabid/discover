@@ -8,7 +8,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import type { Experience } from '@/types/experience';
-import { formatCount, formatSignedPercent } from '@/lib/utils';
+import { formatCount, formatSignedPercent, getRankScoreClass } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
 import { Button } from '@/components/ui/button';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
@@ -58,7 +58,17 @@ export function ExperienceCard({
           className="aspect-video w-full"
         />
         {overlayLabel && (
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/85 px-2.5 py-1.5 text-xs font-bold text-foreground shadow-sm backdrop-blur">
+          <span
+            className={`absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold shadow-sm backdrop-blur ${
+              variant !== 'trending' || weeklyChange === undefined
+                ? 'border-border bg-background/85 text-foreground'
+                : weeklyChange > 0
+                  ? 'border-emerald-500/25 bg-emerald-500/15 text-emerald-400'
+                  : weeklyChange < 0
+                    ? 'border-rose-500/25 bg-rose-500/15 text-rose-400'
+                    : 'border-amber-500/25 bg-amber-500/15 text-amber-400'
+            }`}
+          >
             {variant === 'trending' && weeklyChange !== undefined &&
               (weeklyChange > 0 ? (
                 <TrendingUp size={13} />
@@ -102,7 +112,11 @@ export function ExperienceCard({
                   />
                 }
               >
-                <Bookmark size={16} fill={isBookmarked ? 'currentColor' : 'none'} />
+                <Bookmark
+                  size={16}
+                  className={isBookmarked ? 'text-rose-500' : undefined}
+                  fill={isBookmarked ? 'currentColor' : 'none'}
+                />
               </TooltipTrigger>
               <TooltipContent>
                 {isBookmarked ? 'Remove from library' : 'Save to library'}
@@ -139,7 +153,7 @@ export function ExperienceCard({
             {formatCount(experience.metrics.activePlayers)} active
           </span>
           <span className="inline-flex items-center gap-1">
-            <Star size={13} fill="currentColor" />
+            <Star size={13} className="fill-amber-400 text-amber-400" />
             {experience.metrics.rating}%
           </span>
         </div>
@@ -153,7 +167,7 @@ export function ExperienceCard({
         {ranking && (
           <div className="flex items-center justify-between gap-3 border-t border-border pt-3">
             <div className="flex items-baseline gap-2">
-              <strong className="text-lg tabular-nums text-foreground">
+              <strong className={`text-lg tabular-nums ${getRankScoreClass(ranking.score)}`}>
                 {ranking.score.toFixed(1)}
               </strong>
               <span className="text-[0.65rem] font-bold tracking-wider text-muted-foreground">

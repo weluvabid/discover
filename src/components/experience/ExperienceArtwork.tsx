@@ -1,6 +1,6 @@
 import { useState } from 'react';
 interface ExperienceArtworkProps {
-  src: string;
+  src: string | null | undefined;
   alt: string;
   className?: string;
   loading?: 'eager' | 'lazy';
@@ -14,14 +14,15 @@ export function ExperienceArtwork({
   fetchPriority = 'auto',
 }: ExperienceArtworkProps) {
   const [failed, setFailed] = useState(false);
+  const safeSrc = typeof src === 'string' && src.trim().length > 0 ? src : null;
 
   return (
     <div
       className={`relative overflow-hidden bg-muted ${className} ${failed ? 'grid place-items-center text-xs font-bold tracking-widest text-muted-foreground' : ''}`}
     >
-      {!failed ? (
+      {!failed && safeSrc ? (
         <img
-          src={src}
+          src={safeSrc}
           alt={alt}
           loading={loading}
           fetchPriority={fetchPriority}

@@ -1,4 +1,4 @@
-import { Bookmark, ChevronRight, Compass, Gem, Sparkles, TrendingUp } from 'lucide-react';
+import { Bookmark, ChevronRight, Gem, Sparkles, TrendingUp } from 'lucide-react';
 import type { RankedExperience, RankingContext } from '@/features/discovery/engine/ranking';
 
 import { ExperienceSection } from '@/components/discovery/ExperienceSection';
@@ -139,10 +139,8 @@ export function DiscoverView({
   return (
     <>
       <PageIntro
-        eyebrow={selectedPersona ? 'PERSONALIZED DISCOVERY' : 'DISCOVERY'}
         title="Explore"
-        description={selectedPersona ? `Discover worlds matched to the ${selectedPersona.label.toLowerCase()} play style.` : "Find worlds worth your time, ranked by engagement, relevance and discovery signals."}
-        icon={<Compass size={17} />}
+        description={selectedPersona ? `Discover worlds matched to the ${selectedPersona.label.toLowerCase()} play style.` : 'Find worlds worth your time, ranked by engagement, relevance and discovery signals.'}
       />
       <ExploreFilterBar genre={genre} onGenreChange={onGenreChange} personas={personas} persona={persona} onPersonaChange={onPersonaChange} />
       {loading ? (
