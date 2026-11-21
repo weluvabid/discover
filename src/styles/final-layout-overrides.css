@@ -1,0 +1,219 @@
+/* Final responsive Discover shell and card metadata rules. */
+.app-shell {
+  --sidebar-width: 176px;
+  --sidebar-width-icon: 3.25rem;
+  display: flex;
+  width: 100%;
+}
+.main-column {
+  min-width: 0;
+  width: 100%;
+  margin-left: 0;
+}
+.discover-sidebar [data-slot="sidebar-inner"],
+.discover-sidebar [data-sidebar="sidebar"] {
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
+}
+.discover-sidebar [data-slot="sidebar-container"] {
+  border-right: 1px solid var(--sidebar-border);
+}
+.discover-sidebar-header {
+  min-height: 68px;
+  justify-content: center;
+  padding: 14px 12px;
+}
+.discover-sidebar-header .brand { padding: 0 4px; }
+.discover-sidebar .brand-mark {
+  background: var(--secondary);
+  color: var(--foreground);
+  box-shadow: none;
+}
+.discover-sidebar [data-sidebar="group-label"] {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+.discover-sidebar [data-sidebar="menu-button"] {
+  min-height: 36px;
+  color: var(--muted-foreground);
+}
+.discover-sidebar [data-sidebar="menu-button"][data-active="true"] {
+  background: var(--accent);
+  color: var(--foreground);
+}
+.discover-genre-count {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.discover-sidebar-trigger { flex: 0 0 auto; }
+@media (min-width: 761px) {
+  .discover-sidebar-trigger { display: inline-flex; }
+  .main-column { margin-left: 0; }
+  .explore-filter-bar .genre-tabs { display: none; }
+  .explore-filter-bar {
+    justify-content: flex-end;
+    border-bottom-color: var(--border);
+  }
+}
+.experience-card .ranking-inspector {
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.experience-card .ranking-score { gap: 0; }
+.experience-card .ranking-score strong {
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: 700;
+}
+.experience-card .ranking-score span {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.experience-card .ranking-why-trigger {
+  min-height: 32px;
+  border-color: var(--border);
+  background: var(--secondary);
+  color: var(--muted-foreground);
+}
+.experience-card .ranking-why-trigger:hover,
+.experience-card .ranking-why-trigger[aria-expanded="true"] {
+  border-color: var(--ring);
+  background: var(--accent);
+  color: var(--foreground);
+}
+.ranking-why-popover {
+  border-color: var(--border);
+  background: var(--popover);
+  color: var(--popover-foreground);
+}
+.ranking-popover-heading span,
+.ranking-popover-heading small,
+.ranking-contribution small { color: var(--muted-foreground); }
+.ranking-popover-heading > b,
+.ranking-score-reconciliation strong,
+.ranking-contribution > div:first-child strong { color: var(--foreground); }
+.ranking-popover-summary,
+.ranking-contribution > div:first-child,
+.ranking-eligibility span,
+.ranking-reasons span { color: var(--muted-foreground); }
+.ranking-score-reconciliation {
+  border-color: var(--border);
+  background: var(--secondary);
+}
+.ranking-score-reconciliation span:last-child,
+.ranking-eligibility,
+.ranking-reasons { border-color: var(--border); }
+.ranking-score-reconciliation span:last-child,
+.ranking-eligibility strong,
+.ranking-reasons strong { color: var(--foreground); }
+.ranking-contribution-track { background: var(--secondary); }
+.ranking-contribution-track i { background: var(--muted-foreground); }
+.ranked-experience-row {
+  grid-template-columns: 48px 82px minmax(0, 1fr) auto 32px;
+}
+.ranked-experience-copy {
+  align-self: stretch;
+  justify-content: center;
+}
+.ranked-score-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: var(--foreground);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.ranked-score-meta small {
+  color: var(--muted-foreground);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.ranked-experience-row > .ranking-inspector { min-width: 0; }
+.ranked-experience-row > .ranking-inspector .ranking-score { display: none; }
+@media (max-width: 760px) {
+  .app-shell {
+    display: block;
+    min-height: 100vh;
+  }
+  .main-column {
+    margin-left: 0;
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+  .discover-sidebar-trigger {
+    display: inline-flex;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .topbar { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .mobile-brand { grid-column: 2; grid-row: 1; }
+  .header-actions { grid-column: 3; grid-row: 1; }
+  .explore-filter-bar {
+    display: block;
+    margin: 0 -15px 16px;
+    padding: 8px 15px 12px;
+  }
+  .explore-filter-bar .genre-tabs { display: block; width: 100%; }
+  .explore-filter-bar .genre-filters[data-slot="tabs-list"] {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .explore-filter-bar .genre-filters::-webkit-scrollbar { display: none; }
+  .explore-sort-indicator { display: none; }
+  .grid-trending,
+  .grid-recent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+    margin-right: 0;
+    padding-right: 0;
+  }
+  .grid-trending .experience-card,
+  .grid-recent .experience-card {
+    width: 100%;
+    min-width: 0;
+    scroll-snap-align: none;
+  }
+  .grid-recommended,
+  .alternate-view .grid-recommended {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ranked-experience-row {
+    grid-template-columns: 30px 56px minmax(0, 1fr) 28px;
+    gap: 8px;
+    padding: 10px;
+  }
+  .ranked-artwork { width: 56px; height: 56px; }
+  .ranked-experience-copy {
+    grid-column: 3;
+    grid-row: 1;
+    gap: 4px;
+  }
+  .ranked-experience-row > .ranking-inspector {
+    grid-column: 3 / 5;
+    grid-row: 2;
+    justify-content: flex-start;
+    margin: 0;
+  }
+  .ranked-experience-row > .ranking-inspector .ranking-score { display: none; }
+  .ranked-score-meta { font-size: 14px; }
+  .ranked-bookmark { grid-column: 4; grid-row: 1; }
+  .experience-card .ranking-inspector { min-width: 0; }
+}
+
+@media (min-width: 761px) {
+  .discover-sidebar [data-collapsible="icon"] .brand-copy,
+  .discover-sidebar [data-collapsible="icon"] .discover-genre-count {
+    display: none;
+  }
+}

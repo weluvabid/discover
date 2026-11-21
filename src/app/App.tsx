@@ -10,6 +10,7 @@ import {
 import { GenreFilters } from '@/components/discovery/GenreFilters';
 import { Header } from '@/components/layout/Header';
 import { MobileNavigation, Sidebar } from '@/components/layout/Navigation';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { DiscoverView } from '@/components/pages/DiscoverView';
 import { SearchResultsView } from '@/components/pages/SearchResultsView';
 import { useDiscoverPage } from '@/features/discovery/hooks/use-discover-page';
@@ -43,7 +44,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
   const hasSearch = Boolean(page.query.trim());
 
   return (
-    <div className="app-shell">
+    <SidebarProvider className="app-shell">
       <Sidebar
         activeView={page.activeView}
         selectedGenre={page.genre}
@@ -122,6 +123,6 @@ export default function App({ initialLocation = '/' }: AppProps) {
           />
         )}
       </Suspense>
-    </div>
+    </SidebarProvider>
   );
 }

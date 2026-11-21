@@ -72,7 +72,6 @@ export function ExperienceCard({
             <Sparkles size={11} /> {experience.discoveryReason}
           </span>
         )}
-        {ranking && <RankingWhyPopover ranking={ranking} />}
         <div className="card-meta">
           <span className="active-count">
             <i /> {formatCount(experience.metrics.activePlayers)} active
@@ -81,6 +80,7 @@ export function ExperienceCard({
             <Star size={12} fill="currentColor" /> {experience.metrics.rating}%
           </span>
         </div>
+        {ranking && <RankingWhyPopover ranking={ranking} />}
         <Button variant="outline" className="card-play-button" onClick={() => onSelect(experience)}>
           <Play size={12} fill="currentColor" />{' '}
           {variant === 'recommended' ? 'Play Now' : 'Quick Play'}

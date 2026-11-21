@@ -21,6 +21,7 @@ const STRATEGY_LABELS = {
 
 interface RankingWhyPopoverProps {
   ranking: RankedExperience;
+  showScore?: boolean;
 }
 
 function getDisplayedContributions(
@@ -50,7 +51,7 @@ function getDisplayedContributions(
   return displayed;
 }
 
-export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
+export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopoverProps) {
   const [open, setOpen] = useState(false);
   const popoverId = useId();
 
@@ -85,13 +86,15 @@ export function RankingWhyPopover({ ranking }: RankingWhyPopoverProps) {
 
   return (
     <div className="ranking-inspector">
-      <div
-        className="ranking-score"
-        aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}
-      >
-        <strong>{ranking.score.toFixed(1)}</strong>
-        <span>RANK SCORE</span>
-      </div>
+      {showScore && (
+        <div
+          className="ranking-score"
+          aria-label={`Rank score ${ranking.score.toFixed(1)} out of 100`}
+        >
+          <strong>{ranking.score.toFixed(1)}</strong>
+          <span>RANK SCORE</span>
+        </div>
+      )}
       <Popover
         open={open}
         onOpenChange={(nextOpen) => {

@@ -39,8 +39,9 @@ export function RankedExperienceRow({
         <span>
           {experience.subgenre} · {formatCount(experience.metrics.activePlayers)} active
         </span>
+        <strong className="ranked-score-meta">{ranking.score.toFixed(1)} <small>RANK SCORE</small></strong>
       </Button>
-      <RankingWhyPopover ranking={ranking} />
+      <RankingWhyPopover ranking={ranking} showScore={false} />
       <Button
         variant="ghost"
         size="icon"

@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Brand } from './Brand';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface HeaderProps {
   query: string;
@@ -49,6 +50,7 @@ export function Header({
 
   return (
     <header className="topbar">
+      <SidebarTrigger className="discover-sidebar-trigger" />
       <div className="mobile-brand">
         <Brand />
       </div>
