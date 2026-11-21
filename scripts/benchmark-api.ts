@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { openDatabaseReadOnly } from '../src/server/db/database';
 import { handleApiRequest } from '../src/server/api/app';
+import { RankingWorkerPool } from '../src/server/ranking/worker-pool';
 
 const databasePath = resolve(process.env.DATABASE_PATH ?? 'data/roblox-games.db');
 if (!existsSync(databasePath)) {
@@ -11,6 +12,8 @@ if (!existsSync(databasePath)) {
 }
 
 const db = openDatabaseReadOnly(databasePath);
+const workerCount = Number(process.env.RANKING_WORKERS ?? 0);
+const rankingPool = workerCount > 0 ? new RankingWorkerPool(workerCount, Number(process.env.RANKING_QUEUE_CAPACITY ?? 128)) : undefined;
 const host = '127.0.0.1';
 const contexts = ['featured', 'trending', 'recommended', 'hidden-gems', 'recently-launched'];
 const samples = Number(process.env.BENCHMARK_SAMPLES ?? 60);
@@ -32,7 +35,7 @@ const server = createServer(async (request, response) => {
       }
       body = raw ? JSON.parse(raw) : {};
     }
-    const result = await handleApiRequest(db, request.method ?? 'GET', url, body);
+    const result = await handleApiRequest(db, request.method ?? 'GET', url, body, rankingPool?.rank);
     const payload = JSON.stringify(result.body);
     response.writeHead(result.status, {
       'Content-Type': 'application/json; charset=utf-8',
@@ -91,7 +94,7 @@ try {
     throw new Error(`Local valid catalog is empty (catalogCount=${catalogCount}).`);
   }
 
-  process.stdout.write(`Local SQLite API benchmark\nDatabase: ${databasePath}\nEligible catalog: ${catalogCount}\nSamples/context: ${samples}; warmups: ${warmups}\n`);
+  process.stdout.write(`Local SQLite API benchmark\nDatabase: ${databasePath}\nEligible catalog: ${catalogCount}\nRanking workers: ${workerCount}\nSamples/context: ${samples}; warmups: ${warmups}\n`);
 
   process.stdout.write('\nDiscovery request latency (HTTP + SQLite + ranking + JSON)\n');
   for (const context of contexts) {
@@ -147,5 +150,6 @@ try {
   }
 } finally {
   await new Promise<void>((resolveClose) => server.close(() => resolveClose()));
+  await rankingPool?.close();
   db.close();
 }

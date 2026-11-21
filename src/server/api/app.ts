@@ -4,8 +4,10 @@ import {
   rankForContext,
   type RankingConfiguration,
   type RankingContext,
+  type RankedExperience,
+  type RankingOptions,
 } from '@/features/discovery/engine/ranking';
-import { EXPERIENCE_GENRES } from '@/types/experience';
+import { EXPERIENCE_GENRES, type ExperienceGenre } from '@/types/experience';
 import { seedPersonas } from '../ingestion/synthetic';
 import { getCatalog, getCatalogCount, getExperience } from '../ranking/catalog';
 
@@ -23,7 +25,7 @@ type ApiResult = {
   body: unknown;
 };
 
-type DiscoverInput = {
+export type DiscoverInput = {
   strategy?: string;
   signals?: RankingConfiguration['signals'];
   genre?: string;
@@ -31,11 +33,14 @@ type DiscoverInput = {
   limit?: number;
 };
 
+export type DiscoveryRanker = (catalog: ReturnType<typeof getCatalog>, configuration: RankingConfiguration, context: RankingContext, options?: RankingOptions) => ReturnType<typeof rankForContext> | Promise<ReturnType<typeof rankForContext>>;
+
 export async function handleApiRequest(
   db: DatabaseSync,
   method: string,
   url: URL,
   body?: unknown,
+  ranker: DiscoveryRanker = rankForContext,
 ): Promise<ApiResult> {
   if (method === 'GET' && url.pathname === '/api/health') {
     return {
@@ -165,10 +170,23 @@ export async function handleApiRequest(
       signals:
         validSignals && input.signals ? input.signals : DEFAULT_RANKING_CONFIGURATION.signals,
     };
-    const results = rankForContext(catalog, configuration, context, {
-      limit,
-      genre: genre as never,
-    });
+    let results: RankedExperience[];
+    try {
+      results = await ranker(catalog, configuration, context, {
+        limit,
+        genre: genre as never,
+      });
+    } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === 'RANKING_OVERLOADED'
+      ) {
+        return { status: 503, body: { error: 'Ranking capacity temporarily exhausted.' } };
+      }
+      throw error;
+    }
 
     return {
       status: 200,

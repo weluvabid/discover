@@ -84,3 +84,24 @@ A local Node 22.16.0 run during this implementation measured:
 These are engine-only measurements in the implementation container, not browser rendering or production-device measurements. Re-run on the project's Node 26 runtime when evaluating future changes.
 
 The context pipeline uses a bounded top-candidate heap before diversity reranking. The reranker can subtract at most eight points, so it retains the top `8 × resultLimit` candidates plus every candidate within eight points of that cutoff. A candidate below that bound cannot outrank the retained cutoff candidate even if the latter receives the maximum diversity penalty. This avoids sorting and pairwise-comparing the entire catalog for small visible result windows while preserving the bounded reranking result.
+
+
+## Worker-pool ranking experiment
+
+The API accepts `RANKING_WORKERS=0` (default) for the synchronous baseline or a
+positive worker count for off-thread ranking. SQLite catalog retrieval remains on
+the HTTP thread; only the pure ranking computation is moved to workers. This
+deliberately isolates ranking from database I/O so the benchmark can show whether
+ranking is the limiting stage.
+
+- `RANKING_WORKERS=2` starts two Node worker threads.
+- `RANKING_QUEUE_CAPACITY=128` bounds waiting ranking jobs. When all workers are
+  occupied and the queue is full, discovery returns HTTP 503.
+- Worker errors reject the associated request; failed workers are replaced.
+- Shutdown terminates the pool and rejects queued/in-flight work.
+
+Benchmark the same production build and local read-only catalog with
+`RANKING_WORKERS=0`, then `2`, `4`, and `8`. Compare throughput and tail latency
+at identical concurrency levels. This experiment intentionally keeps SQLite on
+the main thread; if throughput remains flat, the next experiment should isolate
+catalog retrieval rather than increasing worker count.

@@ -82,3 +82,19 @@ pnpm test:acceptance
 ```
 
 The command reads `DATABASE_PATH` from the process environment or `.env`, defaulting to `data/roblox-games.db`. The acceptance suite opens the database in read-only mode and verifies SQLite integrity, foreign keys, the Catalog v1 row counts, uniqueness, metadata and synthetic metric bounds, snapshot consistency, all five discovery contexts, persona requests, catalog pagination, search, and detail lookups. Set `DATABASE_PATH=/absolute/path/to/roblox-games.db` to target another local copy.
+
+
+### Ranking worker benchmark
+
+Run the API benchmark in baseline mode, then repeat with worker counts:
+
+```sh
+pnpm benchmark:api
+RANKING_WORKERS=2 pnpm benchmark:api:workers
+RANKING_WORKERS=4 pnpm benchmark:api:workers
+RANKING_WORKERS=8 pnpm benchmark:api:workers
+```
+
+`RANKING_WORKERS=0` is the synchronous baseline. The worker experiment moves
+only ranking off the HTTP thread; SQLite reads remain synchronous on the main
+thread. Compare the same sample and concurrency settings across runs.

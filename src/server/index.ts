@@ -2,8 +2,11 @@ import { createServer } from 'node:http';
 import { handleApiRequest } from './api/app';
 import { openDatabase } from './db/database';
 import { hydrateFromTurso } from './turso-sync';
+import { RankingWorkerPool } from './ranking/worker-pool';
 
 const db = openDatabase();
+const workerCount = Number(process.env.RANKING_WORKERS ?? 0);
+const rankingPool = workerCount > 0 ? new RankingWorkerPool(workerCount, Number(process.env.RANKING_QUEUE_CAPACITY ?? 128)) : undefined;
 const port = Number(process.env.PORT ?? 8787);
 const host = process.env.HOST ?? '127.0.0.1';
 
@@ -44,7 +47,7 @@ const server = createServer(async (request, response) => {
       body = raw ? JSON.parse(raw) : {};
     }
 
-    const result = await handleApiRequest(db, request.method ?? 'GET', url, body);
+    const result = await handleApiRequest(db, request.method ?? 'GET', url, body, rankingPool?.rank);
 
     response.writeHead(result.status, {
       'Content-Type': 'application/json; charset=utf-8',
@@ -62,8 +65,11 @@ const server = createServer(async (request, response) => {
 
 const shutdown = () => {
   server.close(() => {
-    db.close();
-    process.exit(0);
+    void (async () => {
+      await rankingPool?.close();
+      db.close();
+      process.exit(0);
+    })();
   });
 };
 

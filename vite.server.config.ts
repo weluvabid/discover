@@ -21,6 +21,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         server: 'src/server/index.ts',
+        'ranking-worker': 'src/server/ranking/worker.ts',
         'ingest-catalog': 'scripts/ingest-catalog.ts',
         'sync-turso': 'scripts/sync-turso.ts',
         'benchmark-api': 'scripts/benchmark-api.ts',
