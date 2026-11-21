@@ -84,7 +84,7 @@ export function Header({
         <kbd className="hidden shrink-0 rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground md:inline">
           ⌘ K
         </kbd>
-        {query && (
+        {query && resultCount >= 0 && (
           <span className="shrink-0 text-xs text-muted-foreground">{resultCount} results</span>
         )}
       </label>

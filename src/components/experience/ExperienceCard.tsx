@@ -1,6 +1,14 @@
-import { ArrowUpRight, Bookmark, Sparkles, Star, TrendingUp } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Bookmark,
+  Minus,
+  Sparkles,
+  Star,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react';
 import type { Experience } from '@/types/experience';
-import { formatCount } from '@/lib/utils';
+import { formatCount, formatSignedPercent } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
 import { Button } from '@/components/ui/button';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
@@ -25,9 +33,12 @@ export function ExperienceCard({
   onPlay,
   ranking,
 }: ExperienceCardProps) {
+  const weeklyChange = experience.metrics.weeklyChange;
+  const formattedWeeklyChange =
+    weeklyChange === undefined ? null : formatSignedPercent(weeklyChange);
   const overlayLabel =
-    variant === 'trending' && experience.metrics.weeklyChange !== undefined
-      ? `+${experience.metrics.weeklyChange}%`
+    variant === 'trending' && formattedWeeklyChange !== null
+      ? formattedWeeklyChange
       : variant === 'recommended' && experience.matchScore !== undefined
         ? `${experience.matchScore}% MATCH`
         : variant === 'recent'
@@ -48,7 +59,14 @@ export function ExperienceCard({
         />
         {overlayLabel && (
           <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/85 px-2.5 py-1.5 text-xs font-bold text-foreground shadow-sm backdrop-blur">
-            {variant === 'trending' && <TrendingUp size={13} />}
+            {variant === 'trending' && weeklyChange !== undefined &&
+              (weeklyChange > 0 ? (
+                <TrendingUp size={13} />
+              ) : weeklyChange < 0 ? (
+                <TrendingDown size={13} />
+              ) : (
+                <Minus size={13} />
+              ))}
             {variant === 'recommended' && <Sparkles size={13} />}
             {overlayLabel}
           </span>

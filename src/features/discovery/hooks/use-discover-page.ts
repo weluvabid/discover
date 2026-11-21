@@ -101,6 +101,15 @@ export function useDiscoverPage(initialLocation = '/') {
   }, [pathname, query]);
 
   useEffect(() => {
+    if (searchParams.get('tune') !== '1') return;
+
+    setControlsOpen(true);
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.delete('tune');
+    window.history.replaceState(null, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+  }, [searchParams]);
+
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [pathname]);
 

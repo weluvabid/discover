@@ -10,3 +10,10 @@ export function formatCount(value: number): string {
     value,
   );
 }
+
+export function formatSignedPercent(value: number): string {
+  if (!Number.isFinite(value)) return '0.0%';
+
+  const sign = value > 0 ? '+' : value < 0 ? '−' : '';
+  return `${sign}${Math.abs(value).toFixed(1)}%`;
+}

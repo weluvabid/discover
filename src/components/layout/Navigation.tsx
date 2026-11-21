@@ -25,6 +25,7 @@ const navigationItems = [
 ] as const;
 
 interface SidebarProps {
+  nativeNavigation?: boolean;
   activeView: DiscoveryView;
   selectedGenre: ExperienceGenre | 'All';
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
@@ -37,7 +38,13 @@ function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') 
   return genre === 'All' ? path : `${path}?genre=${encodeURIComponent(genre)}`;
 }
 
-export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts }: SidebarProps) {
+export function Sidebar({
+  activeView,
+  selectedGenre,
+  onSelectGenre,
+  genreCounts,
+  nativeNavigation = false,
+}: SidebarProps) {
   const { isMobile, setOpenMobile, state } = useSidebar();
 
   return (
@@ -64,6 +71,8 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
                         aria-label={label}
                         aria-current={activeView === id ? 'page' : undefined}
                         onClick={(event) => {
+                          if (nativeNavigation) return;
+
                           if (
                             event.button !== 0 ||
                             event.metaKey ||
