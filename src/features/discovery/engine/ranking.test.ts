@@ -170,6 +170,55 @@ describe('discovery ranking', () => {
     ).toBe(true);
   });
 
+
+  it('uses the catalog observation clock for freshness and Recently Launched', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const datasetRelative = {
+      ...fixture,
+      publishedAt: '2024-11-01T00:00:00.000Z',
+      updatedAt: '2024-11-12T00:00:00.000Z',
+      freshnessReferenceAt: '2024-11-13T09:56:00.000Z',
+    };
+    const recent = rankForContext(
+      [datasetRelative],
+      DEFAULT_RANKING_CONFIGURATION,
+      'recently-launched',
+      { limit: 1 },
+    );
+
+    expect(recent).toHaveLength(1);
+    expect(recent[0]?.explanation.eligibilityReasons[0]).toContain('12.4 days ago');
+  });
+
+  it('uses update recency as a freshness signal independently of launch age', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const recentlyUpdated = {
+      ...fixture,
+      publishedAt: '2020-01-01T00:00:00.000Z',
+      updatedAt: '2024-11-12T00:00:00.000Z',
+    };
+    const staleUpdate = {
+      ...recentlyUpdated,
+      updatedAt: '2020-01-01T00:00:00.000Z',
+    };
+    const ranked = rankExperiences(
+      [staleUpdate, recentlyUpdated],
+      DEFAULT_RANKING_CONFIGURATION,
+      new Date('2024-11-13T00:00:00.000Z'),
+    );
+
+    const fresh = ranked.find((item) => item.experience.updatedAt === recentlyUpdated.updatedAt);
+    const stale = ranked.find((item) => item.experience.updatedAt === staleUpdate.updatedAt);
+
+    expect(fresh?.factors.freshness).toBeGreaterThan(stale?.factors.freshness ?? 0);
+  });
+
   it('rejects future-dated releases from Recently Launched', () => {
     const experience = experiences[0];
 

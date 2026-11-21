@@ -24,7 +24,7 @@ Eligibility is separate from ranking. A strong score cannot make an experience q
 | Hidden Gems       | At most 10,000 active players and rating >= 88             | Prefer affinity and quality; down-weight popularity  |
 | Recently Launched | Published from 0 through 30 days before the injected clock | Preserve recency eligibility, then rank by relevance |
 
-The 30-day window and mock thresholds are explicit policy values, not learned model parameters.
+The 30-day window and thresholds are explicit policy values, not learned model parameters. The catalog ranking clock defaults to the latest `source_date_fetched` value across the local catalog, so launch and update recency are evaluated against the dataset observation window.
 
 ## Signals
 
@@ -46,11 +46,11 @@ Every ranked item carries its context, final score, weighted score, diversity ad
 
 ## Time and determinism
 
-Ranking accepts an injected `Date`. The Explore page captures one clock value for its ranking snapshot so all five contexts use the same temporal boundary. Invalid publication dates do not qualify for Recently Launched. Future-dated experiences are excluded from that context. Stable ID tie-breaking makes equal-score results deterministic.
+Ranking accepts an injected `Date`. When no clock is supplied, the engine uses the catalog-wide maximum `source_date_fetched` timestamp attached to catalog records. The Explore page can still inject one clock value for a ranking snapshot so all five contexts use the same temporal boundary. Invalid publication dates do not qualify for Recently Launched. Future-dated experiences are excluded from that context. Stable ID tie-breaking makes equal-score results deterministic.
 
 ## Current data boundary
 
-The browser requests discovery results from the Hono API. The API ranks the valid local SQLite catalog, populated from a pinned Roblox discovery CSV and enriched through public Roblox metadata endpoints. `matchScore` is a deterministic synthetic persona-affinity input, not a value learned from real player events. For enriched records, the existing quality signal also consumes synthetic D1/D7/D30 retention, repeat-play rate and average session duration; mock records without those fields retain the original rating/playtime calculation. The six-signal interface, context eligibility and ranking strategies remain shared between both data sources.
+The browser requests discovery results from the Hono API. The API ranks the valid local SQLite catalog, populated from a pinned Roblox discovery CSV and enriched through public Roblox metadata endpoints. `matchScore` is a deterministic synthetic persona-affinity input, not a value learned from real player events. For enriched records, the existing quality signal also consumes synthetic D1/D7/D30 retention, repeat-play rate and average session duration; mock records without those fields retain the original rating/playtime calculation. The six-signal interface, context eligibility and ranking strategies remain shared between both data sources. Freshness combines launch recency (180-day decay) with update recency (60-day decay, capped at 75% of the launch component); Recently Launched eligibility always uses the original launch date and the 30-day window.
 
 ## Context ranking profiles
 
@@ -96,11 +96,11 @@ I moved ranking to workers after API measurements showed that synchronous CPU wo
 
 The discovery API exposes the catalog's 12 play-style profiles through `GET /api/personas`. The Explore filter lets a visitor choose a profile such as Competitive climber, Social explorer or Creative builder. The selected profile is stored in the URL as `persona`, so a discovery view can be shared and refreshed without losing the selection.
 
-Discovery requests pass that profile to the catalog query. Each experience receives its corresponding catalog match score, which feeds the affinity and relevance signals and is shown as a profile-match indicator on result cards. Leaving the profile set to “All play styles” keeps discovery broad and does not attach a profile match score.
+Discovery requests pass that profile to the catalog query. Each experience receives a deterministic match score computed from the selected profile preferences and the experience genre. Exact preferred genres score highest, adjacent genres receive a middle score, and unrelated genres receive a lower score. Persona-specific title, description, subgenre and tag keywords distinguish profiles that share genre preferences. The score feeds the affinity and relevance signals and is shown as a profile-match indicator on result cards. Leaving the profile set to “All play styles” keeps discovery broad and does not attach a profile match score.
 
 
 ## Play-style evaluation
 
 `pnpm evaluate:personas` evaluates the 12 seeded play styles against the local valid catalog and compares each profile's top results with an unpersonalized baseline. It records preferred-genre share and lift, average match score, top-result overlap, unique games across profiles, and eligibility counts for all five contexts. The evaluator writes a Markdown report for review and JSON output for further analysis. It opens SQLite read-only and accepts an injected evaluation clock through `PERSONA_EVALUATION_NOW`.
 
-The evaluation is a behavioral check of the current ranking heuristics. The catalog's profile match scores are deterministic synthetic values derived from genre mapping and seeded variation; they are not learned from player events. A higher preferred-genre share demonstrates that the ranking follows its configured profile preferences, not that users will enjoy those results.
+The evaluation is a behavioral check of the current ranking heuristics. The profile match score is a deterministic ranking input derived from the declared genre preferences and genre relationships; it is not learned from player events. A higher preferred-genre share demonstrates that the ranking follows its configured profile preferences, not that users will enjoy those results.

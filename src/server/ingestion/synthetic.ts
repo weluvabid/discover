@@ -112,6 +112,141 @@ function randomFor(seed: number, salt: string): () => number {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+const RELATED_GENRES: Record<ExperienceGenre, ExperienceGenre[]> = {
+  'Action RPG': ['Racing', 'Exploration'],
+  Exploration: ['Co-op', 'Horror', 'Action RPG'],
+  'Co-op': ['Exploration', 'Simulation'],
+  Racing: ['Action RPG', 'Puzzle'],
+  Horror: ['Exploration', 'Co-op'],
+  Simulation: ['Puzzle', 'Co-op'],
+  Puzzle: ['Simulation', 'Racing'],
+};
+
+const PERSONA_KEYWORDS: Record<string, string[]> = {
+  competitive: ['ranked', 'competitive', 'arena', 'duel', 'battle', 'versus', 'pvp', 'fighter'],
+  social: ['roleplay', 'hangout', 'party', 'friends', 'social', 'town', 'club', 'chat'],
+  builder: [
+    'build',
+    'builder',
+    'tycoon',
+    'sandbox',
+    'design',
+    'create',
+    'house',
+    'farm',
+    'factory',
+    'restaurant',
+  ],
+  'thrill-seeker': [
+    'horror',
+    'scary',
+    'survival',
+    'escape',
+    'monster',
+    'nightmare',
+    'haunted',
+  ],
+  completionist: [
+    'quest',
+    'level',
+    'progression',
+    'dungeon',
+    'campaign',
+    'achievement',
+    'boss',
+    'adventure',
+  ],
+  casual: ['obby', 'easy', 'party', 'casual', 'minigame', 'mini-game', 'puzzle', 'simulator'],
+  'story-first': [
+    'story',
+    'storyline',
+    'narrative',
+    'chapter',
+    'quest',
+    'adventure',
+    'mystery',
+    'exploration',
+  ],
+  speedrunner: [
+    'speedrun',
+    'race',
+    'racing',
+    'obby',
+    'parkour',
+    'time trial',
+    'checkpoint',
+    'fast',
+  ],
+  tactician: [
+    'strategy',
+    'tactical',
+    'tower defense',
+    'defense',
+    'chess',
+    'command',
+    'war',
+    'squad',
+    'turn-based',
+  ],
+  adventurer: [
+    'open world',
+    'explore',
+    'adventure',
+    'island',
+    'expedition',
+    'survival',
+    'quest',
+    'world',
+  ],
+  'party-player': [
+    'party',
+    'minigame',
+    'mini-game',
+    'round',
+    'friends',
+    'social',
+    'race',
+    'competition',
+  ],
+  collector: [
+    'pet',
+    'collect',
+    'collection',
+    'trade',
+    'trading',
+    'egg',
+    'card',
+    'creature',
+    'inventory',
+    'hatch',
+    'adopt',
+  ],
+};
+
+/** Deterministic persona affinity calibrated to the declared genre preferences. */
+export function calculatePersonaMatchScore(
+  genre: ExperienceGenre,
+  preferences: readonly ExperienceGenre[],
+  rating = 75,
+  personaId?: string,
+  searchableText = '',
+): number {
+  const direct = preferences.includes(genre);
+  const adjacent = RELATED_GENRES[genre].some((candidate) => preferences.includes(candidate));
+  const keywords = PERSONA_KEYWORDS[personaId ?? ''] ?? [];
+  const normalizedText = searchableText.toLowerCase();
+  const keywordMatch = keywords.some((keyword) => {
+    const escaped = keyword.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    return new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`).test(normalizedText);
+  });
+  const base = direct ? 84 : adjacent ? 58 : 28;
+  const keywordBoost = keywordMatch ? 12 : 0;
+  const ratingAdjustment = (rating - 75) * 0.08;
+
+  return Math.round(clamp(base + keywordBoost + ratingAdjustment, 20, 99));
+}
+
 const GENRE_AFFINITY: Record<string, ExperienceGenre[]> = {
   'Action RPG': ['Action RPG'],
   Exploration: ['Exploration'],
@@ -173,17 +308,11 @@ export function generateSyntheticMetrics(input: {
   );
   const weeklyChange =
     Math.round(clamp((quality - 0.55) * 42 + (random() - 0.48) * 70, -65, 180) * 10) / 10;
-  const preferred = GENRE_AFFINITY[genre] ?? ['Exploration', 'Simulation'];
   const matchScores = Object.fromEntries(
-    PERSONAS.map(([id, , , preferences]) => {
-      const direct = preferences.includes(genre as never) ? 1 : 0;
-      const adjacent = preferred.some((candidate) => preferences.includes(candidate as never))
-        ? 0.55
-        : 0;
-      const score = 48 + direct * 34 + adjacent * 10 + quality * 7 + (random() - 0.5) * 16;
-
-      return [id, Math.round(clamp(score, 20, 99))];
-    }),
+    PERSONAS.map(([id, , , preferences]) => [
+      id,
+      calculatePersonaMatchScore(genre as ExperienceGenre, preferences, input.rating, id),
+    ]),
   );
 
   return {

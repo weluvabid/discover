@@ -1,5 +1,8 @@
 import type { DatabaseSync } from 'node:sqlite';
 import type { Experience, ExperienceGenre } from '@/types/experience';
+import { calculatePersonaMatchScore, seedPersonas } from '../ingestion/synthetic';
+
+const PERSONA_PREFERENCES = new Map(seedPersonas().map((persona) => [persona.id, persona.preferences]));
 
 const GENRES: ExperienceGenre[] = [
   'Action RPG',
@@ -24,6 +27,9 @@ interface GameRow {
   artwork_url: string;
   roblox_url: string;
   created_at: string | null;
+  updated_at: string | null;
+  source_updated_at: string | null;
+  source_date_fetched: string | null;
   active_players: number;
   rating: number;
   review_count: number;
@@ -55,7 +61,7 @@ function mapGenre(value: string): ExperienceGenre {
   return 'Simulation';
 }
 
-function toExperience(row: GameRow, persona?: string): Experience {
+function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: string): Experience {
   const tags = JSON.parse(row.tags_json || '[]') as string[];
   const matchScores = JSON.parse(row.match_scores_json || '{}') as Record<string, number>;
 
@@ -85,8 +91,24 @@ function toExperience(row: GameRow, persona?: string): Experience {
       repeatPlayRate: row.repeat_play_rate,
     },
     publishedAt: row.created_at ?? new Date(0).toISOString(),
+    updatedAt: row.source_updated_at ?? row.updated_at ?? undefined,
+    freshnessReferenceAt,
     tags: tags.length > 0 ? tags : [row.genre],
-    matchScore: persona ? (matchScores[persona] ?? 50) : undefined,
+    matchScore: persona
+      ? (() => {
+          const preferences = PERSONA_PREFERENCES.get(persona);
+
+          return preferences
+            ? calculatePersonaMatchScore(
+                mapGenre(row.genre),
+                preferences,
+                row.rating,
+                persona,
+                [row.title, row.description, row.subgenre, ...tags].join(' '),
+              )
+            : (matchScores[persona] ?? 50);
+        })()
+      : undefined,
   };
 }
 
@@ -131,6 +153,9 @@ export function getCatalog(
         `%${options.query.replace(/[\\%_]/g, '\\$&')}%`,
       ]
     : [];
+  const freshnessReferenceAt = db
+    .prepare('SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL')
+    .get() as { reference_at: string | null };
   const rows = db
     .prepare(
       `SELECT * FROM games
@@ -140,7 +165,7 @@ export function getCatalog(
     )
     .all(...parameters, ...queryOrderParameters) as unknown as GameRow[];
   const experiences = rows
-    .map((row) => toExperience(row, options.persona))
+    .map((row) => toExperience(row, options.persona, freshnessReferenceAt.reference_at ?? undefined))
     .filter((experience) => !options.genre || options.genre === 'All' || experience.genre === options.genre);
 
   return experiences.slice(offset, offset + limit);
@@ -174,5 +199,9 @@ export function getExperience(db: DatabaseSync, universeId: string): Experience 
     .prepare("SELECT * FROM games WHERE universe_id = ? AND source_status = 'valid'")
     .get(universeId) as GameRow | undefined;
 
-  return row ? toExperience(row) : undefined;
+  const freshnessReferenceAt = db
+    .prepare('SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL')
+    .get() as { reference_at: string | null };
+
+  return row ? toExperience(row, undefined, freshnessReferenceAt.reference_at ?? undefined) : undefined;
 }

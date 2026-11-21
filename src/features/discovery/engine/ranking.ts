@@ -261,12 +261,23 @@ export function createPreset(strategy: RankingStrategyId): RankingConfiguration 
   };
 }
 
-function ageInDays(experience: Experience, now: Date): number {
-  const published = Date.parse(experience.publishedAt);
+function ageInDays(timestamp: string | undefined, now: Date): number {
+  const parsed = Date.parse(timestamp ?? '');
 
-  if (!Number.isFinite(published)) return Number.POSITIVE_INFINITY;
+  if (!Number.isFinite(parsed)) return Number.POSITIVE_INFINITY;
 
-  return (now.getTime() - published) / DAY_MS;
+  return (now.getTime() - parsed) / DAY_MS;
+}
+
+function resolveRankingClock(experiences: Experience[], requested?: Date): Date {
+  if (requested) return requested;
+
+  const reference = experiences
+    .map((experience) => Date.parse(experience.freshnessReferenceAt ?? ''))
+    .filter(Number.isFinite)
+    .reduce((latest, value) => Math.max(latest, value), Number.NEGATIVE_INFINITY);
+
+  return Number.isFinite(reference) ? new Date(reference) : new Date();
 }
 
 export function getEligibility(
@@ -274,7 +285,7 @@ export function getEligibility(
   experience: Experience,
   now: Date,
 ): { eligible: boolean; reasons: string[] } {
-  const age = ageInDays(experience, now);
+  const age = ageInDays(experience.publishedAt, now);
   const publishedAt = Date.parse(experience.publishedAt);
   const metricsValid =
     Number.isFinite(experience.metrics.activePlayers) &&
@@ -352,7 +363,12 @@ function rawSignals(
   catalogSize: number,
   now: Date,
 ): Record<RankingSignalId, number> {
-  const age = ageInDays(experience, now);
+  const launchAge = ageInDays(experience.publishedAt, now);
+  const updateAge = ageInDays(experience.updatedAt, now);
+  const launchFreshness =
+    Number.isFinite(launchAge) && launchAge >= 0 ? Math.exp(-launchAge / 180) : 0;
+  const updateFreshness =
+    Number.isFinite(updateAge) && updateAge >= 0 ? Math.exp(-updateAge / 60) : 0;
   const match = clamp((experience.matchScore ?? 72) / 100);
   const rating = clamp(experience.metrics.rating / 100);
   const playtime = clamp(experience.metrics.averagePlaytimeMinutes / 60);
@@ -377,7 +393,7 @@ function rawSignals(
     affinity: clamp(match * 0.78 + tags * 0.22),
     quality: hasSyntheticEngagement ? quality : clamp(rating * 0.65 + playtime * 0.35),
     relevance: clamp(match * 0.7 + clamp(experience.description.length / 500) * 0.3),
-    freshness: Number.isFinite(age) ? clamp(Math.exp(-age / 180)) : 0,
+    freshness: clamp(Math.max(launchFreshness, updateFreshness * 0.75)),
     popularity,
     diversity: clamp(1 - Math.max(0, genreFrequency - 1) / Math.max(1, catalogSize - 1)),
   };
@@ -656,7 +672,7 @@ export function rankForContext(
   context: RankingContext,
   options: RankingOptions = {},
 ): RankedExperience[] {
-  const now = options.now ?? new Date();
+  const now = resolveRankingClock(experiences, options.now);
   const retrieved = retrieveCandidates(experiences, options);
   const eligible = filterEligibleCandidates(retrieved, context, now);
   const scored = buildScoredCandidates(eligible, configuration, context, now);
@@ -673,9 +689,10 @@ export function rankForContext(
 export function rankExperiences(
   experiences: Experience[],
   configuration: RankingConfiguration,
-  now = new Date(),
+  now?: Date,
 ): RankedExperience[] {
-  const scored = buildScoredCandidates(experiences, configuration, 'recommended', now);
+  const rankingClock = resolveRankingClock(experiences, now);
+  const scored = buildScoredCandidates(experiences, configuration, 'recommended', rankingClock);
 
   return rerankForDiversity(selectTopCandidates(scored, scored.length), scored.length);
 }

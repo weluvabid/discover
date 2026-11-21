@@ -9,9 +9,9 @@ import { getCatalog } from '../src/server/ranking/catalog';
 const databasePath = resolve(process.env.DATABASE_PATH ?? 'data/roblox-games.db');
 const reportDirectory = resolve(process.env.PERSONA_REPORT_DIR ?? 'reports');
 const limit = Number(process.env.PERSONA_EVALUATION_LIMIT ?? 40);
-const now = process.env.PERSONA_EVALUATION_NOW
+const requestedNow = process.env.PERSONA_EVALUATION_NOW
   ? new Date(process.env.PERSONA_EVALUATION_NOW)
-  : new Date();
+  : undefined;
 const contexts: RankingContext[] = [
   'featured',
   'trending',
@@ -22,10 +22,6 @@ const contexts: RankingContext[] = [
 
 if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
   throw new Error('PERSONA_EVALUATION_LIMIT must be an integer from 1 to 100.');
-}
-
-if (!Number.isFinite(now.getTime())) {
-  throw new Error('PERSONA_EVALUATION_NOW must be a valid ISO date.');
 }
 
 const db = new DatabaseSync(databasePath, { readOnly: true, enableForeignKeyConstraints: true });
@@ -62,6 +58,10 @@ try {
   const catalog = getCatalog(db, { limit: 10_000 });
 
   if (!catalog.length) throw new Error(`No valid catalog records found in ${databasePath}.`);
+
+  const now = requestedNow ?? new Date(catalog[0]?.freshnessReferenceAt ?? Date.now());
+
+  if (!Number.isFinite(now.getTime())) throw new Error('Evaluation clock must be a valid date.');
 
   const personas = seedPersonas();
   const baseline = rankForContext(catalog, DEFAULT_RANKING_CONFIGURATION, 'recommended', { now, limit });

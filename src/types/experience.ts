@@ -63,6 +63,8 @@ export interface Experience {
   artwork: ExperienceArtwork;
   metrics: ExperienceMetrics;
   publishedAt: string;
+  updatedAt?: string;
+  freshnessReferenceAt?: string;
   tags: string[];
   discoveryReason?: string;
   matchScore?: number;
