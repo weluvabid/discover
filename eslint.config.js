@@ -1,5 +1,8 @@
 import eslint from '@eslint/js';
 import prettier from 'eslint-config-prettier';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -16,23 +19,23 @@ const paddingLineBetweenStatements = [
 
 export default tseslint.config(
   {
-    ignores: [
-      '**/node_modules/**',
-      '**/coverage/**',
-      '**/dist/**',
-      '**/build/**',
-      '**/target/**',
-    ],
+    ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**', '**/build/**', '**/target/**'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-  prettier,
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],
     languageOptions: {
-      globals: { ...globals.node },
+      globals: { ...globals.browser, ...globals.node, ...globals.es2022 },
+    },
+    plugins: {
+      'jsx-a11y': jsxA11y,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
     },
     rules: {
+      ...jsxA11y.configs.recommended.rules,
+      ...reactHooks.configs.flat.recommended.rules,
       '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
@@ -60,17 +63,15 @@ export default tseslint.config(
       'prefer-template': 'error',
       quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
   {
-    files: ['**/*.ts', '**/*.mts', '**/*.cts'],
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-      },
-    },
+    files: ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'],
+    languageOptions: { parserOptions: { projectService: true } },
     rules: {
       '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: false }],
     },
   },
+  prettier,
 );

@@ -1,0 +1,352 @@
+import type { Experience } from '@/types/experience';
+
+const image = (id: number) => `https://yavuzceliker.github.io/sample-images/image-${id}.jpg`;
+
+export const experiences: Experience[] = [
+  {
+    id: 'deep-descent',
+    title: 'Deep Descent: Abyssal Depths',
+    description:
+      'Descend into uncharted oceanic trenches with up to four players. Uncover ancient subterranean relics and navigate dynamic pressure environments.',
+    creator: 'Aether Dynamic Labs',
+    creatorVerified: true,
+    genre: 'Exploration',
+    subgenre: 'Ocean Adventure',
+    artwork: {
+      thumbnail: image(1021),
+      hero: image(1021),
+      alt: 'An illuminated underwater research station in a deep ocean trench',
+    },
+    metrics: {
+      activePlayers: 54200,
+      rating: 96,
+      reviewCount: 120000,
+      averagePlaytimeMinutes: 47,
+      weeklyChange: 142,
+    },
+    publishedAt: '2026-10-28T10:00:00.000Z',
+    tags: ['Ocean', 'Co-op', 'Exploration', 'Atmospheric'],
+    isFeatured: true,
+  },
+  {
+    id: 'vanguard-cyber-drift',
+    title: 'Vanguard: Cyber Drift',
+    description:
+      'Race through a neon-drenched megacity where every corner is a chance to rewrite the leaderboard.',
+    creator: 'Apex Forge Interactive',
+    genre: 'Racing',
+    subgenre: 'Cyberpunk Racing',
+    artwork: { thumbnail: image(110), alt: 'Futuristic racing cars on a rain-soaked city circuit' },
+    metrics: {
+      activePlayers: 42100,
+      rating: 96,
+      reviewCount: 48100,
+      averagePlaytimeMinutes: 32,
+      weeklyChange: 142,
+    },
+    publishedAt: '2026-09-12T10:00:00.000Z',
+    tags: ['Racing', 'Cyberpunk', 'Competitive'],
+  },
+  {
+    id: 'elden-realm',
+    title: 'Elden Realm: Shadowfall',
+    description:
+      'A forgotten kingdom, dangerous magic and a world that changes with every expedition.',
+    creator: 'Chrono Labs',
+    genre: 'Action RPG',
+    subgenre: 'Dark Fantasy RPG',
+    artwork: { thumbnail: image(227), alt: 'A dark fantasy battlefield lit by magical energy' },
+    metrics: {
+      activePlayers: 31800,
+      rating: 94,
+      reviewCount: 36200,
+      averagePlaytimeMinutes: 54,
+      weeklyChange: 88,
+    },
+    publishedAt: '2026-08-19T10:00:00.000Z',
+    tags: ['Fantasy', 'RPG', 'Combat'],
+  },
+  {
+    id: 'kinetic-overdrive',
+    title: 'Kinetic Overdrive',
+    description: 'Squad up for high-speed objective battles across destructible industrial arenas.',
+    creator: 'Hyperion Interactive',
+    genre: 'Action RPG',
+    subgenre: 'Movement Shooter',
+    artwork: {
+      thumbnail: image(342),
+      alt: 'A futuristic armored vehicle in a high-speed combat arena',
+    },
+    metrics: {
+      activePlayers: 28400,
+      rating: 91,
+      reviewCount: 29400,
+      averagePlaytimeMinutes: 29,
+      weeklyChange: 64,
+    },
+    publishedAt: '2026-07-21T10:00:00.000Z',
+    tags: ['Shooter', 'Movement', 'Co-op'],
+  },
+  {
+    id: 'orbit-mechanics',
+    title: 'Orbit Mechanics',
+    description:
+      'Build impossible machines, solve orbital puzzles and keep a fragile colony alive.',
+    creator: 'Aeroid Works',
+    genre: 'Simulation',
+    subgenre: 'Physics Simulation',
+    artwork: { thumbnail: image(453), alt: 'A detailed futuristic orbital engineering simulation' },
+    metrics: {
+      activePlayers: 19500,
+      rating: 93,
+      reviewCount: 18600,
+      averagePlaytimeMinutes: 52,
+      weeklyChange: 45,
+    },
+    publishedAt: '2026-06-18T10:00:00.000Z',
+    tags: ['Physics', 'Building', 'Space'],
+  },
+  {
+    id: 'pinecrest-deep-wilds',
+    title: 'Pinecrest: Deep Wilds',
+    description:
+      'Explore a vast wilderness, follow strange signals and survive the things that move after dark.',
+    creator: 'Studio Borealis',
+    genre: 'Exploration',
+    subgenre: 'Survival / Mystery',
+    artwork: { thumbnail: image(564), alt: 'A misty forest trail at dusk' },
+    metrics: { activePlayers: 18200, rating: 93, reviewCount: 9600, averagePlaytimeMinutes: 44 },
+    publishedAt: '2026-05-10T10:00:00.000Z',
+    tags: ['Survival', 'Mystery', 'Atmospheric'],
+    discoveryReason: 'Similar to experiences you enjoy',
+    matchScore: 93,
+  },
+  {
+    id: 'threshold-corridor',
+    title: 'Threshold: Corridor Zero',
+    description:
+      'A co-op psychological horror experience where the building remembers every choice.',
+    creator: 'Parallax Games',
+    genre: 'Horror',
+    subgenre: 'Co-op Horror',
+    artwork: {
+      thumbnail: image(675),
+      alt: 'An eerie fluorescent corridor stretching into darkness',
+    },
+    metrics: { activePlayers: 24600, rating: 95, reviewCount: 14200, averagePlaytimeMinutes: 38 },
+    publishedAt: '2026-04-22T10:00:00.000Z',
+    tags: ['Horror', 'Co-op', 'Psychological'],
+    discoveryReason: 'Popular among players with similar interests',
+    matchScore: 95,
+  },
+  {
+    id: 'clockwork-citadel',
+    title: 'Clockwork Citadel',
+    description: 'Design intricate mechanisms and uncover the secrets of a moving mechanical city.',
+    creator: 'Vektor Dynamics',
+    genre: 'Puzzle',
+    subgenre: 'Puzzle & Automata',
+    artwork: { thumbnail: image(786), alt: 'A complex mechanical city viewed from above' },
+    metrics: { activePlayers: 14100, rating: 94, reviewCount: 7800, averagePlaytimeMinutes: 61 },
+    publishedAt: '2026-03-14T10:00:00.000Z',
+    tags: ['Puzzle', 'Engineering', 'Automation'],
+    discoveryReason: 'Matches your preferred genres',
+    matchScore: 91,
+  },
+  {
+    id: 'liminal-protocols',
+    title: 'Liminal Protocols',
+    description:
+      'Explore impossible architecture and piece together the rules of a world that should not exist.',
+    creator: 'NullPoint Experiments',
+    genre: 'Horror',
+    subgenre: 'Psychological Horror',
+    artwork: { thumbnail: image(897), alt: 'A quiet liminal hallway with warm overhead lighting' },
+    metrics: { activePlayers: 2100, rating: 98, reviewCount: 1800, averagePlaytimeMinutes: 45 },
+    publishedAt: '2026-02-10T10:00:00.000Z',
+    tags: ['Horror', 'Liminal', 'Mystery'],
+    discoveryReason: 'Exceptional player retention',
+  },
+  {
+    id: 'whispers-taiga',
+    title: 'Whispers of Taiga',
+    description:
+      'A quiet wilderness survival game built around discovery, preparation and uneasy solitude.',
+    creator: 'Northwind Collective',
+    genre: 'Exploration',
+    subgenre: 'Realistic Wilderness Survival',
+    artwork: {
+      thumbnail: image(908),
+      alt: 'A remote wilderness settlement surrounded by snow-covered forest',
+    },
+    metrics: { activePlayers: 3400, rating: 97, reviewCount: 2400, averagePlaytimeMinutes: 54 },
+    publishedAt: '2026-01-30T10:00:00.000Z',
+    tags: ['Survival', 'Wilderness', 'Solo'],
+    discoveryReason: 'Under-the-radar solo adventure',
+  },
+  {
+    id: 'broadside-1944',
+    title: 'Broadside 1944',
+    description:
+      'Command a naval task force through tactical engagements and shifting weather systems.',
+    creator: 'NavalSim Interactive',
+    genre: 'Simulation',
+    subgenre: 'Naval Combat Tactics',
+    artwork: { thumbnail: image(1019), alt: 'Naval vessels navigating a stormy ocean' },
+    metrics: { activePlayers: 1800, rating: 95, reviewCount: 1600, averagePlaytimeMinutes: 48 },
+    publishedAt: '2026-01-14T10:00:00.000Z',
+    tags: ['Naval', 'Strategy', 'Simulation'],
+    discoveryReason: 'High replayability rating',
+  },
+  {
+    id: 'singularity-genesis',
+    title: 'Singularity Genesis',
+    description:
+      'Shape a procedural universe one decision at a time in this collaborative sandbox.',
+    creator: 'Synapse Interactive',
+    genre: 'Simulation',
+    subgenre: 'Procedural Sandbox',
+    artwork: { thumbnail: image(1130), alt: 'A surreal procedural sci-fi landscape' },
+    metrics: { activePlayers: 5200, rating: 92, reviewCount: 900, averagePlaytimeMinutes: 36 },
+    publishedAt: '2026-11-18T10:00:00.000Z',
+    tags: ['Sandbox', 'Procedural', 'Creative'],
+  },
+  {
+    id: 'astro-colony-alpha',
+    title: 'Astro Colony: Alpha',
+    description: 'Establish an outpost on a distant moon and turn a hostile landscape into a home.',
+    creator: 'Orbital Works',
+    genre: 'Simulation',
+    subgenre: 'Colony Sim',
+    artwork: { thumbnail: image(1241), alt: 'A modular space colony on a distant moon' },
+    metrics: { activePlayers: 8900, rating: 94, reviewCount: 1300, averagePlaytimeMinutes: 42 },
+    publishedAt: '2026-11-17T10:00:00.000Z',
+    tags: ['Space', 'Colony', 'Building'],
+  },
+  {
+    id: 'neo-horizon-circuit',
+    title: 'Neo Horizon Circuit',
+    description: 'Master precision driving on a series of experimental urban tracks.',
+    creator: 'Torque Engine',
+    genre: 'Racing',
+    subgenre: 'Urban Drift',
+    artwork: { thumbnail: image(1352), alt: 'A sports car drifting through a futuristic city' },
+    metrics: { activePlayers: 8400, rating: 91, reviewCount: 1100, averagePlaytimeMinutes: 26 },
+    publishedAt: '2026-11-16T10:00:00.000Z',
+    tags: ['Racing', 'Drift', 'Competitive'],
+  },
+  {
+    id: 'astral-blades',
+    title: 'Astral Blades 2',
+    description: 'A fast-paced arena combat sequel with expressive movement and team abilities.',
+    creator: 'Omni Realm',
+    genre: 'Action RPG',
+    subgenre: 'Arena Combat',
+    artwork: { thumbnail: image(1463), alt: 'Fantasy warriors clashing in a luminous arena' },
+    metrics: { activePlayers: 13100, rating: 93, reviewCount: 2200, averagePlaytimeMinutes: 31 },
+    publishedAt: '2026-11-15T10:00:00.000Z',
+    tags: ['Combat', 'Arena', 'Fantasy'],
+  },
+  {
+    id: 'neon-ronin',
+    title: 'Neon Ronin: Duel',
+    description: 'Precision swordplay meets a rain-soaked cyberpunk world in a skill-first arena.',
+    creator: 'Kataná Core',
+    genre: 'Action RPG',
+    subgenre: 'Precision Fighter',
+    artwork: {
+      thumbnail: image(1574),
+      alt: 'A lone warrior holding a glowing blade in a dark city',
+    },
+    metrics: { activePlayers: 1400, rating: 96, reviewCount: 870, averagePlaytimeMinutes: 28 },
+    publishedAt: '2026-10-02T10:00:00.000Z',
+    tags: ['Fighting', 'Cyberpunk', 'Skill'],
+    discoveryReason: 'High player satisfaction',
+    matchScore: 95,
+  },
+  {
+    id: 'echo-frontier',
+    title: 'Echo Frontier',
+    description: 'Build a frontier outpost with friends in a procedural co-op survival world.',
+    creator: 'Wild Signal',
+    genre: 'Exploration',
+    subgenre: 'Procedural Co-op',
+    artwork: { thumbnail: image(1685), alt: 'A rugged frontier landscape at blue hour' },
+    metrics: { activePlayers: 4800, rating: 94, reviewCount: 650, averagePlaytimeMinutes: 33 },
+    publishedAt: '2026-11-19T10:00:00.000Z',
+    tags: ['Co-op', 'Survival', 'Procedural'],
+  },
+  {
+    id: 'solaris-horizon',
+    title: 'Solaris Horizon',
+    description: 'Race custom spacecraft through gravity-bending tracks around distant planets.',
+    creator: 'Zero-G Racing',
+    genre: 'Racing',
+    subgenre: 'Zero-G Racing',
+    artwork: { thumbnail: image(1796), alt: 'A sleek spacecraft racing through an orbital track' },
+    metrics: { activePlayers: 3200, rating: 92, reviewCount: 430, averagePlaytimeMinutes: 24 },
+    publishedAt: '2026-11-18T10:00:00.000Z',
+    tags: ['Space', 'Racing', 'Competitive'],
+  },
+  {
+    id: 'aether-ruins',
+    title: 'Aether Ruins',
+    description:
+      'Traverse a shattered sky-island network and uncover the history of a vanished civilization.',
+    creator: 'Lantern Studio',
+    genre: 'Exploration',
+    subgenre: 'Fantasy Adventure',
+    artwork: {
+      thumbnail: image(1907),
+      alt: 'Ancient floating ruins above a cloud-covered landscape',
+    },
+    metrics: { activePlayers: 2700, rating: 95, reviewCount: 390, averagePlaytimeMinutes: 41 },
+    publishedAt: '2026-11-13T10:00:00.000Z',
+    tags: ['Fantasy', 'Adventure', 'Exploration'],
+  },
+  {
+    id: 'driftline-zero',
+    title: 'Driftline Zero',
+    description:
+      'Tune a street machine and master technical drift circuits built by the community.',
+    creator: 'Apex Circuitry',
+    genre: 'Racing',
+    subgenre: 'Technical Drift',
+    artwork: { thumbnail: image(2018), alt: 'A performance car navigating a mountain drift road' },
+    metrics: { activePlayers: 1900, rating: 93, reviewCount: 280, averagePlaytimeMinutes: 22 },
+    publishedAt: '2026-11-12T10:00:00.000Z',
+    tags: ['Racing', 'Drift', 'Cars'],
+  },
+];
+
+export function getMockExperience(id: string): Experience {
+  const experience = experiences.find((item) => item.id === id);
+
+  if (!experience) {
+    throw new Error(`Missing mock experience: ${id}`);
+  }
+
+  return experience;
+}
+
+export const featuredExperience = getMockExperience('deep-descent');
+export const trendingExperiences = [
+  'vanguard-cyber-drift',
+  'elden-realm',
+  'kinetic-overdrive',
+  'orbit-mechanics',
+].map(getMockExperience);
+export const recommendedExperiences = [
+  'pinecrest-deep-wilds',
+  'threshold-corridor',
+  'clockwork-citadel',
+].map(getMockExperience);
+export const hiddenGemExperiences = ['liminal-protocols', 'whispers-taiga', 'broadside-1944'].map(
+  getMockExperience,
+);
+export const recentlyLaunchedExperiences = [
+  'singularity-genesis',
+  'astro-colony-alpha',
+  'neo-horizon-circuit',
+  'astral-blades',
+].map(getMockExperience);

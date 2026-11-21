@@ -9,6 +9,7 @@ build/
 target/
 coverage/
 out/
+*.tsbuildinfo
 
 # Environment and secrets
 .env
@@ -20,6 +21,7 @@ out/
 .cache/
 .tmp/
 .temp/
+.vite/
 
 # Editors and operating systems
 .DS_Store
