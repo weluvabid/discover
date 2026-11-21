@@ -29,7 +29,7 @@ export function Header({ query, onQueryChange, resultCount, onOpenDiscoveryContr
   }, []);
 
   return (
-    <div className="sticky top-0 z-40 border-b border-border/80 bg-background/90 px-4 py-3 backdrop-blur-xl md:static md:flex md:items-center md:gap-4 md:px-6">
+    <div className="sticky top-0 z-40 border-b border-border/80 bg-background/90 px-4 py-3 backdrop-blur-xl md:flex md:items-center md:gap-4 md:px-6">
       <header className="flex min-h-10 items-center justify-between gap-3 md:contents">
         <SidebarTrigger className="hidden md:inline-flex" />
         <div className="md:hidden"><Brand compact /></div>

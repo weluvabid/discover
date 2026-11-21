@@ -8,7 +8,7 @@ interface SearchResultsViewProps {
   results: Experience[];
   bookmarks: string[];
   onToggleBookmark: (id: string) => void;
-  onSelect: (experience: Experience) => void;
+  onPlay: (experience: Experience) => void;
 }
 
 export function SearchResultsView({
@@ -16,7 +16,7 @@ export function SearchResultsView({
   results,
   bookmarks,
   onToggleBookmark,
-  onSelect,
+  onPlay,
 }: SearchResultsViewProps) {
   return (
     <div className="min-w-0">
@@ -32,7 +32,7 @@ export function SearchResultsView({
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
-        onSelect={onSelect}
+        onPlay={onPlay}
         emptyTitle="No matching experiences"
         emptyMessage="Try another title, creator or genre."
       />

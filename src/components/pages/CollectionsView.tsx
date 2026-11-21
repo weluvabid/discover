@@ -7,7 +7,7 @@ import { PageIntro } from './PageIntro';
 interface CollectionsViewProps {
   bookmarks: string[];
   onToggleBookmark: (id: string) => void;
-  onSelect: (experience: Experience) => void;
+  onPlay: (experience: Experience) => void;
 }
 
 const collections = [
@@ -28,7 +28,7 @@ const collections = [
   },
 ] as const;
 
-export function CollectionsView({ bookmarks, onToggleBookmark, onSelect }: CollectionsViewProps) {
+export function CollectionsView({ bookmarks, onToggleBookmark, onPlay }: CollectionsViewProps) {
   return (
     <div className="min-w-0">
       <PageIntro
@@ -57,7 +57,7 @@ export function CollectionsView({ bookmarks, onToggleBookmark, onSelect }: Colle
                   variant="recommended"
                   isBookmarked={bookmarks.includes(experience.id)}
                   onToggleBookmark={onToggleBookmark}
-                  onSelect={onSelect}
+                  onPlay={onPlay}
                 />
               ))}
             </div>

@@ -9,11 +9,11 @@ function Slider({
   max = 100,
   ...props
 }: SliderPrimitive.Root.Props) {
-  const _values = Array.isArray(value)
+  const values = Array.isArray(value)
     ? value
     : Array.isArray(defaultValue)
       ? defaultValue
-      : [min, max]
+      : [min]
 
   return (
     <SliderPrimitive.Root
@@ -22,7 +22,7 @@ function Slider({
         className
       )}
       data-slot="slider"
-      defaultValue={defaultValue}
+      defaultValue={defaultValue ?? [min]}
       value={value}
       min={min}
       max={max}
@@ -36,9 +36,9 @@ function Slider({
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
-            className="rounded-full bg-[var(--roblox-blue)] select-none data-[orientation=horizontal]:h-full data-[orientation=horizontal]:ms-[var(--start-position)] data-[orientation=horizontal]:w-[calc(var(--end-position)_-_var(--start-position))] data-[orientation=vertical]:w-full data-[orientation=vertical]:mt-[var(--start-position)] data-[orientation=vertical]:h-[calc(var(--end-position)_-_var(--start-position))]"
+            className="relative rounded-full bg-[var(--roblox-blue)] select-none data-[orientation=horizontal]:h-full data-[orientation=horizontal]:w-[var(--start-position)] data-[orientation=vertical]:w-full data-[orientation=vertical]:h-[var(--start-position)]"
           />
-          {Array.from({ length: _values.length }, (_, index) => (
+          {Array.from({ length: values.length }, (_, index) => (
             <SliderPrimitive.Thumb
               data-slot="slider-thumb"
               key={index}

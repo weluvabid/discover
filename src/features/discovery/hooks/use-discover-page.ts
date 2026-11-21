@@ -42,7 +42,6 @@ export function useDiscoverPage(initialLocation = '/') {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
 
-  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
   const [controlsOpen, setControlsOpen] = useState(false);
   const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(
     DEFAULT_RANKING_CONFIGURATION,
@@ -184,15 +183,9 @@ export function useDiscoverPage(initialLocation = '/') {
   );
 
   const closeControls = useCallback(() => setControlsOpen(false), []);
-  const selectExperience = useCallback(
-    (experience: Experience) => setSelectedExperience(experience),
-    [],
-  );
 
   return {
     activeView,
-    selectedExperience,
-    setSelectedExperience,
     controlsOpen,
     setControlsOpen,
     rankingConfiguration,
@@ -210,7 +203,6 @@ export function useDiscoverPage(initialLocation = '/') {
     hasCustomRanking,
     navigate,
     closeControls,
-    selectExperience,
     setQuery: updateQuery,
   };
 }

@@ -18,7 +18,7 @@ interface DiscoverViewProps {
   genre: ExperienceGenre | 'All';
   onGenreChange: (genre: ExperienceGenre | 'All') => void;
   onToggleBookmark: (id: string) => void;
-  onSelect: (experience: Experience) => void;
+  onPlay: (experience: Experience) => void;
   onNavigate: (view: DiscoveryView) => void;
 }
 
@@ -31,7 +31,7 @@ export function DiscoverView({
   genre,
   onGenreChange,
   onToggleBookmark,
-  onSelect,
+  onPlay,
   onNavigate,
 }: DiscoverViewProps) {
   const rankingMaps = Object.fromEntries(
@@ -57,7 +57,7 @@ export function DiscoverView({
           variant="recommended"
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
-          onSelect={onSelect}
+          onPlay={onPlay}
           emptyTitle="Your library is empty"
           emptyMessage="Save experiences as you explore and they'll appear here."
           emptyIcon={<Bookmark aria-hidden="true" />}
@@ -76,7 +76,7 @@ export function DiscoverView({
       <CollectionsView
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
-        onSelect={onSelect}
+        onPlay={onPlay}
       />
     );
   }
@@ -97,7 +97,7 @@ export function DiscoverView({
           variant="trending"
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
-          onSelect={onSelect}
+          onPlay={onPlay}
         />
       </div>
     );
@@ -120,7 +120,7 @@ export function DiscoverView({
           variant="recommended"
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}
-          onSelect={onSelect}
+          onPlay={onPlay}
         />
       </div>
     );
@@ -141,7 +141,7 @@ export function DiscoverView({
           ranking={featured}
           isBookmarked={bookmarks.includes(featured.experience.id)}
           onToggleBookmark={onToggleBookmark}
-          onSelect={onSelect}
+          onPlay={onPlay}
         />
       )}
       <ExperienceSection
@@ -151,7 +151,7 @@ export function DiscoverView({
         variant="trending"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
-        onSelect={onSelect}
+        onPlay={onPlay}
         action={
           <Button variant="ghost" size="xs" className="text-muted-foreground hover:text-foreground" onClick={() => onNavigate('trending')}>
             View all ({rankedSections.trending.length}) <ChevronRight size={15} />
@@ -166,7 +166,7 @@ export function DiscoverView({
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
-        onSelect={onSelect}
+        onPlay={onPlay}
       />
       <ExperienceSection
         title="Hidden Gems"
@@ -176,7 +176,7 @@ export function DiscoverView({
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
-        onSelect={onSelect}
+        onPlay={onPlay}
       />
       <ExperienceSection
         title="Recently Launched"
@@ -186,7 +186,7 @@ export function DiscoverView({
         variant="recent"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}
-        onSelect={onSelect}
+        onPlay={onPlay}
       />
       <div className="mt-10 flex items-start gap-2 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
         <Sparkles size={14} /> Recommendations are generated from sample player preferences and

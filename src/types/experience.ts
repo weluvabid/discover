@@ -46,6 +46,8 @@ export interface ExperienceMetrics {
 
 export interface Experience {
   id: string;
+  /** HTTPS Roblox experience URL used by the Play action when available. */
+  robloxUrl?: string;
   title: string;
   description: string;
   creator: string;

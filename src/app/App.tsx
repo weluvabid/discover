@@ -1,16 +1,14 @@
-import { lazy, Suspense, useEffect, useRef } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef } from 'react';
+import { toast, Toaster } from 'sonner';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Navigation';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { DiscoverView } from '@/components/pages/DiscoverView';
 import { SearchResultsView } from '@/components/pages/SearchResultsView';
 import { useDiscoverPage } from '@/features/discovery/hooks/use-discover-page';
+import type { Experience } from '@/types/experience';
+import { resolveRobloxLaunchUrl } from '@/lib/roblox-launch';
 
-const ExperienceDialog = lazy(() =>
-  import('@/components/experience/ExperienceDialog').then((module) => ({
-    default: module.ExperienceDialog,
-  })),
-);
 const DiscoveryControlsDialog = lazy(() =>
   import('@/features/discovery/DiscoveryControlsDialog').then((module) => ({
     default: module.DiscoveryControlsDialog,
@@ -24,6 +22,37 @@ interface AppProps {
 export default function App({ initialLocation = '/' }: AppProps) {
   const page = useDiscoverPage(initialLocation);
   const controlsWereOpen = useRef(false);
+
+  const toggleBookmark = useCallback(
+    (id: string) => {
+      const wasBookmarked = page.bookmarks.includes(id);
+      page.toggleBookmark(id);
+      toast.success(wasBookmarked ? 'Removed from Library' : 'Added to Library');
+    },
+    [page.bookmarks, page.toggleBookmark],
+  );
+
+  const launchExperience = useCallback((experience: Experience) => {
+    if (!experience.robloxUrl) {
+      toast.error(`${experience.title} doesn't have a Roblox launch URL yet.`);
+      return;
+    }
+
+    const launchUrl = resolveRobloxLaunchUrl(experience.robloxUrl);
+    if (!launchUrl) {
+      toast.error('This experience has an invalid Roblox launch URL.');
+      return;
+    }
+
+    const launchWindow = window.open(launchUrl.toString(), '_blank');
+    if (!launchWindow) {
+      toast.error('Your browser blocked the Roblox launch. Allow pop-ups and try again.');
+      return;
+    }
+
+    launchWindow.opener = null;
+    toast.success(`Opening ${experience.title} on Roblox`);
+  }, []);
 
   useEffect(() => {
     if (controlsWereOpen.current && !page.controlsOpen) {
@@ -57,8 +86,8 @@ export default function App({ initialLocation = '/' }: AppProps) {
               query={page.query || page.genre}
               results={page.visibleResults}
               bookmarks={page.bookmarks}
-              onToggleBookmark={page.toggleBookmark}
-              onSelect={page.selectExperience}
+              onToggleBookmark={toggleBookmark}
+              onPlay={launchExperience}
             />
           ) : (
             <DiscoverView
@@ -69,20 +98,15 @@ export default function App({ initialLocation = '/' }: AppProps) {
               rankedSections={page.rankedSections}
               genre={page.genre}
               onGenreChange={page.setGenre}
-              onToggleBookmark={page.toggleBookmark}
-              onSelect={page.selectExperience}
+              onToggleBookmark={toggleBookmark}
+              onPlay={launchExperience}
               onNavigate={page.navigate}
             />
           )}
         </main>
       </div>
+      <Toaster position="bottom-center" theme="dark" />
       <Suspense fallback={null}>
-        {page.selectedExperience && (
-          <ExperienceDialog
-            experience={page.selectedExperience}
-            onClose={() => page.setSelectedExperience(null)}
-          />
-        )}
         {page.controlsOpen && (
           <DiscoveryControlsDialog
             open

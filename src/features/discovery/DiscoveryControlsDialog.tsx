@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Check, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
+import { toast } from 'sonner';
+import {Check, RotateCcw, Sparkles, X} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -65,12 +67,19 @@ export function DiscoveryControlsDialog({
 
   const handleApply = () => {
     onApply(draft);
+    toast.success('Discovery preferences updated');
     onClose();
   };
 
   const handleDiscard = () => {
     discardDraft();
+    toast.info('Changes discarded');
     onClose();
+  };
+
+  const handleReset = () => {
+    resetDraft();
+    toast.success('Ranking defaults restored');
   };
 
   return (
@@ -89,14 +98,17 @@ export function DiscoveryControlsDialog({
       >
         <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl">
           <header className="flex shrink-0 flex-col gap-3 border-b border-border p-4 md:p-5">
-            <div className="flex items-center justify-between">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-secondary text-foreground">
-                <SlidersHorizontal className="block" size={19} aria-hidden="true" />
+            <div className="grid grid-cols-3 items-center">
+              <span
+                aria-hidden="true"
+                className="col-start-2 flex size-10 shrink-0 items-center justify-center justify-self-center rounded-xl border border-border bg-secondary text-foreground"
+              >
+                <Sparkles className="block" size={19} />
               </span>
               <DialogClose
                 render={
                   <Button
-                    className="size-9"
+                    className="col-start-3 size-9 justify-self-end"
                     variant="ghost"
                     size="icon"
                     aria-label="Close discovery controls"
@@ -126,7 +138,7 @@ export function DiscoveryControlsDialog({
             </DialogDescription>
           </header>
 
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <ScrollArea className="min-h-0 flex-1">
             <div className="flex flex-col gap-6 p-4 md:gap-8 md:p-6">
               <section className="flex flex-col gap-3" aria-labelledby="ranking-strategies-heading">
                 <div className="flex items-center justify-between gap-3">
@@ -231,7 +243,7 @@ export function DiscoveryControlsDialog({
                 </div>
               </section>
             </div>
-          </div>
+          </ScrollArea>
 
           <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border p-3 md:p-4">
             <Tooltip>
@@ -241,7 +253,7 @@ export function DiscoveryControlsDialog({
                     variant="ghost"
                     size="icon"
                     className="size-10"
-                    onClick={resetDraft}
+                    onClick={handleReset}
                     aria-label="Reset defaults"
                   />
                 }
