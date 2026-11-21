@@ -76,6 +76,38 @@ describe('discovery ranking', () => {
     expect(ranked.position).toBe(1);
   });
 
+  it('uses a selected play-style match score to change recommendation order', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const strongMatch = {
+      ...fixture,
+      id: 'persona-strong-match',
+      matchScore: 99,
+      title: 'Strong profile match',
+    };
+    const weakMatch = {
+      ...fixture,
+      id: 'persona-weak-match',
+      matchScore: 20,
+      title: 'Weak profile match',
+    };
+    const ranked = rankForContext(
+      [weakMatch, strongMatch],
+      DEFAULT_RANKING_CONFIGURATION,
+      'recommended',
+      { now: FIXED_NOW, limit: 2 },
+    );
+
+    expect(ranked.map((item) => item.experience.id)).toEqual([
+      'persona-strong-match',
+      'persona-weak-match',
+    ]);
+    expect(ranked[0]?.factors.affinity).toBeGreaterThan(ranked[1]?.factors.affinity ?? 0);
+    expect(ranked[0]?.factors.relevance).toBeGreaterThan(ranked[1]?.factors.relevance ?? 0);
+  });
+
   it('uses deterministic synthetic retention and repeat-play inputs in engagement quality', () => {
     const fixture = experiences[0];
 

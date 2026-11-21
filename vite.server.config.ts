@@ -25,6 +25,7 @@ export default defineConfig({
         'ingest-catalog': 'scripts/ingest-catalog.ts',
         'sync-turso': 'scripts/sync-turso.ts',
         'benchmark-api': 'scripts/benchmark-api.ts',
+        'evaluate-personas': 'scripts/evaluate-personas.ts',
       },
       external: (id) => builtins.has(id),
       output: {

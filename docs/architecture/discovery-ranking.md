@@ -97,3 +97,10 @@ I moved ranking to workers after API measurements showed that synchronous CPU wo
 The discovery API exposes the catalog's 12 play-style profiles through `GET /api/personas`. The Explore filter lets a visitor choose a profile such as Competitive climber, Social explorer or Creative builder. The selected profile is stored in the URL as `persona`, so a discovery view can be shared and refreshed without losing the selection.
 
 Discovery requests pass that profile to the catalog query. Each experience receives its corresponding catalog match score, which feeds the affinity and relevance signals and is shown as a profile-match indicator on result cards. Leaving the profile set to “All play styles” keeps discovery broad and does not attach a profile match score.
+
+
+## Play-style evaluation
+
+`pnpm evaluate:personas` evaluates the 12 seeded play styles against the local valid catalog and compares each profile's top results with an unpersonalized baseline. It records preferred-genre share and lift, average match score, top-result overlap, unique games across profiles, and eligibility counts for all five contexts. The evaluator writes a Markdown report for review and JSON output for further analysis. It opens SQLite read-only and accepts an injected evaluation clock through `PERSONA_EVALUATION_NOW`.
+
+The evaluation is a behavioral check of the current ranking heuristics. The catalog's profile match scores are deterministic synthetic values derived from genre mapping and seeded variation; they are not learned from player events. A higher preferred-genre share demonstrates that the ranking follows its configured profile preferences, not that users will enjoy those results.

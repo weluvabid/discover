@@ -1,0 +1,5888 @@
+{
+  "generatedAt": "2026-11-21T16:03:53.256Z",
+  "evaluationClock": "2026-11-21T16:03:51.585Z",
+  "databasePath": "/Users/abid/dev/oss/discover/data/roblox-games.db",
+  "catalogCount": 1027,
+  "personaCount": 12,
+  "resultLimit": 40,
+  "baseline": {
+    "resultCount": 40,
+    "topResults": [
+      {
+        "id": "5569032992",
+        "title": "🎟️Dandy's World [ALPHA]",
+        "genre": "Horror"
+      },
+      {
+        "id": "994732206",
+        "title": "Blox Fruits",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "383310974",
+        "title": "Adopt Me!",
+        "genre": "Co-op"
+      },
+      {
+        "id": "4949420752",
+        "title": "Realistic Street Soccer (3 on 3)",
+        "genre": "Racing"
+      },
+      {
+        "id": "5650396773",
+        "title": "a dusty trip [✈️PLANE]",
+        "genre": "Exploration"
+      },
+      {
+        "id": "6371309794",
+        "title": "💪 Ninja Challenge [Beta]",
+        "genre": "Puzzle"
+      },
+      {
+        "id": "5750914919",
+        "title": "[🏴‍☠️] Fisch",
+        "genre": "Simulation"
+      },
+      {
+        "id": "6035872082",
+        "title": "RIVALS",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "2619619496",
+        "title": "BedWars [⌚ REBOOT]",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "66654135",
+        "title": "Murder Mystery 2",
+        "genre": "Horror"
+      },
+      {
+        "id": "3647333358",
+        "title": "[VIP] Evade 🎃✨",
+        "genre": "Horror"
+      },
+      {
+        "id": "1686885941",
+        "title": "Brookhaven 🏡RP",
+        "genre": "Co-op"
+      },
+      {
+        "id": "1451439645",
+        "title": "[🎃 UPD] King Legacy",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "1709917610",
+        "title": "Regretevator [ ELEVATOR SIMULATOR ]",
+        "genre": "Co-op"
+      },
+      {
+        "id": "5203828273",
+        "title": "Dress To Impress 💜",
+        "genre": "Co-op"
+      },
+      {
+        "id": "372226183",
+        "title": "Flee the Facility",
+        "genre": "Horror"
+      },
+      {
+        "id": "1831550657",
+        "title": "⚡ Creatures of Sonaria 💙 Survive Kaiju Animals",
+        "genre": "Co-op"
+      },
+      {
+        "id": "4342047058",
+        "title": "Guts &amp; Blackpowder",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "5720553711",
+        "title": "NewSmith🏠RP Update 14!",
+        "genre": "Co-op"
+      },
+      {
+        "id": "3808081382",
+        "title": "The Strongest Battlegrounds",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "4777817887",
+        "title": "Blade Ball",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "1235188606",
+        "title": "😈SHADOW Dragon Adventures 🐉 Fantasy Pets ✨",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "4540138978",
+        "title": "Metro Life 🏙️ City RP",
+        "genre": "Co-op"
+      },
+      {
+        "id": "2992873140",
+        "title": "Emergency Hamburg",
+        "genre": "Co-op"
+      },
+      {
+        "id": "88070565",
+        "title": "Welcome to Bloxburg",
+        "genre": "Co-op"
+      },
+      {
+        "id": "2440500124",
+        "title": "🎃 DOORS 👁️",
+        "genre": "Horror"
+      },
+      {
+        "id": "4689722433",
+        "title": "Kitten Game 🐾",
+        "genre": "Co-op"
+      },
+      {
+        "id": "3240075297",
+        "title": "Berry Avenue 🏠 RP",
+        "genre": "Co-op"
+      },
+      {
+        "id": "1278035280",
+        "title": "Warrior Cats: Ultimate Edition",
+        "genre": "Co-op"
+      },
+      {
+        "id": "5166944221",
+        "title": "Death Ball",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "1054526971",
+        "title": "Blackhawk Rescue Mission 5",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "5254920366",
+        "title": "Secret Staycation",
+        "genre": "Exploration"
+      },
+      {
+        "id": "3508322461",
+        "title": "[PERFECTION] Jujutsu Shenanigans",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "2294168059",
+        "title": "[HALLOWEEN 🎃] The Mimic",
+        "genre": "Horror"
+      },
+      {
+        "id": "2711375305",
+        "title": "Catalog Avatar Creator",
+        "genre": "Simulation"
+      },
+      {
+        "id": "1318971886",
+        "title": "Break In (Story)",
+        "genre": "Exploration"
+      },
+      {
+        "id": "972475338",
+        "title": "🚩Expedition Antarctica",
+        "genre": "Exploration"
+      },
+      {
+        "id": "2655311011",
+        "title": "[👑 EXTREME] Anime Dimensions Simulator",
+        "genre": "Action RPG"
+      },
+      {
+        "id": "2549475383",
+        "title": "Livetopia🏡 New House",
+        "genre": "Co-op"
+      },
+      {
+        "id": "3308103880",
+        "title": "🍂 Maple Hospital",
+        "genre": "Co-op"
+      }
+    ],
+    "topGenres": [
+      {
+        "genre": "Co-op",
+        "count": 14,
+        "share": 35
+      },
+      {
+        "genre": "Action RPG",
+        "count": 12,
+        "share": 30
+      },
+      {
+        "genre": "Horror",
+        "count": 6,
+        "share": 15
+      },
+      {
+        "genre": "Exploration",
+        "count": 4,
+        "share": 10
+      },
+      {
+        "genre": "Simulation",
+        "count": 2,
+        "share": 5
+      },
+      {
+        "genre": "Puzzle",
+        "count": 1,
+        "share": 2.5
+      },
+      {
+        "genre": "Racing",
+        "count": 1,
+        "share": 2.5
+      }
+    ]
+  },
+  "aggregate": {
+    "uniqueGamesAcrossPersonas": 208,
+    "possiblePersonaResultSlots": 480,
+    "meanPairwiseTopResultJaccard": 0.12248077920436815,
+    "maxPairwiseTopResultJaccard": 0.6,
+    "meanPreferredGenreShare": 47.5,
+    "meanPreferredGenreLiftPoints": 18.125
+  },
+  "evaluations": [
+    {
+      "id": "competitive",
+      "label": "Competitive climber",
+      "preferences": [
+        "Action RPG",
+        "Racing"
+      ],
+      "topResults": [
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 99,
+          "score": 76.115,
+          "position": 1
+        },
+        {
+          "id": "3808081382",
+          "title": "The Strongest Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Yielding Arts",
+          "matchScore": 99,
+          "score": 74.665,
+          "position": 2
+        },
+        {
+          "id": "4949420752",
+          "title": "Realistic Street Soccer (3 on 3)",
+          "genre": "Racing",
+          "creator": "The Builder's Legion",
+          "matchScore": 90,
+          "score": 71.9,
+          "position": 3
+        },
+        {
+          "id": "3365661357",
+          "title": "SharkBite 2 🦈",
+          "genre": "Horror",
+          "creator": "Abracadabra",
+          "matchScore": 99,
+          "score": 71.894,
+          "position": 4
+        },
+        {
+          "id": "3754482795",
+          "title": "Elemental Powers Tycoon",
+          "genre": "Simulation",
+          "creator": "Giggle Inc",
+          "matchScore": 99,
+          "score": 69.18,
+          "position": 5
+        },
+        {
+          "id": "2655311011",
+          "title": "[👑 EXTREME] Anime Dimensions Simulator",
+          "genre": "Action RPG",
+          "creator": "Albatross Games",
+          "matchScore": 99,
+          "score": 67.959,
+          "position": 6
+        },
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 98,
+          "score": 66.345,
+          "position": 7
+        },
+        {
+          "id": "111958650",
+          "title": "[☢️] Arsenal",
+          "genre": "Action RPG",
+          "creator": "ROLVe",
+          "matchScore": 99,
+          "score": 65.239,
+          "position": 8
+        },
+        {
+          "id": "1782832995",
+          "title": "[🕷️HALLOWEEN🕸️] A Universal Time 3.9 🎃",
+          "genre": "Action RPG",
+          "creator": "Universe Time Studio",
+          "matchScore": 97,
+          "score": 64.186,
+          "position": 9
+        },
+        {
+          "id": "2435789930",
+          "title": "[🏠NEW!!] Twilight Daycare!",
+          "genre": "Co-op",
+          "creator": "Nighty Studio",
+          "matchScore": 95,
+          "score": 63.841,
+          "position": 10
+        },
+        {
+          "id": "4931927012",
+          "title": "🎃Basketball Legends🎃",
+          "genre": "Racing",
+          "creator": "InfinitySports",
+          "matchScore": 99,
+          "score": 63.361,
+          "position": 11
+        },
+        {
+          "id": "4777817887",
+          "title": "Blade Ball",
+          "genre": "Action RPG",
+          "creator": "Wiggity.",
+          "matchScore": 88,
+          "score": 62.973,
+          "position": 12
+        },
+        {
+          "id": "3308103880",
+          "title": "🍂 Maple Hospital",
+          "genre": "Co-op",
+          "creator": "Marizma Games",
+          "matchScore": 91,
+          "score": 62.858,
+          "position": 13
+        },
+        {
+          "id": "6072944764",
+          "title": "YooBroxDD's DOORS RP 👁️",
+          "genre": "Co-op",
+          "creator": "@YooBroxDD",
+          "matchScore": 97,
+          "score": 62.737,
+          "position": 14
+        },
+        {
+          "id": "5518683179",
+          "title": "Legends Arena",
+          "genre": "Action RPG",
+          "creator": "Play Fusion Faceoff",
+          "matchScore": 99,
+          "score": 62.504,
+          "position": 15
+        },
+        {
+          "id": "3457700596",
+          "title": "[MYTHICAL WOLF] Fruit Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "P O P O",
+          "matchScore": 91,
+          "score": 62.395,
+          "position": 16
+        },
+        {
+          "id": "4348829796",
+          "title": "Murderers VS Sheriffs Duels",
+          "genre": "Action RPG",
+          "creator": "Red21 Games",
+          "matchScore": 90,
+          "score": 62.332,
+          "position": 17
+        },
+        {
+          "id": "3013715655",
+          "title": "Fantasia 👑",
+          "genre": "Co-op",
+          "creator": "sheki studio",
+          "matchScore": 96,
+          "score": 62.327,
+          "position": 18
+        },
+        {
+          "id": "1278035280",
+          "title": "Warrior Cats: Ultimate Edition",
+          "genre": "Co-op",
+          "creator": "WarriorCatsRP",
+          "matchScore": 88,
+          "score": 62.301,
+          "position": 19
+        },
+        {
+          "id": "5214918244",
+          "title": "⚽️Ultimate Soccer",
+          "genre": "Racing",
+          "creator": "Untitled Soccer Thing",
+          "matchScore": 97,
+          "score": 62.27,
+          "position": 20
+        },
+        {
+          "id": "4293374620",
+          "title": "[🎃] Super League Soccer",
+          "genre": "Racing",
+          "creator": "Play! Football",
+          "matchScore": 89,
+          "score": 62.107,
+          "position": 21
+        },
+        {
+          "id": "4568630521",
+          "title": "[🦇] Heroes Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "more awesome games yo",
+          "matchScore": 90,
+          "score": 62.018,
+          "position": 22
+        },
+        {
+          "id": "3508322461",
+          "title": "[PERFECTION] Jujutsu Shenanigans",
+          "genre": "Action RPG",
+          "creator": "@AlsoNot_Tze",
+          "matchScore": 87,
+          "score": 61.858,
+          "position": 23
+        },
+        {
+          "id": "5747480325",
+          "title": "[🐻FNaF] Tongue Battles",
+          "genre": "Action RPG",
+          "creator": "LDS Fighting",
+          "matchScore": 98,
+          "score": 61.787,
+          "position": 24
+        },
+        {
+          "id": "4730278139",
+          "title": "[AVATAR EDITOR] untitled boxing game🥊",
+          "genre": "Racing",
+          "creator": "drowningsome",
+          "matchScore": 99,
+          "score": 61.737,
+          "position": 25
+        },
+        {
+          "id": "5117983607",
+          "title": "[upd5.3] superbox siege defense",
+          "genre": "Action RPG",
+          "creator": "team spelled incorrectly",
+          "matchScore": 98,
+          "score": 61.725,
+          "position": 26
+        },
+        {
+          "id": "1390601379",
+          "title": "Combat Warriors 🩸",
+          "genre": "Action RPG",
+          "creator": "PlayCombatWarriors",
+          "matchScore": 93,
+          "score": 61.724,
+          "position": 27
+        },
+        {
+          "id": "2765784373",
+          "title": "PHIGHTING! [ALPHA]",
+          "genre": "Action RPG",
+          "creator": "boggio",
+          "matchScore": 90,
+          "score": 61.603,
+          "position": 28
+        },
+        {
+          "id": "2380077519",
+          "title": "Slap Battles👏",
+          "genre": "Action RPG",
+          "creator": "Slap Battles",
+          "matchScore": 88,
+          "score": 61.512,
+          "position": 29
+        },
+        {
+          "id": "1998835206",
+          "title": "[🎃] item asylum",
+          "genre": "Action RPG",
+          "creator": "Jean's Bizarre Community",
+          "matchScore": 90,
+          "score": 61.462,
+          "position": 30
+        },
+        {
+          "id": "3032132418",
+          "title": "HCBB 9v9 2.0",
+          "genre": "Racing",
+          "creator": "HCBB League",
+          "matchScore": 96,
+          "score": 61.378,
+          "position": 31
+        },
+        {
+          "id": "4430449940",
+          "title": "Saber Showdown",
+          "genre": "Action RPG",
+          "creator": "Nova Wave Games",
+          "matchScore": 93,
+          "score": 61.377,
+          "position": 32
+        },
+        {
+          "id": "3520336190",
+          "title": "WWE 24 Roleplay (REVAMP)",
+          "genre": "Co-op",
+          "creator": "@JustCallMeYousef",
+          "matchScore": 99,
+          "score": 61.312,
+          "position": 33
+        },
+        {
+          "id": "485929611",
+          "title": "Horse World",
+          "genre": "Action RPG",
+          "creator": "Virtuality World",
+          "matchScore": 89,
+          "score": 61.149,
+          "position": 34
+        },
+        {
+          "id": "848145103",
+          "title": "[💰] Dungeon Quest! ⚔️ RPG Adventure",
+          "genre": "Action RPG",
+          "creator": "Dungeon Quest by Voldex",
+          "matchScore": 99,
+          "score": 61.119,
+          "position": 35
+        },
+        {
+          "id": "1742264997",
+          "title": "SCP: Roleplay",
+          "genre": "Co-op",
+          "creator": "SCP | Roleplay Community",
+          "matchScore": 88,
+          "score": 61.082,
+          "position": 36
+        },
+        {
+          "id": "1648496580",
+          "title": "Bendy and the ink Machine",
+          "genre": "Horror",
+          "creator": "@Drecktharx",
+          "matchScore": 98,
+          "score": 61.055,
+          "position": 37
+        },
+        {
+          "id": "3168615253",
+          "title": "Ability Wars",
+          "genre": "Action RPG",
+          "creator": "Ability Wars",
+          "matchScore": 92,
+          "score": 60.818,
+          "position": 38
+        },
+        {
+          "id": "4669435504",
+          "title": "Shadow Boxing Battles",
+          "genre": "Action RPG",
+          "creator": "@NowDoTheHarlemShake",
+          "matchScore": 99,
+          "score": 60.783,
+          "position": 39
+        },
+        {
+          "id": "3408154779",
+          "title": "Blast Zone",
+          "genre": "Action RPG",
+          "creator": "Blast Zone Team",
+          "matchScore": 94,
+          "score": 60.656,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 29,
+        "preferredGenreShare": 72.5,
+        "baselinePreferredGenreShare": 32.5,
+        "preferredGenreLiftPoints": 40,
+        "meanMatchScore": 94.475,
+        "topGenres": [
+          {
+            "genre": "Action RPG",
+            "count": 23,
+            "share": 57.49999999999999
+          },
+          {
+            "genre": "Co-op",
+            "count": 8,
+            "share": 20
+          },
+          {
+            "genre": "Racing",
+            "count": 6,
+            "share": 15
+          },
+          {
+            "genre": "Horror",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Simulation",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.1267605633802817,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "social",
+      "label": "Social explorer",
+      "preferences": [
+        "Co-op",
+        "Exploration"
+      ],
+      "topResults": [
+        {
+          "id": "994732206",
+          "title": "Blox Fruits",
+          "genre": "Action RPG",
+          "creator": "Gamer Robot Inc",
+          "matchScore": 95,
+          "score": 75.122,
+          "position": 1
+        },
+        {
+          "id": "5422546686",
+          "title": "NEW🦋 Horse Life 🐎",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 98,
+          "score": 73.197,
+          "position": 2
+        },
+        {
+          "id": "972475338",
+          "title": "🚩Expedition Antarctica",
+          "genre": "Exploration",
+          "creator": "Playduo Studio",
+          "matchScore": 95,
+          "score": 72.246,
+          "position": 3
+        },
+        {
+          "id": "2440500124",
+          "title": "🎃 DOORS 👁️",
+          "genre": "Horror",
+          "creator": "LSPLASH",
+          "matchScore": 92,
+          "score": 71.864,
+          "position": 4
+        },
+        {
+          "id": "5750914919",
+          "title": "[🏴‍☠️] Fisch",
+          "genre": "Simulation",
+          "creator": "Fisching",
+          "matchScore": 99,
+          "score": 71.803,
+          "position": 5
+        },
+        {
+          "id": "5830262966",
+          "title": "Impossible Squid Game! Glass Bridge 2",
+          "genre": "Puzzle",
+          "creator": "Northern Lights LTD",
+          "matchScore": 94,
+          "score": 70.612,
+          "position": 6
+        },
+        {
+          "id": "3476371299",
+          "title": "⚡Race Clicker",
+          "genre": "Racing",
+          "creator": "48h Games",
+          "matchScore": 87,
+          "score": 68.737,
+          "position": 7
+        },
+        {
+          "id": "1452258989",
+          "title": "[FREE ADMIN]",
+          "genre": "Co-op",
+          "creator": "Creator_Studio",
+          "matchScore": 98,
+          "score": 66.157,
+          "position": 8
+        },
+        {
+          "id": "1451439645",
+          "title": "[🎃 UPD] King Legacy",
+          "genre": "Action RPG",
+          "creator": "Sea King Games",
+          "matchScore": 95,
+          "score": 66.01,
+          "position": 9
+        },
+        {
+          "id": "3756501373",
+          "title": "[UPDATE 4] Meme Sea",
+          "genre": "Action RPG",
+          "creator": "Meme Sea Group",
+          "matchScore": 99,
+          "score": 64.818,
+          "position": 10
+        },
+        {
+          "id": "358276974",
+          "title": "Apocalypse Rising 2",
+          "genre": "Action RPG",
+          "creator": "Dualpoint Interactive",
+          "matchScore": 91,
+          "score": 64.262,
+          "position": 11
+        },
+        {
+          "id": "3608594708",
+          "title": "✨Collect The Body",
+          "genre": "Exploration",
+          "creator": "The Venomhawks",
+          "matchScore": 98,
+          "score": 63.771,
+          "position": 12
+        },
+        {
+          "id": "1235188606",
+          "title": "😈SHADOW Dragon Adventures 🐉 Fantasy Pets ✨",
+          "genre": "Action RPG",
+          "creator": "Sonar Studios",
+          "matchScore": 91,
+          "score": 63.7,
+          "position": 13
+        },
+        {
+          "id": "1709917610",
+          "title": "Regretevator [ ELEVATOR SIMULATOR ]",
+          "genre": "Co-op",
+          "creator": "The Axolotl Sun",
+          "matchScore": 95,
+          "score": 63.589,
+          "position": 14
+        },
+        {
+          "id": "5170731021",
+          "title": "Demon Blade",
+          "genre": "Action RPG",
+          "creator": "DemonCube",
+          "matchScore": 98,
+          "score": 63.469,
+          "position": 15
+        },
+        {
+          "id": "4362771421",
+          "title": "Garten of Banban",
+          "genre": "Exploration",
+          "creator": "Jule Games x Euphoric Bros",
+          "matchScore": 99,
+          "score": 63.442,
+          "position": 16
+        },
+        {
+          "id": "2644656496",
+          "title": "HAZE PIECE",
+          "genre": "Action RPG",
+          "creator": "[HS] Haze Studios",
+          "matchScore": 96,
+          "score": 63.096,
+          "position": 17
+        },
+        {
+          "id": "1202096104",
+          "title": "[15 NEW CARS] Driving Empire 🏎️ Car Racing",
+          "genre": "Simulation",
+          "creator": "Driving Empire by Voldex",
+          "matchScore": 95,
+          "score": 63.041,
+          "position": 18
+        },
+        {
+          "id": "4434803478",
+          "title": "Teamwork Puzzles 2 (Obby)",
+          "genre": "Puzzle",
+          "creator": "Pear Pressure",
+          "matchScore": 95,
+          "score": 62.354,
+          "position": 19
+        },
+        {
+          "id": "5650396773",
+          "title": "a dusty trip [✈️PLANE]",
+          "genre": "Exploration",
+          "creator": "Jandel's Road Trip",
+          "matchScore": 87,
+          "score": 62.243,
+          "position": 20
+        },
+        {
+          "id": "3502524667",
+          "title": "GRUMPY GRAN! (SCARY OBBY)",
+          "genre": "Puzzle",
+          "creator": "@PlatinumFalls",
+          "matchScore": 97,
+          "score": 62.063,
+          "position": 21
+        },
+        {
+          "id": "93740418",
+          "title": "Hide and Seek Extreme",
+          "genre": "Co-op",
+          "creator": "@Tim7775",
+          "matchScore": 92,
+          "score": 61.983,
+          "position": 22
+        },
+        {
+          "id": "3085857678",
+          "title": "Tsunami Game",
+          "genre": "Horror",
+          "creator": "Virtual Valley Games",
+          "matchScore": 99,
+          "score": 61.963,
+          "position": 23
+        },
+        {
+          "id": "4523856444",
+          "title": "Color or Die 🎨",
+          "genre": "Horror",
+          "creator": "BIGworks Games",
+          "matchScore": 99,
+          "score": 61.924,
+          "position": 24
+        },
+        {
+          "id": "4642134795",
+          "title": "Obby But You Can't Jump",
+          "genre": "Puzzle",
+          "creator": "Super Obbys :3",
+          "matchScore": 97,
+          "score": 61.406,
+          "position": 25
+        },
+        {
+          "id": "601130232",
+          "title": "Bee Swarm Simulator",
+          "genre": "Simulation",
+          "creator": "@Onett",
+          "matchScore": 95,
+          "score": 61.145,
+          "position": 26
+        },
+        {
+          "id": "210851291",
+          "title": "Build A Boat For Treasure",
+          "genre": "Simulation",
+          "creator": "Chillz Studios",
+          "matchScore": 99,
+          "score": 60.967,
+          "position": 27
+        },
+        {
+          "id": "648454481",
+          "title": "[🎃UPDATE] Grand Piece Online",
+          "genre": "Action RPG",
+          "creator": "Grand Quest Games",
+          "matchScore": 86,
+          "score": 60.963,
+          "position": 28
+        },
+        {
+          "id": "4356662626",
+          "title": "[💎]Ninjitsu: Master of Elements",
+          "genre": "Action RPG",
+          "creator": "Apex | Studios",
+          "matchScore": 98,
+          "score": 60.722,
+          "position": 29
+        },
+        {
+          "id": "321279858",
+          "title": "SharkBite Classic 🦈",
+          "genre": "Horror",
+          "creator": "Abracadabra",
+          "matchScore": 99,
+          "score": 60.677,
+          "position": 30
+        },
+        {
+          "id": "4990998060",
+          "title": "Carry A Friend! (Teamwork Obby)",
+          "genre": "Puzzle",
+          "creator": "Picture Pearfect",
+          "matchScore": 90,
+          "score": 60.486,
+          "position": 31
+        },
+        {
+          "id": "6290175032",
+          "title": "Don't Shatter [2 Player Obby]",
+          "genre": "Puzzle",
+          "creator": "Bob's Supermarket",
+          "matchScore": 95,
+          "score": 60.47,
+          "position": 32
+        },
+        {
+          "id": "2970472544",
+          "title": "Light Game - Game 7",
+          "genre": "Co-op",
+          "creator": "Light Game Community",
+          "matchScore": 98,
+          "score": 60.246,
+          "position": 33
+        },
+        {
+          "id": "3056160040",
+          "title": "Find The Markers (237)",
+          "genre": "Exploration",
+          "creator": "markers epic memers",
+          "matchScore": 90,
+          "score": 60.109,
+          "position": 34
+        },
+        {
+          "id": "3566531630",
+          "title": "Find The Floppa Morphs (855)",
+          "genre": "Exploration",
+          "creator": "BIG PLAY",
+          "matchScore": 89,
+          "score": 59.972,
+          "position": 35
+        },
+        {
+          "id": "5148099079",
+          "title": "Bike of Hell",
+          "genre": "Puzzle",
+          "creator": "Captain Grumpy Games",
+          "matchScore": 93,
+          "score": 59.777,
+          "position": 36
+        },
+        {
+          "id": "86781307",
+          "title": "🎃 The Maze Runner",
+          "genre": "Horror",
+          "creator": "Revolution Games",
+          "matchScore": 98,
+          "score": 59.769,
+          "position": 37
+        },
+        {
+          "id": "3864279452",
+          "title": "cart ride around nothing",
+          "genre": "Puzzle",
+          "creator": "@OneSkyVed",
+          "matchScore": 99,
+          "score": 59.523,
+          "position": 38
+        },
+        {
+          "id": "2151379579",
+          "title": "Easy Obby",
+          "genre": "Puzzle",
+          "creator": "@zknx",
+          "matchScore": 94,
+          "score": 59.343,
+          "position": 39
+        },
+        {
+          "id": "4795326392",
+          "title": "Pull a Sword",
+          "genre": "Simulation",
+          "creator": "xFrozen Obbys",
+          "matchScore": 99,
+          "score": 59.3,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 11,
+        "preferredGenreShare": 27.500000000000004,
+        "baselinePreferredGenreShare": 45,
+        "preferredGenreLiftPoints": -17.499999999999996,
+        "meanMatchScore": 95.075,
+        "topGenres": [
+          {
+            "genre": "Action RPG",
+            "count": 9,
+            "share": 22.5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 9,
+            "share": 22.5
+          },
+          {
+            "genre": "Exploration",
+            "count": 6,
+            "share": 15
+          },
+          {
+            "genre": "Co-op",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Horror",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.1111111111111111,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "builder",
+      "label": "Creative builder",
+      "preferences": [
+        "Simulation",
+        "Puzzle"
+      ],
+      "topResults": [
+        {
+          "id": "6035872082",
+          "title": "RIVALS",
+          "genre": "Action RPG",
+          "creator": "Nosniy Games",
+          "matchScore": 95,
+          "score": 75.083,
+          "position": 1
+        },
+        {
+          "id": "1831550657",
+          "title": "⚡ Creatures of Sonaria 💙 Survive Kaiju Animals",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 96,
+          "score": 74.016,
+          "position": 2
+        },
+        {
+          "id": "2049551477",
+          "title": "Cheese Escape [Horror]",
+          "genre": "Horror",
+          "creator": "@Spirow734",
+          "matchScore": 98,
+          "score": 72.792,
+          "position": 3
+        },
+        {
+          "id": "6215464786",
+          "title": "Chained [2 Player Obby]",
+          "genre": "Puzzle",
+          "creator": "1-Day",
+          "matchScore": 99,
+          "score": 72.553,
+          "position": 4
+        },
+        {
+          "id": "3882062045",
+          "title": "Find The Simpsons [263]",
+          "genre": "Exploration",
+          "creator": "Tem Production",
+          "matchScore": 99,
+          "score": 72.196,
+          "position": 5
+        },
+        {
+          "id": "1719305066",
+          "title": "ROBLOX Rally Racing",
+          "genre": "Racing",
+          "creator": "Roblox Rallying Group",
+          "matchScore": 99,
+          "score": 71.505,
+          "position": 6
+        },
+        {
+          "id": "2711375305",
+          "title": "Catalog Avatar Creator",
+          "genre": "Simulation",
+          "creator": "@ItsMuneeeb",
+          "matchScore": 93,
+          "score": 69.434,
+          "position": 7
+        },
+        {
+          "id": "1054526971",
+          "title": "Blackhawk Rescue Mission 5",
+          "genre": "Action RPG",
+          "creator": "PLATINUM FIVE",
+          "matchScore": 98,
+          "score": 67.971,
+          "position": 8
+        },
+        {
+          "id": "2729513759",
+          "title": "[UPDATE!] Speed Draw!",
+          "genre": "Co-op",
+          "creator": "Studio Giraffe",
+          "matchScore": 99,
+          "score": 67.235,
+          "position": 9
+        },
+        {
+          "id": "3240075297",
+          "title": "Berry Avenue 🏠 RP",
+          "genre": "Co-op",
+          "creator": "Amberry Games",
+          "matchScore": 99,
+          "score": 65.997,
+          "position": 10
+        },
+        {
+          "id": "807930589",
+          "title": "The Wild West",
+          "genre": "Action RPG",
+          "creator": "Starboard Studios",
+          "matchScore": 97,
+          "score": 65.806,
+          "position": 11
+        },
+        {
+          "id": "6097519616",
+          "title": "[YUTA] Jujutsu Beatdown",
+          "genre": "Action RPG",
+          "creator": "Accel Grounds",
+          "matchScore": 99,
+          "score": 65.418,
+          "position": 12
+        },
+        {
+          "id": "5166944221",
+          "title": "Death Ball",
+          "genre": "Action RPG",
+          "creator": "Anime Boys Developers",
+          "matchScore": 96,
+          "score": 64.954,
+          "position": 13
+        },
+        {
+          "id": "1281592938",
+          "title": "ENTRENCHED WW1 BETA",
+          "genre": "Action RPG",
+          "creator": "Edot",
+          "matchScore": 98,
+          "score": 64.94,
+          "position": 14
+        },
+        {
+          "id": "4342047058",
+          "title": "Guts &amp; Blackpowder",
+          "genre": "Action RPG",
+          "creator": "Guts &amp; Blackpowder",
+          "matchScore": 93,
+          "score": 64.888,
+          "position": 15
+        },
+        {
+          "id": "88070565",
+          "title": "Welcome to Bloxburg",
+          "genre": "Co-op",
+          "creator": "Bloxburg Development",
+          "matchScore": 95,
+          "score": 64.886,
+          "position": 16
+        },
+        {
+          "id": "3012965062",
+          "title": "[UPDATE] The Presentation Experience",
+          "genre": "Co-op",
+          "creator": "Minimal Games",
+          "matchScore": 98,
+          "score": 64.773,
+          "position": 17
+        },
+        {
+          "id": "540382210",
+          "title": "[HALLOWEEN!!!] Fredbear's Mega Roleplay",
+          "genre": "Co-op",
+          "creator": "Kypher Studios",
+          "matchScore": 98,
+          "score": 64.66,
+          "position": 18
+        },
+        {
+          "id": "2023680558",
+          "title": "🐸Animal Simulator",
+          "genre": "Co-op",
+          "creator": "@ragnar9878",
+          "matchScore": 97,
+          "score": 64.455,
+          "position": 19
+        },
+        {
+          "id": "5720553711",
+          "title": "NewSmith🏠RP Update 14!",
+          "genre": "Co-op",
+          "creator": "ARKverse office",
+          "matchScore": 92,
+          "score": 64.322,
+          "position": 20
+        },
+        {
+          "id": "5569032992",
+          "title": "🎟️Dandy's World [ALPHA]",
+          "genre": "Horror",
+          "creator": "BlushCrunch Studio",
+          "matchScore": 86,
+          "score": 64.197,
+          "position": 21
+        },
+        {
+          "id": "6369934270",
+          "title": "🎃 Hide or Die!",
+          "genre": "Co-op",
+          "creator": "0 CCU Games",
+          "matchScore": 98,
+          "score": 64.043,
+          "position": 22
+        },
+        {
+          "id": "1686885941",
+          "title": "Brookhaven 🏡RP",
+          "genre": "Co-op",
+          "creator": "@Wolfpaq",
+          "matchScore": 87,
+          "score": 63.929,
+          "position": 23
+        },
+        {
+          "id": "4367208330",
+          "title": "Pressure",
+          "genre": "Horror",
+          "creator": "Urbanshade: Hadal Division",
+          "matchScore": 99,
+          "score": 63.92,
+          "position": 24
+        },
+        {
+          "id": "2992873140",
+          "title": "Emergency Hamburg",
+          "genre": "Co-op",
+          "creator": "Emergency Hamburg",
+          "matchScore": 92,
+          "score": 63.887,
+          "position": 25
+        },
+        {
+          "id": "873703865",
+          "title": "Westbound",
+          "genre": "Exploration",
+          "creator": "Moondrop Studios",
+          "matchScore": 99,
+          "score": 63.855,
+          "position": 26
+        },
+        {
+          "id": "4019583467",
+          "title": "NEW🧙 Be NPC or DIE!💢",
+          "genre": "Horror",
+          "creator": "arashiyama",
+          "matchScore": 98,
+          "score": 63.756,
+          "position": 27
+        },
+        {
+          "id": "4839802560",
+          "title": "LifeTogether 🏠 RP [UPDATE 34]",
+          "genre": "Co-op",
+          "creator": "Cinnamon Software",
+          "matchScore": 97,
+          "score": 63.751,
+          "position": 28
+        },
+        {
+          "id": "4263576532",
+          "title": "Cali Shootout 💥",
+          "genre": "Action RPG",
+          "creator": "Crimelife",
+          "matchScore": 99,
+          "score": 63.585,
+          "position": 29
+        },
+        {
+          "id": "6371309794",
+          "title": "💪 Ninja Challenge [Beta]",
+          "genre": "Puzzle",
+          "creator": "Ninja Challenge",
+          "matchScore": 93,
+          "score": 63.393,
+          "position": 30
+        },
+        {
+          "id": "4130569984",
+          "title": "Jurassic Blocky",
+          "genre": "Co-op",
+          "creator": "Jurassic Blocky",
+          "matchScore": 96,
+          "score": 63.368,
+          "position": 31
+        },
+        {
+          "id": "5203828273",
+          "title": "Dress To Impress 💜",
+          "genre": "Co-op",
+          "creator": "Dress To Impress Group",
+          "matchScore": 87,
+          "score": 63.294,
+          "position": 32
+        },
+        {
+          "id": "5254920366",
+          "title": "Secret Staycation",
+          "genre": "Exploration",
+          "creator": "ひみつのおるすばん：Secret Staycation",
+          "matchScore": 91,
+          "score": 63.221,
+          "position": 33
+        },
+        {
+          "id": "4689722433",
+          "title": "Kitten Game 🐾",
+          "genre": "Co-op",
+          "creator": "@Bro_IsThisReal",
+          "matchScore": 90,
+          "score": 63.02,
+          "position": 34
+        },
+        {
+          "id": "4671010462",
+          "title": "Paradise 🏠 RP",
+          "genre": "Co-op",
+          "creator": "Cazeby",
+          "matchScore": 99,
+          "score": 63.006,
+          "position": 35
+        },
+        {
+          "id": "5265857965",
+          "title": "Legends Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Arts of Vermillion",
+          "matchScore": 97,
+          "score": 62.995,
+          "position": 36
+        },
+        {
+          "id": "4457060041",
+          "title": "Emergency Emden V2",
+          "genre": "Co-op",
+          "creator": "Emergency Emden",
+          "matchScore": 95,
+          "score": 62.893,
+          "position": 37
+        },
+        {
+          "id": "5772121491",
+          "title": "Thats not my Robloxian",
+          "genre": "Puzzle",
+          "creator": "Scary Developers",
+          "matchScore": 99,
+          "score": 62.883,
+          "position": 38
+        },
+        {
+          "id": "4778845442",
+          "title": "[⚔️RANKED] Toilet Tower Defense",
+          "genre": "Simulation",
+          "creator": "Telanthric Development",
+          "matchScore": 96,
+          "score": 62.88,
+          "position": 39
+        },
+        {
+          "id": "5455619189",
+          "title": "Zombies vs Humans",
+          "genre": "Horror",
+          "creator": "Dejavu Studios",
+          "matchScore": 99,
+          "score": 62.862,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 5,
+        "preferredGenreShare": 12.5,
+        "baselinePreferredGenreShare": 7.5,
+        "preferredGenreLiftPoints": 5,
+        "meanMatchScore": 95.875,
+        "topGenres": [
+          {
+            "genre": "Co-op",
+            "count": 17,
+            "share": 42.5
+          },
+          {
+            "genre": "Action RPG",
+            "count": 9,
+            "share": 22.5
+          },
+          {
+            "genre": "Horror",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Exploration",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.25,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "thrill-seeker",
+      "label": "Thrill seeker",
+      "preferences": [
+        "Horror",
+        "Co-op"
+      ],
+      "topResults": [
+        {
+          "id": "66654135",
+          "title": "Murder Mystery 2",
+          "genre": "Horror",
+          "creator": "@Nikilis",
+          "matchScore": 99,
+          "score": 76.295,
+          "position": 1
+        },
+        {
+          "id": "4221956550",
+          "title": "The Butchery [HORROR]",
+          "genre": "Exploration",
+          "creator": "@chubby_baby7",
+          "matchScore": 99,
+          "score": 72.626,
+          "position": 2
+        },
+        {
+          "id": "2827951974",
+          "title": "SCP Games and SCP Monsters",
+          "genre": "Co-op",
+          "creator": "@lolbuih",
+          "matchScore": 94,
+          "score": 69.259,
+          "position": 3
+        },
+        {
+          "id": "187796008",
+          "title": "Those Who Remain",
+          "genre": "Action RPG",
+          "creator": "Peak Development Studios",
+          "matchScore": 94,
+          "score": 68.932,
+          "position": 4
+        },
+        {
+          "id": "3647333358",
+          "title": "[VIP] Evade 🎃✨",
+          "genre": "Horror",
+          "creator": "Hexagon Development Community",
+          "matchScore": 92,
+          "score": 65.848,
+          "position": 5
+        },
+        {
+          "id": "372226183",
+          "title": "Flee the Facility",
+          "genre": "Horror",
+          "creator": "A.W. Apps",
+          "matchScore": 94,
+          "score": 65.429,
+          "position": 6
+        },
+        {
+          "id": "5026122481",
+          "title": "[UPDATE] Death in the Box",
+          "genre": "Horror",
+          "creator": "ARK-ADE",
+          "matchScore": 99,
+          "score": 64.573,
+          "position": 7
+        },
+        {
+          "id": "1315450727",
+          "title": "Daycare 🎈 (Story)",
+          "genre": "Exploration",
+          "creator": "Parwaz Studios",
+          "matchScore": 99,
+          "score": 63.999,
+          "position": 8
+        },
+        {
+          "id": "1516533665",
+          "title": "Piggy [DECAY CHAPTER]",
+          "genre": "Horror",
+          "creator": "@MiniToon",
+          "matchScore": 99,
+          "score": 63.982,
+          "position": 9
+        },
+        {
+          "id": "4365819446",
+          "title": "[NEW MAP] Keys 🗝️ Season 20",
+          "genre": "Horror",
+          "creator": "Daybreaker",
+          "matchScore": 95,
+          "score": 63.953,
+          "position": 10
+        },
+        {
+          "id": "2294168059",
+          "title": "[HALLOWEEN 🎃] The Mimic",
+          "genre": "Horror",
+          "creator": "CTStudio",
+          "matchScore": 93,
+          "score": 63.851,
+          "position": 11
+        },
+        {
+          "id": "5096440156",
+          "title": "weird strict dad [BOOK 2]",
+          "genre": "Exploration",
+          "creator": "BlueLoop Studios",
+          "matchScore": 98,
+          "score": 63.553,
+          "position": 12
+        },
+        {
+          "id": "4720386144",
+          "title": "[HORROR] Ophelia",
+          "genre": "Simulation",
+          "creator": "@BIackViiper",
+          "matchScore": 99,
+          "score": 63.361,
+          "position": 13
+        },
+        {
+          "id": "1415710834",
+          "title": "Banana Eats 🌈",
+          "genre": "Horror",
+          "creator": "@RyCitrus",
+          "matchScore": 96,
+          "score": 63.343,
+          "position": 14
+        },
+        {
+          "id": "3761186887",
+          "title": "Apeirophobia",
+          "genre": "Exploration",
+          "creator": "Polaroid Studios",
+          "matchScore": 95,
+          "score": 63.03,
+          "position": 15
+        },
+        {
+          "id": "847722000",
+          "title": "The Rake REMASTERED",
+          "genre": "Horror",
+          "creator": "@RVVZ",
+          "matchScore": 97,
+          "score": 62.679,
+          "position": 16
+        },
+        {
+          "id": "5544551093",
+          "title": "Secret Killer",
+          "genre": "Horror",
+          "creator": "Monster Nova Studios",
+          "matchScore": 97,
+          "score": 62.672,
+          "position": 17
+        },
+        {
+          "id": "5195168716",
+          "title": "The Curse [HORROR]",
+          "genre": "Horror",
+          "creator": "@ItzMePanos",
+          "matchScore": 98,
+          "score": 62.487,
+          "position": 18
+        },
+        {
+          "id": "1000233041",
+          "title": "3008 [2.73]",
+          "genre": "Horror",
+          "creator": "@uglyburger0",
+          "matchScore": 96,
+          "score": 62.039,
+          "position": 19
+        },
+        {
+          "id": "4987467534",
+          "title": "[HALLOWEEN] Residence Massacre",
+          "genre": "Horror",
+          "creator": "@MisterGamer_67",
+          "matchScore": 93,
+          "score": 61.879,
+          "position": 20
+        },
+        {
+          "id": "4925010421",
+          "title": "Interliminality (ALPHA 1.3.6)",
+          "genre": "Exploration",
+          "creator": "Studio308",
+          "matchScore": 92,
+          "score": 61.544,
+          "position": 21
+        },
+        {
+          "id": "5956634861",
+          "title": "Insomnia (Horror)",
+          "genre": "Exploration",
+          "creator": "ZeRoCIient",
+          "matchScore": 99,
+          "score": 61.515,
+          "position": 22
+        },
+        {
+          "id": "2274830359",
+          "title": "Escape Running Head",
+          "genre": "Horror",
+          "creator": "@manato48",
+          "matchScore": 89,
+          "score": 61.472,
+          "position": 23
+        },
+        {
+          "id": "1125307892",
+          "title": "[🎅] In Area 51 [ALPHA]",
+          "genre": "Horror",
+          "creator": "@Metrivus",
+          "matchScore": 91,
+          "score": 61.22,
+          "position": 24
+        },
+        {
+          "id": "4949420752",
+          "title": "Realistic Street Soccer (3 on 3)",
+          "genre": "Racing",
+          "creator": "The Builder's Legion",
+          "matchScore": 58,
+          "score": 61.18,
+          "position": 25
+        },
+        {
+          "id": "5216419122",
+          "title": "GEF",
+          "genre": "Horror",
+          "creator": "mPhase",
+          "matchScore": 93,
+          "score": 60.676,
+          "position": 26
+        },
+        {
+          "id": "2157872230",
+          "title": "Infectious Smile",
+          "genre": "Horror",
+          "creator": "laughablehaha",
+          "matchScore": 87,
+          "score": 60.429,
+          "position": 27
+        },
+        {
+          "id": "1645606267",
+          "title": "Frogge",
+          "genre": "Horror",
+          "creator": "Sleep Paralysis Demons",
+          "matchScore": 93,
+          "score": 60.428,
+          "position": 28
+        },
+        {
+          "id": "5795519964",
+          "title": "Escape Angry Head",
+          "genre": "Horror",
+          "creator": "Shestvie Official [RU]",
+          "matchScore": 99,
+          "score": 60.082,
+          "position": 29
+        },
+        {
+          "id": "2113323331",
+          "title": "Teddy 🎃",
+          "genre": "Horror",
+          "creator": "@GnomeCode",
+          "matchScore": 98,
+          "score": 60.065,
+          "position": 30
+        },
+        {
+          "id": "6281662204",
+          "title": "Monster [HORROR]",
+          "genre": "Exploration",
+          "creator": "Astra's Army",
+          "matchScore": 99,
+          "score": 60.026,
+          "position": 31
+        },
+        {
+          "id": "5948668992",
+          "title": "The Robloxia: Until Dawn",
+          "genre": "Horror",
+          "creator": "The Robloxia: Until Dawn community",
+          "matchScore": 96,
+          "score": 59.925,
+          "position": 32
+        },
+        {
+          "id": "5803199989",
+          "title": "The Exit 8!",
+          "genre": "Horror",
+          "creator": "DBS The Exit",
+          "matchScore": 93,
+          "score": 59.876,
+          "position": 33
+        },
+        {
+          "id": "3085257211",
+          "title": "Rainbow Friends",
+          "genre": "Exploration",
+          "creator": "Roy &amp; Charcle",
+          "matchScore": 95,
+          "score": 59.705,
+          "position": 34
+        },
+        {
+          "id": "3264293423",
+          "title": "Five Nights At Freddy's Doom",
+          "genre": "Horror",
+          "creator": "@CaioOpaleiroBR",
+          "matchScore": 92,
+          "score": 59.636,
+          "position": 35
+        },
+        {
+          "id": "1489026993",
+          "title": "🔪Survive the Killer!",
+          "genre": "Horror",
+          "creator": "Slyce Entertainment",
+          "matchScore": 90,
+          "score": 59.167,
+          "position": 36
+        },
+        {
+          "id": "6164853651",
+          "title": "Hungry Pig",
+          "genre": "Horror",
+          "creator": "@SoundTrackZack",
+          "matchScore": 95,
+          "score": 59.145,
+          "position": 37
+        },
+        {
+          "id": "3249295527",
+          "title": "PANIK",
+          "genre": "Horror",
+          "creator": "Panik.",
+          "matchScore": 90,
+          "score": 58.947,
+          "position": 38
+        },
+        {
+          "id": "2826640183",
+          "title": "Build to Survive!",
+          "genre": "Horror",
+          "creator": "Survival_Games",
+          "matchScore": 94,
+          "score": 58.553,
+          "position": 39
+        },
+        {
+          "id": "4669328522",
+          "title": "Zooo",
+          "genre": "Horror",
+          "creator": "@manato48",
+          "matchScore": 87,
+          "score": 58.346,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 29,
+        "preferredGenreShare": 72.5,
+        "baselinePreferredGenreShare": 50,
+        "preferredGenreLiftPoints": 22.5,
+        "meanMatchScore": 93.9,
+        "topGenres": [
+          {
+            "genre": "Horror",
+            "count": 28,
+            "share": 70
+          },
+          {
+            "genre": "Exploration",
+            "count": 8,
+            "share": 20
+          },
+          {
+            "genre": "Action RPG",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Co-op",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.06666666666666667,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "completionist",
+      "label": "Completionist",
+      "preferences": [
+        "Action RPG",
+        "Simulation"
+      ],
+      "topResults": [
+        {
+          "id": "5569032992",
+          "title": "🎟️Dandy's World [ALPHA]",
+          "genre": "Horror",
+          "creator": "BlushCrunch Studio",
+          "matchScore": 99,
+          "score": 76.552,
+          "position": 1
+        },
+        {
+          "id": "4342047058",
+          "title": "Guts &amp; Blackpowder",
+          "genre": "Action RPG",
+          "creator": "Guts &amp; Blackpowder",
+          "matchScore": 99,
+          "score": 74.898,
+          "position": 2
+        },
+        {
+          "id": "5720553711",
+          "title": "NewSmith🏠RP Update 14!",
+          "genre": "Co-op",
+          "creator": "ARKverse office",
+          "matchScore": 99,
+          "score": 74.667,
+          "position": 3
+        },
+        {
+          "id": "1318971886",
+          "title": "Break In (Story)",
+          "genre": "Exploration",
+          "creator": "@Cracky4",
+          "matchScore": 99,
+          "score": 73.802,
+          "position": 4
+        },
+        {
+          "id": "4908792642",
+          "title": "[W51] Obby But You’re On a Bike",
+          "genre": "Puzzle",
+          "creator": "FORTUNE 777",
+          "matchScore": 99,
+          "score": 70.77,
+          "position": 5
+        },
+        {
+          "id": "1719305066",
+          "title": "ROBLOX Rally Racing",
+          "genre": "Racing",
+          "creator": "Roblox Rallying Group",
+          "matchScore": 93,
+          "score": 69.495,
+          "position": 6
+        },
+        {
+          "id": "4778845442",
+          "title": "[⚔️RANKED] Toilet Tower Defense",
+          "genre": "Simulation",
+          "creator": "Telanthric Development",
+          "matchScore": 99,
+          "score": 69.485,
+          "position": 7
+        },
+        {
+          "id": "4777817887",
+          "title": "Blade Ball",
+          "genre": "Action RPG",
+          "creator": "Wiggity.",
+          "matchScore": 99,
+          "score": 69.058,
+          "position": 8
+        },
+        {
+          "id": "2655311011",
+          "title": "[👑 EXTREME] Anime Dimensions Simulator",
+          "genre": "Action RPG",
+          "creator": "Albatross Games",
+          "matchScore": 96,
+          "score": 66.954,
+          "position": 9
+        },
+        {
+          "id": "6035872082",
+          "title": "RIVALS",
+          "genre": "Action RPG",
+          "creator": "Nosniy Games",
+          "matchScore": 93,
+          "score": 66.413,
+          "position": 10
+        },
+        {
+          "id": "1836146838",
+          "title": "Bloxy Bingo",
+          "genre": "Co-op",
+          "creator": "Bloxy Bingo",
+          "matchScore": 99,
+          "score": 66.192,
+          "position": 11
+        },
+        {
+          "id": "5166944221",
+          "title": "Death Ball",
+          "genre": "Action RPG",
+          "creator": "Anime Boys Developers",
+          "matchScore": 99,
+          "score": 65.959,
+          "position": 12
+        },
+        {
+          "id": "1278035280",
+          "title": "Warrior Cats: Ultimate Edition",
+          "genre": "Co-op",
+          "creator": "WarriorCatsRP",
+          "matchScore": 98,
+          "score": 65.651,
+          "position": 13
+        },
+        {
+          "id": "5203828273",
+          "title": "Dress To Impress 💜",
+          "genre": "Co-op",
+          "creator": "Dress To Impress Group",
+          "matchScore": 94,
+          "score": 65.639,
+          "position": 14
+        },
+        {
+          "id": "1054526971",
+          "title": "Blackhawk Rescue Mission 5",
+          "genre": "Action RPG",
+          "creator": "PLATINUM FIVE",
+          "matchScore": 98,
+          "score": 65.571,
+          "position": 15
+        },
+        {
+          "id": "2992873140",
+          "title": "Emergency Hamburg",
+          "genre": "Co-op",
+          "creator": "Emergency Hamburg",
+          "matchScore": 97,
+          "score": 65.562,
+          "position": 16
+        },
+        {
+          "id": "2549475383",
+          "title": "Livetopia🏡 New House",
+          "genre": "Co-op",
+          "creator": "Century Makers",
+          "matchScore": 99,
+          "score": 65.542,
+          "position": 17
+        },
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 95,
+          "score": 65.34,
+          "position": 18
+        },
+        {
+          "id": "2380077519",
+          "title": "Slap Battles👏",
+          "genre": "Action RPG",
+          "creator": "Slap Battles",
+          "matchScore": 99,
+          "score": 65.197,
+          "position": 19
+        },
+        {
+          "id": "2023680558",
+          "title": "🐸Animal Simulator",
+          "genre": "Co-op",
+          "creator": "@ragnar9878",
+          "matchScore": 99,
+          "score": 65.125,
+          "position": 20
+        },
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 90,
+          "score": 65.1,
+          "position": 21
+        },
+        {
+          "id": "245662005",
+          "title": "Jailbreak 🍁",
+          "genre": "Action RPG",
+          "creator": "Badimo",
+          "matchScore": 99,
+          "score": 64.99,
+          "position": 22
+        },
+        {
+          "id": "88070565",
+          "title": "Welcome to Bloxburg",
+          "genre": "Co-op",
+          "creator": "Bloxburg Development",
+          "matchScore": 95,
+          "score": 64.886,
+          "position": 23
+        },
+        {
+          "id": "6097519616",
+          "title": "[YUTA] Jujutsu Beatdown",
+          "genre": "Action RPG",
+          "creator": "Accel Grounds",
+          "matchScore": 97,
+          "score": 64.748,
+          "position": 24
+        },
+        {
+          "id": "3508322461",
+          "title": "[PERFECTION] Jujutsu Shenanigans",
+          "genre": "Action RPG",
+          "creator": "@AlsoNot_Tze",
+          "matchScore": 95,
+          "score": 64.538,
+          "position": 25
+        },
+        {
+          "id": "903807016",
+          "title": "Emergency Response: Liberty County",
+          "genre": "Co-op",
+          "creator": "Police Roleplay Community",
+          "matchScore": 99,
+          "score": 64.428,
+          "position": 26
+        },
+        {
+          "id": "4839802560",
+          "title": "LifeTogether 🏠 RP [UPDATE 34]",
+          "genre": "Co-op",
+          "creator": "Cinnamon Software",
+          "matchScore": 99,
+          "score": 64.421,
+          "position": 27
+        },
+        {
+          "id": "4348829796",
+          "title": "Murderers VS Sheriffs Duels",
+          "genre": "Action RPG",
+          "creator": "Red21 Games",
+          "matchScore": 96,
+          "score": 64.342,
+          "position": 28
+        },
+        {
+          "id": "3882062045",
+          "title": "Find The Simpsons [263]",
+          "genre": "Exploration",
+          "creator": "Tem Production",
+          "matchScore": 99,
+          "score": 64.196,
+          "position": 29
+        },
+        {
+          "id": "3472976893",
+          "title": "Backrooms",
+          "genre": "Horror",
+          "creator": "Red Panda Industries",
+          "matchScore": 99,
+          "score": 64.17,
+          "position": 30
+        },
+        {
+          "id": "4557322431",
+          "title": "[UPDATE 1] Project: Afternight",
+          "genre": "Action RPG",
+          "creator": "Project: AE",
+          "matchScore": 99,
+          "score": 64.17,
+          "position": 31
+        },
+        {
+          "id": "1831550657",
+          "title": "⚡ Creatures of Sonaria 💙 Survive Kaiju Animals",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 90,
+          "score": 64.006,
+          "position": 32
+        },
+        {
+          "id": "3240075297",
+          "title": "Berry Avenue 🏠 RP",
+          "genre": "Co-op",
+          "creator": "Amberry Games",
+          "matchScore": 93,
+          "score": 63.987,
+          "position": 33
+        },
+        {
+          "id": "1686885941",
+          "title": "Brookhaven 🏡RP",
+          "genre": "Co-op",
+          "creator": "@Wolfpaq",
+          "matchScore": 87,
+          "score": 63.929,
+          "position": 34
+        },
+        {
+          "id": "113491250",
+          "title": "Phantom Forces",
+          "genre": "Action RPG",
+          "creator": "StyLiS Studios",
+          "matchScore": 97,
+          "score": 63.835,
+          "position": 35
+        },
+        {
+          "id": "4019583467",
+          "title": "NEW🧙 Be NPC or DIE!💢",
+          "genre": "Horror",
+          "creator": "arashiyama",
+          "matchScore": 98,
+          "score": 63.756,
+          "position": 36
+        },
+        {
+          "id": "1281592938",
+          "title": "ENTRENCHED WW1 BETA",
+          "genre": "Action RPG",
+          "creator": "Edot",
+          "matchScore": 94,
+          "score": 63.6,
+          "position": 37
+        },
+        {
+          "id": "1782832995",
+          "title": "[🕷️HALLOWEEN🕸️] A Universal Time 3.9 🎃",
+          "genre": "Action RPG",
+          "creator": "Universe Time Studio",
+          "matchScore": 95,
+          "score": 63.516,
+          "position": 38
+        },
+        {
+          "id": "2711375305",
+          "title": "Catalog Avatar Creator",
+          "genre": "Simulation",
+          "creator": "@ItsMuneeeb",
+          "matchScore": 92,
+          "score": 63.499,
+          "position": 39
+        },
+        {
+          "id": "4430449940",
+          "title": "Saber Showdown",
+          "genre": "Action RPG",
+          "creator": "Nova Wave Games",
+          "matchScore": 99,
+          "score": 63.387,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 19,
+        "preferredGenreShare": 47.5,
+        "baselinePreferredGenreShare": 35,
+        "preferredGenreLiftPoints": 12.5,
+        "meanMatchScore": 96.6,
+        "topGenres": [
+          {
+            "genre": "Action RPG",
+            "count": 17,
+            "share": 42.5
+          },
+          {
+            "genre": "Co-op",
+            "count": 14,
+            "share": 35
+          },
+          {
+            "genre": "Horror",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Exploration",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Simulation",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.3559322033898305,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "casual",
+      "label": "Casual browser",
+      "preferences": [
+        "Puzzle",
+        "Racing"
+      ],
+      "topResults": [
+        {
+          "id": "4949420752",
+          "title": "Realistic Street Soccer (3 on 3)",
+          "genre": "Racing",
+          "creator": "The Builder's Legion",
+          "matchScore": 98,
+          "score": 74.58,
+          "position": 1
+        },
+        {
+          "id": "6035872082",
+          "title": "RIVALS",
+          "genre": "Action RPG",
+          "creator": "Nosniy Games",
+          "matchScore": 62,
+          "score": 64.028,
+          "position": 2
+        },
+        {
+          "id": "3354479870",
+          "title": "just daytona. (9 NEW CARS)",
+          "genre": "Simulation",
+          "creator": "@vouthin",
+          "matchScore": 93,
+          "score": 63.562,
+          "position": 3
+        },
+        {
+          "id": "1686885941",
+          "title": "Brookhaven 🏡RP",
+          "genre": "Co-op",
+          "creator": "@Wolfpaq",
+          "matchScore": 61,
+          "score": 63.219,
+          "position": 4
+        },
+        {
+          "id": "5214918244",
+          "title": "⚽️Ultimate Soccer",
+          "genre": "Racing",
+          "creator": "Untitled Soccer Thing",
+          "matchScore": 99,
+          "score": 62.94,
+          "position": 5
+        },
+        {
+          "id": "5569032992",
+          "title": "🎟️Dandy's World [ALPHA]",
+          "genre": "Horror",
+          "creator": "BlushCrunch Studio",
+          "matchScore": 58,
+          "score": 62.817,
+          "position": 6
+        },
+        {
+          "id": "4293374620",
+          "title": "[🎃] Super League Soccer",
+          "genre": "Racing",
+          "creator": "Play! Football",
+          "matchScore": 91,
+          "score": 62.777,
+          "position": 7
+        },
+        {
+          "id": "4851783408",
+          "title": "[AFC AJAX EVENT] Real Futbol 24",
+          "genre": "Racing",
+          "creator": "Real Sports Interactive",
+          "matchScore": 98,
+          "score": 62.154,
+          "position": 8
+        },
+        {
+          "id": "4931927012",
+          "title": "🎃Basketball Legends🎃",
+          "genre": "Racing",
+          "creator": "InfinitySports",
+          "matchScore": 95,
+          "score": 62.021,
+          "position": 9
+        },
+        {
+          "id": "5650396773",
+          "title": "a dusty trip [✈️PLANE]",
+          "genre": "Exploration",
+          "creator": "Jandel's Road Trip",
+          "matchScore": 60,
+          "score": 61.198,
+          "position": 10
+        },
+        {
+          "id": "3032132418",
+          "title": "HCBB 9v9 2.0",
+          "genre": "Racing",
+          "creator": "HCBB League",
+          "matchScore": 95,
+          "score": 61.043,
+          "position": 11
+        },
+        {
+          "id": "4434803478",
+          "title": "Teamwork Puzzles 2 (Obby)",
+          "genre": "Puzzle",
+          "creator": "Pear Pressure",
+          "matchScore": 59,
+          "score": 58.294,
+          "position": 12
+        },
+        {
+          "id": "4252393983",
+          "title": "Team Soccer (3 vs. 3)",
+          "genre": "Racing",
+          "creator": "🐦Cardinal Studios™",
+          "matchScore": 87,
+          "score": 58.23,
+          "position": 13
+        },
+        {
+          "id": "4324259364",
+          "title": "[TWIN GUNS] LOCKED",
+          "genre": "Racing",
+          "creator": "@Zhoulle",
+          "matchScore": 99,
+          "score": 58.225,
+          "position": 14
+        },
+        {
+          "id": "4675711088",
+          "title": "MPS 4-a-side",
+          "genre": "Racing",
+          "creator": "MPS Studiоs",
+          "matchScore": 91,
+          "score": 58.181,
+          "position": 15
+        },
+        {
+          "id": "3144493466",
+          "title": "Football Stars 2",
+          "genre": "Racing",
+          "creator": "Sungaze",
+          "matchScore": 99,
+          "score": 58.065,
+          "position": 16
+        },
+        {
+          "id": "4743794878",
+          "title": "The Classic Soccer",
+          "genre": "Racing",
+          "creator": "@guigoals",
+          "matchScore": 89,
+          "score": 56.544,
+          "position": 17
+        },
+        {
+          "id": "994732206",
+          "title": "Blox Fruits",
+          "genre": "Action RPG",
+          "creator": "Gamer Robot Inc",
+          "matchScore": 56,
+          "score": 56.457,
+          "position": 18
+        },
+        {
+          "id": "3207320372",
+          "title": "[UPDATE!] Hoop Central 6 Stress Test",
+          "genre": "Racing",
+          "creator": "Hoop Central Remake",
+          "matchScore": 99,
+          "score": 56.392,
+          "position": 19
+        },
+        {
+          "id": "4777817887",
+          "title": "Blade Ball",
+          "genre": "Action RPG",
+          "creator": "Wiggity.",
+          "matchScore": 60,
+          "score": 55.993,
+          "position": 20
+        },
+        {
+          "id": "4557649405",
+          "title": "Super Football",
+          "genre": "Racing",
+          "creator": "@jcs1p",
+          "matchScore": 97,
+          "score": 55.624,
+          "position": 21
+        },
+        {
+          "id": "5728146086",
+          "title": "[NEW] Touch Volleyball",
+          "genre": "Racing",
+          "creator": "Touch Games",
+          "matchScore": 95,
+          "score": 55.578,
+          "position": 22
+        },
+        {
+          "id": "2547466305",
+          "title": "Beyond Volleyball League",
+          "genre": "Racing",
+          "creator": "Beyond Volleyball League",
+          "matchScore": 92,
+          "score": 55.244,
+          "position": 23
+        },
+        {
+          "id": "2646667816",
+          "title": "⚽ Soccer Legends [BETA]",
+          "genre": "Racing",
+          "creator": "Ace Sport",
+          "matchScore": 97,
+          "score": 55.137,
+          "position": 24
+        },
+        {
+          "id": "1709917610",
+          "title": "Regretevator [ ELEVATOR SIMULATOR ]",
+          "genre": "Co-op",
+          "creator": "The Axolotl Sun",
+          "matchScore": 61,
+          "score": 54.599,
+          "position": 25
+        },
+        {
+          "id": "3475191052",
+          "title": "[💰🍀]⚽Goal Kick Simulator",
+          "genre": "Simulation",
+          "creator": "Dream Simulators",
+          "matchScore": 91,
+          "score": 54.446,
+          "position": 26
+        },
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 58,
+          "score": 54.38,
+          "position": 27
+        },
+        {
+          "id": "1831550657",
+          "title": "⚡ Creatures of Sonaria 💙 Survive Kaiju Animals",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 60,
+          "score": 53.956,
+          "position": 28
+        },
+        {
+          "id": "4342047058",
+          "title": "Guts &amp; Blackpowder",
+          "genre": "Action RPG",
+          "creator": "Guts &amp; Blackpowder",
+          "matchScore": 60,
+          "score": 53.833,
+          "position": 29
+        },
+        {
+          "id": "372226183",
+          "title": "Flee the Facility",
+          "genre": "Horror",
+          "creator": "A.W. Apps",
+          "matchScore": 59,
+          "score": 53.704,
+          "position": 30
+        },
+        {
+          "id": "2655311011",
+          "title": "[👑 EXTREME] Anime Dimensions Simulator",
+          "genre": "Action RPG",
+          "creator": "Albatross Games",
+          "matchScore": 62,
+          "score": 53.164,
+          "position": 31
+        },
+        {
+          "id": "4540138978",
+          "title": "Metro Life 🏙️ City RP",
+          "genre": "Co-op",
+          "creator": "Century Creators",
+          "matchScore": 59,
+          "score": 52.898,
+          "position": 32
+        },
+        {
+          "id": "2549475383",
+          "title": "Livetopia🏡 New House",
+          "genre": "Co-op",
+          "creator": "Century Makers",
+          "matchScore": 61,
+          "score": 52.812,
+          "position": 33
+        },
+        {
+          "id": "2435789930",
+          "title": "[🏠NEW!!] Twilight Daycare!",
+          "genre": "Co-op",
+          "creator": "Nighty Studio",
+          "matchScore": 62,
+          "score": 52.786,
+          "position": 34
+        },
+        {
+          "id": "4104399691",
+          "title": "Home Run Simulator",
+          "genre": "Racing",
+          "creator": "House of Highlights",
+          "matchScore": 88,
+          "score": 52.706,
+          "position": 35
+        },
+        {
+          "id": "3476371299",
+          "title": "⚡Race Clicker",
+          "genre": "Racing",
+          "creator": "48h Games",
+          "matchScore": 62,
+          "score": 52.362,
+          "position": 36
+        },
+        {
+          "id": "3756501373",
+          "title": "[UPDATE 4] Meme Sea",
+          "genre": "Action RPG",
+          "creator": "Meme Sea Group",
+          "matchScore": 61,
+          "score": 52.088,
+          "position": 37
+        },
+        {
+          "id": "3012965062",
+          "title": "[UPDATE] The Presentation Experience",
+          "genre": "Co-op",
+          "creator": "Minimal Games",
+          "matchScore": 60,
+          "score": 52.043,
+          "position": 38
+        },
+        {
+          "id": "5838365297",
+          "title": "Basketball Hoop Simulator 🏀",
+          "genre": "Simulation",
+          "creator": "Comeback Simulators",
+          "matchScore": 94,
+          "score": 51.996,
+          "position": 39
+        },
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 55,
+          "score": 51.94,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 19,
+        "preferredGenreShare": 47.5,
+        "baselinePreferredGenreShare": 5,
+        "preferredGenreLiftPoints": 42.5,
+        "meanMatchScore": 77.075,
+        "topGenres": [
+          {
+            "genre": "Racing",
+            "count": 18,
+            "share": 45
+          },
+          {
+            "genre": "Co-op",
+            "count": 8,
+            "share": 20
+          },
+          {
+            "genre": "Action RPG",
+            "count": 7,
+            "share": 17.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Horror",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Exploration",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.25,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "story-first",
+      "label": "Story seeker",
+      "preferences": [
+        "Exploration",
+        "Horror"
+      ],
+      "topResults": [
+        {
+          "id": "3647333358",
+          "title": "[VIP] Evade 🎃✨",
+          "genre": "Horror",
+          "creator": "Hexagon Development Community",
+          "matchScore": 99,
+          "score": 76.193,
+          "position": 1
+        },
+        {
+          "id": "994732206",
+          "title": "Blox Fruits",
+          "genre": "Action RPG",
+          "creator": "Gamer Robot Inc",
+          "matchScore": 96,
+          "score": 75.457,
+          "position": 2
+        },
+        {
+          "id": "972475338",
+          "title": "🚩Expedition Antarctica",
+          "genre": "Exploration",
+          "creator": "Playduo Studio",
+          "matchScore": 95,
+          "score": 72.246,
+          "position": 3
+        },
+        {
+          "id": "1709917610",
+          "title": "Regretevator [ ELEVATOR SIMULATOR ]",
+          "genre": "Co-op",
+          "creator": "The Axolotl Sun",
+          "matchScore": 93,
+          "score": 70.919,
+          "position": 4
+        },
+        {
+          "id": "4434803478",
+          "title": "Teamwork Puzzles 2 (Obby)",
+          "genre": "Puzzle",
+          "creator": "Pear Pressure",
+          "matchScore": 96,
+          "score": 70.689,
+          "position": 5
+        },
+        {
+          "id": "3476371299",
+          "title": "⚡Race Clicker",
+          "genre": "Racing",
+          "creator": "48h Games",
+          "matchScore": 87,
+          "score": 68.737,
+          "position": 6
+        },
+        {
+          "id": "5750914919",
+          "title": "[🏴‍☠️] Fisch",
+          "genre": "Simulation",
+          "creator": "Fisching",
+          "matchScore": 88,
+          "score": 68.118,
+          "position": 7
+        },
+        {
+          "id": "66654135",
+          "title": "Murder Mystery 2",
+          "genre": "Horror",
+          "creator": "@Nikilis",
+          "matchScore": 95,
+          "score": 66.955,
+          "position": 8
+        },
+        {
+          "id": "358276974",
+          "title": "Apocalypse Rising 2",
+          "genre": "Action RPG",
+          "creator": "Dualpoint Interactive",
+          "matchScore": 99,
+          "score": 66.942,
+          "position": 9
+        },
+        {
+          "id": "2440500124",
+          "title": "🎃 DOORS 👁️",
+          "genre": "Horror",
+          "creator": "LSPLASH",
+          "matchScore": 99,
+          "score": 66.209,
+          "position": 10
+        },
+        {
+          "id": "372226183",
+          "title": "Flee the Facility",
+          "genre": "Horror",
+          "creator": "A.W. Apps",
+          "matchScore": 94,
+          "score": 65.429,
+          "position": 11
+        },
+        {
+          "id": "648454481",
+          "title": "[🎃UPDATE] Grand Piece Online",
+          "genre": "Action RPG",
+          "creator": "Grand Quest Games",
+          "matchScore": 99,
+          "score": 65.318,
+          "position": 12
+        },
+        {
+          "id": "2294168059",
+          "title": "[HALLOWEEN 🎃] The Mimic",
+          "genre": "Horror",
+          "creator": "CTStudio",
+          "matchScore": 96,
+          "score": 64.856,
+          "position": 13
+        },
+        {
+          "id": "1451439645",
+          "title": "[🎃 UPD] King Legacy",
+          "genre": "Action RPG",
+          "creator": "Sea King Games",
+          "matchScore": 91,
+          "score": 64.67,
+          "position": 14
+        },
+        {
+          "id": "187796008",
+          "title": "Those Who Remain",
+          "genre": "Action RPG",
+          "creator": "Peak Development Studios",
+          "matchScore": 97,
+          "score": 64.337,
+          "position": 15
+        },
+        {
+          "id": "1235188606",
+          "title": "😈SHADOW Dragon Adventures 🐉 Fantasy Pets ✨",
+          "genre": "Action RPG",
+          "creator": "Sonar Studios",
+          "matchScore": 92,
+          "score": 64.035,
+          "position": 16
+        },
+        {
+          "id": "2827951974",
+          "title": "SCP Games and SCP Monsters",
+          "genre": "Co-op",
+          "creator": "@lolbuih",
+          "matchScore": 95,
+          "score": 63.994,
+          "position": 17
+        },
+        {
+          "id": "1125307892",
+          "title": "[🎅] In Area 51 [ALPHA]",
+          "genre": "Horror",
+          "creator": "@Metrivus",
+          "matchScore": 99,
+          "score": 63.9,
+          "position": 18
+        },
+        {
+          "id": "5096440156",
+          "title": "weird strict dad [BOOK 2]",
+          "genre": "Exploration",
+          "creator": "BlueLoop Studios",
+          "matchScore": 99,
+          "score": 63.888,
+          "position": 19
+        },
+        {
+          "id": "2157872230",
+          "title": "Infectious Smile",
+          "genre": "Horror",
+          "creator": "laughablehaha",
+          "matchScore": 97,
+          "score": 63.779,
+          "position": 20
+        },
+        {
+          "id": "1315450727",
+          "title": "Daycare 🎈 (Story)",
+          "genre": "Exploration",
+          "creator": "Parwaz Studios",
+          "matchScore": 98,
+          "score": 63.664,
+          "position": 21
+        },
+        {
+          "id": "5650396773",
+          "title": "a dusty trip [✈️PLANE]",
+          "genre": "Exploration",
+          "creator": "Jandel's Road Trip",
+          "matchScore": 91,
+          "score": 63.583,
+          "position": 22
+        },
+        {
+          "id": "3608594708",
+          "title": "✨Collect The Body",
+          "genre": "Exploration",
+          "creator": "The Venomhawks",
+          "matchScore": 96,
+          "score": 63.101,
+          "position": 23
+        },
+        {
+          "id": "1000233041",
+          "title": "3008 [2.73]",
+          "genre": "Horror",
+          "creator": "@uglyburger0",
+          "matchScore": 99,
+          "score": 63.044,
+          "position": 24
+        },
+        {
+          "id": "1415710834",
+          "title": "Banana Eats 🌈",
+          "genre": "Horror",
+          "creator": "@RyCitrus",
+          "matchScore": 95,
+          "score": 63.008,
+          "position": 25
+        },
+        {
+          "id": "4925010421",
+          "title": "Interliminality (ALPHA 1.3.6)",
+          "genre": "Exploration",
+          "creator": "Studio308",
+          "matchScore": 96,
+          "score": 62.884,
+          "position": 26
+        },
+        {
+          "id": "2274830359",
+          "title": "Escape Running Head",
+          "genre": "Horror",
+          "creator": "@manato48",
+          "matchScore": 93,
+          "score": 62.812,
+          "position": 27
+        },
+        {
+          "id": "1516533665",
+          "title": "Piggy [DECAY CHAPTER]",
+          "genre": "Horror",
+          "creator": "@MiniToon",
+          "matchScore": 95,
+          "score": 62.642,
+          "position": 28
+        },
+        {
+          "id": "4365819446",
+          "title": "[NEW MAP] Keys 🗝️ Season 20",
+          "genre": "Horror",
+          "creator": "Daybreaker",
+          "matchScore": 91,
+          "score": 62.613,
+          "position": 29
+        },
+        {
+          "id": "4987467534",
+          "title": "[HALLOWEEN] Residence Massacre",
+          "genre": "Horror",
+          "creator": "@MisterGamer_67",
+          "matchScore": 95,
+          "score": 62.549,
+          "position": 30
+        },
+        {
+          "id": "3056160040",
+          "title": "Find The Markers (237)",
+          "genre": "Exploration",
+          "creator": "markers epic memers",
+          "matchScore": 97,
+          "score": 62.454,
+          "position": 31
+        },
+        {
+          "id": "2644656496",
+          "title": "HAZE PIECE",
+          "genre": "Action RPG",
+          "creator": "[HS] Haze Studios",
+          "matchScore": 94,
+          "score": 62.426,
+          "position": 32
+        },
+        {
+          "id": "1452258989",
+          "title": "[FREE ADMIN]",
+          "genre": "Co-op",
+          "creator": "Creator_Studio",
+          "matchScore": 94,
+          "score": 62.417,
+          "position": 33
+        },
+        {
+          "id": "4834449429",
+          "title": "Radiant Residents",
+          "genre": "Horror",
+          "creator": "@UmmmOkayWhat",
+          "matchScore": 98,
+          "score": 62.116,
+          "position": 34
+        },
+        {
+          "id": "3264293423",
+          "title": "Five Nights At Freddy's Doom",
+          "genre": "Horror",
+          "creator": "@CaioOpaleiroBR",
+          "matchScore": 99,
+          "score": 61.981,
+          "position": 35
+        },
+        {
+          "id": "4523856444",
+          "title": "Color or Die 🎨",
+          "genre": "Horror",
+          "creator": "BIGworks Games",
+          "matchScore": 99,
+          "score": 61.924,
+          "position": 36
+        },
+        {
+          "id": "210851291",
+          "title": "Build A Boat For Treasure",
+          "genre": "Simulation",
+          "creator": "Chillz Studios",
+          "matchScore": 96,
+          "score": 61.762,
+          "position": 37
+        },
+        {
+          "id": "5422546686",
+          "title": "NEW🦋 Horse Life 🐎",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 87,
+          "score": 61.512,
+          "position": 38
+        },
+        {
+          "id": "4362771421",
+          "title": "Garten of Banban",
+          "genre": "Exploration",
+          "creator": "Jule Games x Euphoric Bros",
+          "matchScore": 93,
+          "score": 61.432,
+          "position": 39
+        },
+        {
+          "id": "4990998060",
+          "title": "Carry A Friend! (Teamwork Obby)",
+          "genre": "Puzzle",
+          "creator": "Picture Pearfect",
+          "matchScore": 92,
+          "score": 61.156,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 24,
+        "preferredGenreShare": 60,
+        "baselinePreferredGenreShare": 25,
+        "preferredGenreLiftPoints": 35,
+        "meanMatchScore": 95.1,
+        "topGenres": [
+          {
+            "genre": "Horror",
+            "count": 16,
+            "share": 40
+          },
+          {
+            "genre": "Exploration",
+            "count": 8,
+            "share": 20
+          },
+          {
+            "genre": "Action RPG",
+            "count": 7,
+            "share": 17.5
+          },
+          {
+            "genre": "Co-op",
+            "count": 4,
+            "share": 10
+          },
+          {
+            "genre": "Puzzle",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Simulation",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.17647058823529413,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "speedrunner",
+      "label": "Speedrunner",
+      "preferences": [
+        "Racing",
+        "Action RPG"
+      ],
+      "topResults": [
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 98,
+          "score": 74.345,
+          "position": 1
+        },
+        {
+          "id": "3308103880",
+          "title": "🍂 Maple Hospital",
+          "genre": "Co-op",
+          "creator": "Marizma Games",
+          "matchScore": 99,
+          "score": 73.538,
+          "position": 2
+        },
+        {
+          "id": "4293374620",
+          "title": "[🎃] Super League Soccer",
+          "genre": "Racing",
+          "creator": "Play! Football",
+          "matchScore": 98,
+          "score": 73.122,
+          "position": 3
+        },
+        {
+          "id": "3365661357",
+          "title": "SharkBite 2 🦈",
+          "genre": "Horror",
+          "creator": "Abracadabra",
+          "matchScore": 90,
+          "score": 68.879,
+          "position": 4
+        },
+        {
+          "id": "3754482795",
+          "title": "Elemental Powers Tycoon",
+          "genre": "Simulation",
+          "creator": "Giggle Inc",
+          "matchScore": 98,
+          "score": 68.845,
+          "position": 5
+        },
+        {
+          "id": "1782832995",
+          "title": "[🕷️HALLOWEEN🕸️] A Universal Time 3.9 🎃",
+          "genre": "Action RPG",
+          "creator": "Universe Time Studio",
+          "matchScore": 98,
+          "score": 66.921,
+          "position": 6
+        },
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 91,
+          "score": 65.435,
+          "position": 7
+        },
+        {
+          "id": "1709832923",
+          "title": "Zombie Uprising",
+          "genre": "Action RPG",
+          "creator": "USSF - United States Special Forces",
+          "matchScore": 96,
+          "score": 65.255,
+          "position": 8
+        },
+        {
+          "id": "2435789930",
+          "title": "[🏠NEW!!] Twilight Daycare!",
+          "genre": "Co-op",
+          "creator": "Nighty Studio",
+          "matchScore": 99,
+          "score": 65.181,
+          "position": 9
+        },
+        {
+          "id": "4348829796",
+          "title": "Murderers VS Sheriffs Duels",
+          "genre": "Action RPG",
+          "creator": "Red21 Games",
+          "matchScore": 98,
+          "score": 65.012,
+          "position": 10
+        },
+        {
+          "id": "3457700596",
+          "title": "[MYTHICAL WOLF] Fruit Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "P O P O",
+          "matchScore": 98,
+          "score": 64.74,
+          "position": 11
+        },
+        {
+          "id": "4568630521",
+          "title": "[🦇] Heroes Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "more awesome games yo",
+          "matchScore": 98,
+          "score": 64.698,
+          "position": 12
+        },
+        {
+          "id": "485929611",
+          "title": "Horse World",
+          "genre": "Action RPG",
+          "creator": "Virtuality World",
+          "matchScore": 99,
+          "score": 64.499,
+          "position": 13
+        },
+        {
+          "id": "1278035280",
+          "title": "Warrior Cats: Ultimate Edition",
+          "genre": "Co-op",
+          "creator": "WarriorCatsRP",
+          "matchScore": 94,
+          "score": 64.311,
+          "position": 14
+        },
+        {
+          "id": "2655311011",
+          "title": "[👑 EXTREME] Anime Dimensions Simulator",
+          "genre": "Action RPG",
+          "creator": "Albatross Games",
+          "matchScore": 95,
+          "score": 64.219,
+          "position": 15
+        },
+        {
+          "id": "3419284255",
+          "title": "Peroxide",
+          "genre": "Action RPG",
+          "creator": "[Peroxide]",
+          "matchScore": 99,
+          "score": 64.052,
+          "position": 16
+        },
+        {
+          "id": "4949420752",
+          "title": "Realistic Street Soccer (3 on 3)",
+          "genre": "Racing",
+          "creator": "The Builder's Legion",
+          "matchScore": 89,
+          "score": 63.565,
+          "position": 17
+        },
+        {
+          "id": "2380077519",
+          "title": "Slap Battles👏",
+          "genre": "Action RPG",
+          "creator": "Slap Battles",
+          "matchScore": 94,
+          "score": 63.522,
+          "position": 18
+        },
+        {
+          "id": "4931927012",
+          "title": "🎃Basketball Legends🎃",
+          "genre": "Racing",
+          "creator": "InfinitySports",
+          "matchScore": 99,
+          "score": 63.361,
+          "position": 19
+        },
+        {
+          "id": "3808081382",
+          "title": "The Strongest Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Yielding Arts",
+          "matchScore": 89,
+          "score": 63.315,
+          "position": 20
+        },
+        {
+          "id": "3837114739",
+          "title": "The Vampire Legacies 2 BETA",
+          "genre": "Co-op",
+          "creator": "The Vampire Legacies",
+          "matchScore": 98,
+          "score": 62.954,
+          "position": 21
+        },
+        {
+          "id": "111958650",
+          "title": "[☢️] Arsenal",
+          "genre": "Action RPG",
+          "creator": "ROLVe",
+          "matchScore": 99,
+          "score": 62.839,
+          "position": 22
+        },
+        {
+          "id": "4777817887",
+          "title": "Blade Ball",
+          "genre": "Action RPG",
+          "creator": "Wiggity.",
+          "matchScore": 87,
+          "score": 62.638,
+          "position": 23
+        },
+        {
+          "id": "3508322461",
+          "title": "[PERFECTION] Jujutsu Shenanigans",
+          "genre": "Action RPG",
+          "creator": "@AlsoNot_Tze",
+          "matchScore": 86,
+          "score": 61.523,
+          "position": 24
+        },
+        {
+          "id": "1998835206",
+          "title": "[🎃] item asylum",
+          "genre": "Action RPG",
+          "creator": "Jean's Bizarre Community",
+          "matchScore": 90,
+          "score": 61.462,
+          "position": 25
+        },
+        {
+          "id": "5214918244",
+          "title": "⚽️Ultimate Soccer",
+          "genre": "Racing",
+          "creator": "Untitled Soccer Thing",
+          "matchScore": 94,
+          "score": 61.265,
+          "position": 26
+        },
+        {
+          "id": "3168615253",
+          "title": "Ability Wars",
+          "genre": "Action RPG",
+          "creator": "Ability Wars",
+          "matchScore": 93,
+          "score": 61.153,
+          "position": 27
+        },
+        {
+          "id": "1742264997",
+          "title": "SCP: Roleplay",
+          "genre": "Co-op",
+          "creator": "SCP | Roleplay Community",
+          "matchScore": 88,
+          "score": 61.082,
+          "position": 28
+        },
+        {
+          "id": "1318971886",
+          "title": "Break In (Story)",
+          "genre": "Exploration",
+          "creator": "@Cracky4",
+          "matchScore": 61,
+          "score": 61.072,
+          "position": 29
+        },
+        {
+          "id": "4673599750",
+          "title": "Murderers vs Sheriffs 2",
+          "genre": "Action RPG",
+          "creator": "Murderers vs Sheriffs 2",
+          "matchScore": 93,
+          "score": 61.044,
+          "position": 30
+        },
+        {
+          "id": "3408154779",
+          "title": "Blast Zone",
+          "genre": "Action RPG",
+          "creator": "Blast Zone Team",
+          "matchScore": 95,
+          "score": 60.991,
+          "position": 31
+        },
+        {
+          "id": "3520336190",
+          "title": "WWE 24 Roleplay (REVAMP)",
+          "genre": "Co-op",
+          "creator": "@JustCallMeYousef",
+          "matchScore": 98,
+          "score": 60.977,
+          "position": 32
+        },
+        {
+          "id": "1268927906",
+          "title": "💪Muscle Legends",
+          "genre": "Simulation",
+          "creator": "Scriptbloxian Studios",
+          "matchScore": 99,
+          "score": 60.833,
+          "position": 33
+        },
+        {
+          "id": "2765784373",
+          "title": "PHIGHTING! [ALPHA]",
+          "genre": "Action RPG",
+          "creator": "boggio",
+          "matchScore": 87,
+          "score": 60.598,
+          "position": 34
+        },
+        {
+          "id": "3421408084",
+          "title": "Rogue Demon",
+          "genre": "Action RPG",
+          "creator": "TS Industries.",
+          "matchScore": 94,
+          "score": 60.596,
+          "position": 35
+        },
+        {
+          "id": "5012222382",
+          "title": "Gunfight Arena",
+          "genre": "Action RPG",
+          "creator": "Gunfight Studio",
+          "matchScore": 94,
+          "score": 60.541,
+          "position": 36
+        },
+        {
+          "id": "4675711088",
+          "title": "MPS 4-a-side",
+          "genre": "Racing",
+          "creator": "MPS Studiоs",
+          "matchScore": 98,
+          "score": 60.526,
+          "position": 37
+        },
+        {
+          "id": "6072944764",
+          "title": "YooBroxDD's DOORS RP 👁️",
+          "genre": "Co-op",
+          "creator": "@YooBroxDD",
+          "matchScore": 90,
+          "score": 60.392,
+          "position": 38
+        },
+        {
+          "id": "5117983607",
+          "title": "[upd5.3] superbox siege defense",
+          "genre": "Action RPG",
+          "creator": "team spelled incorrectly",
+          "matchScore": 94,
+          "score": 60.385,
+          "position": 39
+        },
+        {
+          "id": "2309508401",
+          "title": "Smooth Slicing (NEW WEAPON)",
+          "genre": "Action RPG",
+          "creator": "Harpax Dev",
+          "matchScore": 99,
+          "score": 60.309,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 28,
+        "preferredGenreShare": 70,
+        "baselinePreferredGenreShare": 32.5,
+        "preferredGenreLiftPoints": 37.5,
+        "meanMatchScore": 93.9,
+        "topGenres": [
+          {
+            "genre": "Action RPG",
+            "count": 23,
+            "share": 57.49999999999999
+          },
+          {
+            "genre": "Co-op",
+            "count": 8,
+            "share": 20
+          },
+          {
+            "genre": "Racing",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Exploration",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Horror",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.14285714285714285,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "tactician",
+      "label": "Tactician",
+      "preferences": [
+        "Puzzle",
+        "Simulation"
+      ],
+      "topResults": [
+        {
+          "id": "6035872082",
+          "title": "RIVALS",
+          "genre": "Action RPG",
+          "creator": "Nosniy Games",
+          "matchScore": 98,
+          "score": 76.088,
+          "position": 1
+        },
+        {
+          "id": "5203828273",
+          "title": "Dress To Impress 💜",
+          "genre": "Co-op",
+          "creator": "Dress To Impress Group",
+          "matchScore": 99,
+          "score": 75.314,
+          "position": 2
+        },
+        {
+          "id": "1318971886",
+          "title": "Break In (Story)",
+          "genre": "Exploration",
+          "creator": "@Cracky4",
+          "matchScore": 99,
+          "score": 73.802,
+          "position": 3
+        },
+        {
+          "id": "5569032992",
+          "title": "🎟️Dandy's World [ALPHA]",
+          "genre": "Horror",
+          "creator": "BlushCrunch Studio",
+          "matchScore": 90,
+          "score": 73.537,
+          "position": 4
+        },
+        {
+          "id": "5620182793",
+          "title": "[W14] Skateboard Obby",
+          "genre": "Puzzle",
+          "creator": "Gorilla Obby",
+          "matchScore": 98,
+          "score": 71.628,
+          "position": 5
+        },
+        {
+          "id": "1719305066",
+          "title": "ROBLOX Rally Racing",
+          "genre": "Racing",
+          "creator": "Roblox Rallying Group",
+          "matchScore": 99,
+          "score": 71.505,
+          "position": 6
+        },
+        {
+          "id": "4778845442",
+          "title": "[⚔️RANKED] Toilet Tower Defense",
+          "genre": "Simulation",
+          "creator": "Telanthric Development",
+          "matchScore": 98,
+          "score": 69.15,
+          "position": 7
+        },
+        {
+          "id": "5166944221",
+          "title": "Death Ball",
+          "genre": "Action RPG",
+          "creator": "Anime Boys Developers",
+          "matchScore": 98,
+          "score": 68.024,
+          "position": 8
+        },
+        {
+          "id": "4342047058",
+          "title": "Guts &amp; Blackpowder",
+          "genre": "Action RPG",
+          "creator": "Guts &amp; Blackpowder",
+          "matchScore": 99,
+          "score": 66.898,
+          "position": 9
+        },
+        {
+          "id": "2992873140",
+          "title": "Emergency Hamburg",
+          "genre": "Co-op",
+          "creator": "Emergency Hamburg",
+          "matchScore": 99,
+          "score": 66.232,
+          "position": 10
+        },
+        {
+          "id": "88070565",
+          "title": "Welcome to Bloxburg",
+          "genre": "Co-op",
+          "creator": "Bloxburg Development",
+          "matchScore": 98,
+          "score": 65.891,
+          "position": 11
+        },
+        {
+          "id": "4540138978",
+          "title": "Metro Life 🏙️ City RP",
+          "genre": "Co-op",
+          "creator": "Century Creators",
+          "matchScore": 97,
+          "score": 65.628,
+          "position": 12
+        },
+        {
+          "id": "1054526971",
+          "title": "Blackhawk Rescue Mission 5",
+          "genre": "Action RPG",
+          "creator": "PLATINUM FIVE",
+          "matchScore": 98,
+          "score": 65.571,
+          "position": 13
+        },
+        {
+          "id": "2549475383",
+          "title": "Livetopia🏡 New House",
+          "genre": "Co-op",
+          "creator": "Century Makers",
+          "matchScore": 99,
+          "score": 65.542,
+          "position": 14
+        },
+        {
+          "id": "1686885941",
+          "title": "Brookhaven 🏡RP",
+          "genre": "Co-op",
+          "creator": "@Wolfpaq",
+          "matchScore": 91,
+          "score": 65.269,
+          "position": 15
+        },
+        {
+          "id": "2049551477",
+          "title": "Cheese Escape [Horror]",
+          "genre": "Horror",
+          "creator": "@Spirow734",
+          "matchScore": 99,
+          "score": 65.127,
+          "position": 16
+        },
+        {
+          "id": "3012965062",
+          "title": "[UPDATE] The Presentation Experience",
+          "genre": "Co-op",
+          "creator": "Minimal Games",
+          "matchScore": 99,
+          "score": 65.108,
+          "position": 17
+        },
+        {
+          "id": "245662005",
+          "title": "Jailbreak 🍁",
+          "genre": "Action RPG",
+          "creator": "Badimo",
+          "matchScore": 99,
+          "score": 64.99,
+          "position": 18
+        },
+        {
+          "id": "1511883870",
+          "title": "Shindo Life [239]",
+          "genre": "Action RPG",
+          "creator": "RELL World",
+          "matchScore": 92,
+          "score": 64.936,
+          "position": 19
+        },
+        {
+          "id": "2160907981",
+          "title": "Spray Paint!",
+          "genre": "Co-op",
+          "creator": "@SheriffTaco",
+          "matchScore": 98,
+          "score": 64.729,
+          "position": 20
+        },
+        {
+          "id": "3240075297",
+          "title": "Berry Avenue 🏠 RP",
+          "genre": "Co-op",
+          "creator": "Amberry Games",
+          "matchScore": 95,
+          "score": 64.657,
+          "position": 21
+        },
+        {
+          "id": "113491250",
+          "title": "Phantom Forces",
+          "genre": "Action RPG",
+          "creator": "StyLiS Studios",
+          "matchScore": 99,
+          "score": 64.505,
+          "position": 22
+        },
+        {
+          "id": "6097519616",
+          "title": "[YUTA] Jujutsu Beatdown",
+          "genre": "Action RPG",
+          "creator": "Accel Grounds",
+          "matchScore": 96,
+          "score": 64.413,
+          "position": 23
+        },
+        {
+          "id": "4019583467",
+          "title": "NEW🧙 Be NPC or DIE!💢",
+          "genre": "Horror",
+          "creator": "arashiyama",
+          "matchScore": 99,
+          "score": 64.091,
+          "position": 24
+        },
+        {
+          "id": "873703865",
+          "title": "Westbound",
+          "genre": "Exploration",
+          "creator": "Moondrop Studios",
+          "matchScore": 99,
+          "score": 63.855,
+          "position": 25
+        },
+        {
+          "id": "3204175584",
+          "title": "Redcliff City 🏡RP",
+          "genre": "Co-op",
+          "creator": "Redcliff City RP",
+          "matchScore": 97,
+          "score": 63.709,
+          "position": 26
+        },
+        {
+          "id": "2087494287",
+          "title": "H2O Mermaid Testing",
+          "genre": "Co-op",
+          "creator": "@ThatPreston",
+          "matchScore": 99,
+          "score": 63.687,
+          "position": 27
+        },
+        {
+          "id": "5265857965",
+          "title": "Legends Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Arts of Vermillion",
+          "matchScore": 99,
+          "score": 63.665,
+          "position": 28
+        },
+        {
+          "id": "5720553711",
+          "title": "NewSmith🏠RP Update 14!",
+          "genre": "Co-op",
+          "creator": "ARKverse office",
+          "matchScore": 90,
+          "score": 63.652,
+          "position": 29
+        },
+        {
+          "id": "5265950669",
+          "title": "Ultra Toilet Roleplay 2 [11.0]",
+          "genre": "Co-op",
+          "creator": "Ultimate Super Toilet Roleplay",
+          "matchScore": 99,
+          "score": 63.487,
+          "position": 30
+        },
+        {
+          "id": "5372679817",
+          "title": "Block Puzzle",
+          "genre": "Puzzle",
+          "creator": "JD Games.",
+          "matchScore": 99,
+          "score": 63.367,
+          "position": 31
+        },
+        {
+          "id": "1831550657",
+          "title": "⚡ Creatures of Sonaria 💙 Survive Kaiju Animals",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 88,
+          "score": 63.336,
+          "position": 32
+        },
+        {
+          "id": "540382210",
+          "title": "[HALLOWEEN!!!] Fredbear's Mega Roleplay",
+          "genre": "Co-op",
+          "creator": "Kypher Studios",
+          "matchScore": 94,
+          "score": 63.32,
+          "position": 33
+        },
+        {
+          "id": "4671010462",
+          "title": "Paradise 🏠 RP",
+          "genre": "Co-op",
+          "creator": "Cazeby",
+          "matchScore": 99,
+          "score": 63.006,
+          "position": 34
+        },
+        {
+          "id": "5254920366",
+          "title": "Secret Staycation",
+          "genre": "Exploration",
+          "creator": "ひみつのおるすばん：Secret Staycation",
+          "matchScore": 90,
+          "score": 62.886,
+          "position": 35
+        },
+        {
+          "id": "4948814458",
+          "title": "FORTLINE",
+          "genre": "Action RPG",
+          "creator": "Battle Royalе",
+          "matchScore": 98,
+          "score": 62.759,
+          "position": 36
+        },
+        {
+          "id": "4689722433",
+          "title": "Kitten Game 🐾",
+          "genre": "Co-op",
+          "creator": "@Bro_IsThisReal",
+          "matchScore": 89,
+          "score": 62.685,
+          "position": 37
+        },
+        {
+          "id": "5129563181",
+          "title": "Colony Survival ( Iron Update! 🏭)",
+          "genre": "Horror",
+          "creator": "Crunchy Orc",
+          "matchScore": 99,
+          "score": 62.259,
+          "position": 38
+        },
+        {
+          "id": "2589957623",
+          "title": "Car Suspension Test",
+          "genre": "Simulation",
+          "creator": "@TypKris",
+          "matchScore": 99,
+          "score": 62.246,
+          "position": 39
+        },
+        {
+          "id": "3560583071",
+          "title": "Hello Neighbor [2 Acts][Xbox support]",
+          "genre": "Horror",
+          "creator": "@pantrill",
+          "matchScore": 96,
+          "score": 62.227,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 4,
+        "preferredGenreShare": 10,
+        "baselinePreferredGenreShare": 7.5,
+        "preferredGenreLiftPoints": 2.5,
+        "meanMatchScore": 96.75,
+        "topGenres": [
+          {
+            "genre": "Co-op",
+            "count": 17,
+            "share": 42.5
+          },
+          {
+            "genre": "Action RPG",
+            "count": 10,
+            "share": 25
+          },
+          {
+            "genre": "Horror",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Exploration",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Simulation",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.2698412698412698,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "adventurer",
+      "label": "Open-world adventurer",
+      "preferences": [
+        "Exploration",
+        "Action RPG"
+      ],
+      "topResults": [
+        {
+          "id": "5650396773",
+          "title": "a dusty trip [✈️PLANE]",
+          "genre": "Exploration",
+          "creator": "Jandel's Road Trip",
+          "matchScore": 99,
+          "score": 74.263,
+          "position": 1
+        },
+        {
+          "id": "2440500124",
+          "title": "🎃 DOORS 👁️",
+          "genre": "Horror",
+          "creator": "LSPLASH",
+          "matchScore": 99,
+          "score": 74.209,
+          "position": 2
+        },
+        {
+          "id": "994732206",
+          "title": "Blox Fruits",
+          "genre": "Action RPG",
+          "creator": "Gamer Robot Inc",
+          "matchScore": 91,
+          "score": 73.782,
+          "position": 3
+        },
+        {
+          "id": "3308103880",
+          "title": "🍂 Maple Hospital",
+          "genre": "Co-op",
+          "creator": "Marizma Games",
+          "matchScore": 99,
+          "score": 73.538,
+          "position": 4
+        },
+        {
+          "id": "5750914919",
+          "title": "[🏴‍☠️] Fisch",
+          "genre": "Simulation",
+          "creator": "Fisching",
+          "matchScore": 99,
+          "score": 71.803,
+          "position": 5
+        },
+        {
+          "id": "3476371299",
+          "title": "⚡Race Clicker",
+          "genre": "Racing",
+          "creator": "48h Games",
+          "matchScore": 95,
+          "score": 71.417,
+          "position": 6
+        },
+        {
+          "id": "3502524667",
+          "title": "GRUMPY GRAN! (SCARY OBBY)",
+          "genre": "Puzzle",
+          "creator": "@PlatinumFalls",
+          "matchScore": 99,
+          "score": 70.733,
+          "position": 7
+        },
+        {
+          "id": "3508322461",
+          "title": "[PERFECTION] Jujutsu Shenanigans",
+          "genre": "Action RPG",
+          "creator": "@AlsoNot_Tze",
+          "matchScore": 97,
+          "score": 67.608,
+          "position": 8
+        },
+        {
+          "id": "5422546686",
+          "title": "NEW🦋 Horse Life 🐎",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 99,
+          "score": 65.532,
+          "position": 9
+        },
+        {
+          "id": "4673599750",
+          "title": "Murderers vs Sheriffs 2",
+          "genre": "Action RPG",
+          "creator": "Murderers vs Sheriffs 2",
+          "matchScore": 98,
+          "score": 65.119,
+          "position": 10
+        },
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 89,
+          "score": 64.765,
+          "position": 11
+        },
+        {
+          "id": "93740418",
+          "title": "Hide and Seek Extreme",
+          "genre": "Co-op",
+          "creator": "@Tim7775",
+          "matchScore": 93,
+          "score": 64.718,
+          "position": 12
+        },
+        {
+          "id": "4777817887",
+          "title": "Blade Ball",
+          "genre": "Action RPG",
+          "creator": "Wiggity.",
+          "matchScore": 93,
+          "score": 64.648,
+          "position": 13
+        },
+        {
+          "id": "1278035280",
+          "title": "Warrior Cats: Ultimate Edition",
+          "genre": "Co-op",
+          "creator": "WarriorCatsRP",
+          "matchScore": 95,
+          "score": 64.646,
+          "position": 14
+        },
+        {
+          "id": "3756501373",
+          "title": "[UPDATE 4] Meme Sea",
+          "genre": "Action RPG",
+          "creator": "Meme Sea Group",
+          "matchScore": 98,
+          "score": 64.483,
+          "position": 15
+        },
+        {
+          "id": "3608594708",
+          "title": "✨Collect The Body",
+          "genre": "Exploration",
+          "creator": "The Venomhawks",
+          "matchScore": 99,
+          "score": 64.106,
+          "position": 16
+        },
+        {
+          "id": "3457700596",
+          "title": "[MYTHICAL WOLF] Fruit Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "P O P O",
+          "matchScore": 96,
+          "score": 64.07,
+          "position": 17
+        },
+        {
+          "id": "4348829796",
+          "title": "Murderers VS Sheriffs Duels",
+          "genre": "Action RPG",
+          "creator": "Red21 Games",
+          "matchScore": 95,
+          "score": 64.007,
+          "position": 18
+        },
+        {
+          "id": "3808081382",
+          "title": "The Strongest Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Yielding Arts",
+          "matchScore": 91,
+          "score": 63.985,
+          "position": 19
+        },
+        {
+          "id": "1235188606",
+          "title": "😈SHADOW Dragon Adventures 🐉 Fantasy Pets ✨",
+          "genre": "Action RPG",
+          "creator": "Sonar Studios",
+          "matchScore": 91,
+          "score": 63.7,
+          "position": 20
+        },
+        {
+          "id": "1782832995",
+          "title": "[🕷️HALLOWEEN🕸️] A Universal Time 3.9 🎃",
+          "genre": "Action RPG",
+          "creator": "Universe Time Studio",
+          "matchScore": 95,
+          "score": 63.516,
+          "position": 21
+        },
+        {
+          "id": "1451439645",
+          "title": "[🎃 UPD] King Legacy",
+          "genre": "Action RPG",
+          "creator": "Sea King Games",
+          "matchScore": 87,
+          "score": 63.33,
+          "position": 22
+        },
+        {
+          "id": "648454481",
+          "title": "[🎃UPDATE] Grand Piece Online",
+          "genre": "Action RPG",
+          "creator": "Grand Quest Games",
+          "matchScore": 93,
+          "score": 63.308,
+          "position": 23
+        },
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 88,
+          "score": 62.995,
+          "position": 24
+        },
+        {
+          "id": "2765784373",
+          "title": "PHIGHTING! [ALPHA]",
+          "genre": "Action RPG",
+          "creator": "boggio",
+          "matchScore": 94,
+          "score": 62.943,
+          "position": 25
+        },
+        {
+          "id": "605887098",
+          "title": "⭐ ZENVO! Car Dealership Tycoon",
+          "genre": "Simulation",
+          "creator": "Foxzie",
+          "matchScore": 99,
+          "score": 62.612,
+          "position": 26
+        },
+        {
+          "id": "2655311011",
+          "title": "[👑 EXTREME] Anime Dimensions Simulator",
+          "genre": "Action RPG",
+          "creator": "Albatross Games",
+          "matchScore": 90,
+          "score": 62.544,
+          "position": 27
+        },
+        {
+          "id": "2435789930",
+          "title": "[🏠NEW!!] Twilight Daycare!",
+          "genre": "Co-op",
+          "creator": "Nighty Studio",
+          "matchScore": 91,
+          "score": 62.501,
+          "position": 28
+        },
+        {
+          "id": "3168615253",
+          "title": "Ability Wars",
+          "genre": "Action RPG",
+          "creator": "Ability Wars",
+          "matchScore": 97,
+          "score": 62.493,
+          "position": 29
+        },
+        {
+          "id": "1390601379",
+          "title": "Combat Warriors 🩸",
+          "genre": "Action RPG",
+          "creator": "PlayCombatWarriors",
+          "matchScore": 94,
+          "score": 62.059,
+          "position": 30
+        },
+        {
+          "id": "4568630521",
+          "title": "[🦇] Heroes Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "more awesome games yo",
+          "matchScore": 90,
+          "score": 62.018,
+          "position": 31
+        },
+        {
+          "id": "3013715655",
+          "title": "Fantasia 👑",
+          "genre": "Co-op",
+          "creator": "sheki studio",
+          "matchScore": 95,
+          "score": 61.992,
+          "position": 32
+        },
+        {
+          "id": "3837114739",
+          "title": "The Vampire Legacies 2 BETA",
+          "genre": "Co-op",
+          "creator": "The Vampire Legacies",
+          "matchScore": 95,
+          "score": 61.949,
+          "position": 33
+        },
+        {
+          "id": "5830262966",
+          "title": "Impossible Squid Game! Glass Bridge 2",
+          "genre": "Puzzle",
+          "creator": "Northern Lights LTD",
+          "matchScore": 92,
+          "score": 61.942,
+          "position": 34
+        },
+        {
+          "id": "4523856444",
+          "title": "Color or Die 🎨",
+          "genre": "Horror",
+          "creator": "BIGworks Games",
+          "matchScore": 99,
+          "score": 61.924,
+          "position": 35
+        },
+        {
+          "id": "1709832923",
+          "title": "Zombie Uprising",
+          "genre": "Action RPG",
+          "creator": "USSF - United States Special Forces",
+          "matchScore": 93,
+          "score": 61.85,
+          "position": 36
+        },
+        {
+          "id": "3420059569",
+          "title": "GREAT SCHOOL BREAKOUT! (First Person Obby)",
+          "genre": "Puzzle",
+          "creator": "@PlatinumFalls",
+          "matchScore": 99,
+          "score": 61.847,
+          "position": 37
+        },
+        {
+          "id": "5148099079",
+          "title": "Bike of Hell",
+          "genre": "Puzzle",
+          "creator": "Captain Grumpy Games",
+          "matchScore": 99,
+          "score": 61.787,
+          "position": 38
+        },
+        {
+          "id": "111958650",
+          "title": "[☢️] Arsenal",
+          "genre": "Action RPG",
+          "creator": "ROLVe",
+          "matchScore": 95,
+          "score": 61.499,
+          "position": 39
+        },
+        {
+          "id": "4362771421",
+          "title": "Garten of Banban",
+          "genre": "Exploration",
+          "creator": "Jule Games x Euphoric Bros",
+          "matchScore": 93,
+          "score": 61.432,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 23,
+        "preferredGenreShare": 57.49999999999999,
+        "baselinePreferredGenreShare": 40,
+        "preferredGenreLiftPoints": 17.499999999999993,
+        "meanMatchScore": 94.825,
+        "topGenres": [
+          {
+            "genre": "Action RPG",
+            "count": 20,
+            "share": 50
+          },
+          {
+            "genre": "Co-op",
+            "count": 8,
+            "share": 20
+          },
+          {
+            "genre": "Puzzle",
+            "count": 4,
+            "share": 10
+          },
+          {
+            "genre": "Exploration",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Horror",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Simulation",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.21212121212121213,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "party-player",
+      "label": "Party player",
+      "preferences": [
+        "Co-op",
+        "Racing"
+      ],
+      "topResults": [
+        {
+          "id": "4293374620",
+          "title": "[🎃] Super League Soccer",
+          "genre": "Racing",
+          "creator": "Play! Football",
+          "matchScore": 94,
+          "score": 71.782,
+          "position": 1
+        },
+        {
+          "id": "3354479870",
+          "title": "just daytona. (9 NEW CARS)",
+          "genre": "Simulation",
+          "creator": "@vouthin",
+          "matchScore": 98,
+          "score": 65.237,
+          "position": 2
+        },
+        {
+          "id": "3647333358",
+          "title": "[VIP] Evade 🎃✨",
+          "genre": "Horror",
+          "creator": "Hexagon Development Community",
+          "matchScore": 62,
+          "score": 63.798,
+          "position": 3
+        },
+        {
+          "id": "5214918244",
+          "title": "⚽️Ultimate Soccer",
+          "genre": "Racing",
+          "creator": "Untitled Soccer Thing",
+          "matchScore": 99,
+          "score": 62.94,
+          "position": 4
+        },
+        {
+          "id": "4949420752",
+          "title": "Realistic Street Soccer (3 on 3)",
+          "genre": "Racing",
+          "creator": "The Builder's Legion",
+          "matchScore": 86,
+          "score": 62.56,
+          "position": 5
+        },
+        {
+          "id": "3032132418",
+          "title": "HCBB 9v9 2.0",
+          "genre": "Racing",
+          "creator": "HCBB League",
+          "matchScore": 98,
+          "score": 62.048,
+          "position": 6
+        },
+        {
+          "id": "1451439645",
+          "title": "[🎃 UPD] King Legacy",
+          "genre": "Action RPG",
+          "creator": "Sea King Games",
+          "matchScore": 59,
+          "score": 61.95,
+          "position": 7
+        },
+        {
+          "id": "4931927012",
+          "title": "🎃Basketball Legends🎃",
+          "genre": "Racing",
+          "creator": "InfinitySports",
+          "matchScore": 94,
+          "score": 61.686,
+          "position": 8
+        },
+        {
+          "id": "2023680558",
+          "title": "🐸Animal Simulator",
+          "genre": "Co-op",
+          "creator": "@ragnar9878",
+          "matchScore": 62,
+          "score": 60.73,
+          "position": 9
+        },
+        {
+          "id": "4851783408",
+          "title": "[AFC AJAX EVENT] Real Futbol 24",
+          "genre": "Racing",
+          "creator": "Real Sports Interactive",
+          "matchScore": 93,
+          "score": 60.479,
+          "position": 10
+        },
+        {
+          "id": "5650396773",
+          "title": "a dusty trip [✈️PLANE]",
+          "genre": "Exploration",
+          "creator": "Jandel's Road Trip",
+          "matchScore": 57,
+          "score": 60.193,
+          "position": 11
+        },
+        {
+          "id": "4252393983",
+          "title": "Team Soccer (3 vs. 3)",
+          "genre": "Racing",
+          "creator": "🐦Cardinal Studios™",
+          "matchScore": 92,
+          "score": 59.905,
+          "position": 12
+        },
+        {
+          "id": "4434803478",
+          "title": "Teamwork Puzzles 2 (Obby)",
+          "genre": "Puzzle",
+          "creator": "Pear Pressure",
+          "matchScore": 60,
+          "score": 58.629,
+          "position": 13
+        },
+        {
+          "id": "3144493466",
+          "title": "Football Stars 2",
+          "genre": "Racing",
+          "creator": "Sungaze",
+          "matchScore": 98,
+          "score": 57.73,
+          "position": 14
+        },
+        {
+          "id": "4743794878",
+          "title": "The Classic Soccer",
+          "genre": "Racing",
+          "creator": "@guigoals",
+          "matchScore": 92,
+          "score": 57.549,
+          "position": 15
+        },
+        {
+          "id": "3475191052",
+          "title": "[💰🍀]⚽Goal Kick Simulator",
+          "genre": "Simulation",
+          "creator": "Dream Simulators",
+          "matchScore": 98,
+          "score": 56.791,
+          "position": 16
+        },
+        {
+          "id": "4675711088",
+          "title": "MPS 4-a-side",
+          "genre": "Racing",
+          "creator": "MPS Studiоs",
+          "matchScore": 86,
+          "score": 56.506,
+          "position": 17
+        },
+        {
+          "id": "5166944221",
+          "title": "Death Ball",
+          "genre": "Action RPG",
+          "creator": "Anime Boys Developers",
+          "matchScore": 60,
+          "score": 55.294,
+          "position": 18
+        },
+        {
+          "id": "2547466305",
+          "title": "Beyond Volleyball League",
+          "genre": "Racing",
+          "creator": "Beyond Volleyball League",
+          "matchScore": 92,
+          "score": 55.244,
+          "position": 19
+        },
+        {
+          "id": "6035872082",
+          "title": "RIVALS",
+          "genre": "Action RPG",
+          "creator": "Nosniy Games",
+          "matchScore": 52,
+          "score": 55.078,
+          "position": 20
+        },
+        {
+          "id": "4324259364",
+          "title": "[TWIN GUNS] LOCKED",
+          "genre": "Racing",
+          "creator": "@Zhoulle",
+          "matchScore": 89,
+          "score": 54.875,
+          "position": 21
+        },
+        {
+          "id": "5345465804",
+          "title": "Touch Sports",
+          "genre": "Racing",
+          "creator": "@Papparolox",
+          "matchScore": 99,
+          "score": 54.301,
+          "position": 22
+        },
+        {
+          "id": "994732206",
+          "title": "Blox Fruits",
+          "genre": "Action RPG",
+          "creator": "Gamer Robot Inc",
+          "matchScore": 55,
+          "score": 53.722,
+          "position": 23
+        },
+        {
+          "id": "93740418",
+          "title": "Hide and Seek Extreme",
+          "genre": "Co-op",
+          "creator": "@Tim7775",
+          "matchScore": 60,
+          "score": 53.663,
+          "position": 24
+        },
+        {
+          "id": "5728146086",
+          "title": "[NEW] Touch Volleyball",
+          "genre": "Racing",
+          "creator": "Touch Games",
+          "matchScore": 89,
+          "score": 53.568,
+          "position": 25
+        },
+        {
+          "id": "5569032992",
+          "title": "🎟️Dandy's World [ALPHA]",
+          "genre": "Horror",
+          "creator": "BlushCrunch Studio",
+          "matchScore": 54,
+          "score": 53.477,
+          "position": 26
+        },
+        {
+          "id": "5838365297",
+          "title": "Basketball Hoop Simulator 🏀",
+          "genre": "Simulation",
+          "creator": "Comeback Simulators",
+          "matchScore": 98,
+          "score": 53.336,
+          "position": 27
+        },
+        {
+          "id": "3593752588",
+          "title": "🏀 Basketball Pro Simulator",
+          "genre": "Simulation",
+          "creator": "LemonBread Studios",
+          "matchScore": 99,
+          "score": 53.106,
+          "position": 28
+        },
+        {
+          "id": "3012965062",
+          "title": "[UPDATE] The Presentation Experience",
+          "genre": "Co-op",
+          "creator": "Minimal Games",
+          "matchScore": 61,
+          "score": 52.378,
+          "position": 29
+        },
+        {
+          "id": "4557649405",
+          "title": "Super Football",
+          "genre": "Racing",
+          "creator": "@jcs1p",
+          "matchScore": 87,
+          "score": 52.274,
+          "position": 30
+        },
+        {
+          "id": "4540138978",
+          "title": "Metro Life 🏙️ City RP",
+          "genre": "Co-op",
+          "creator": "Century Creators",
+          "matchScore": 57,
+          "score": 52.228,
+          "position": 31
+        },
+        {
+          "id": "2765784373",
+          "title": "PHIGHTING! [ALPHA]",
+          "genre": "Action RPG",
+          "creator": "boggio",
+          "matchScore": 62,
+          "score": 52.223,
+          "position": 32
+        },
+        {
+          "id": "3508322461",
+          "title": "[PERFECTION] Jujutsu Shenanigans",
+          "genre": "Action RPG",
+          "creator": "@AlsoNot_Tze",
+          "matchScore": 58,
+          "score": 52.143,
+          "position": 33
+        },
+        {
+          "id": "2294168059",
+          "title": "[HALLOWEEN 🎃] The Mimic",
+          "genre": "Horror",
+          "creator": "CTStudio",
+          "matchScore": 58,
+          "score": 52.126,
+          "position": 34
+        },
+        {
+          "id": "3756501373",
+          "title": "[UPDATE 4] Meme Sea",
+          "genre": "Action RPG",
+          "creator": "Meme Sea Group",
+          "matchScore": 61,
+          "score": 52.088,
+          "position": 35
+        },
+        {
+          "id": "3207320372",
+          "title": "[UPDATE!] Hoop Central 6 Stress Test",
+          "genre": "Racing",
+          "creator": "Hoop Central Remake",
+          "matchScore": 86,
+          "score": 52.037,
+          "position": 36
+        },
+        {
+          "id": "4104399691",
+          "title": "Home Run Simulator",
+          "genre": "Racing",
+          "creator": "House of Highlights",
+          "matchScore": 86,
+          "score": 52.036,
+          "position": 37
+        },
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 51,
+          "score": 52.035,
+          "position": 38
+        },
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 55,
+          "score": 51.94,
+          "position": 39
+        },
+        {
+          "id": "358276974",
+          "title": "Apocalypse Rising 2",
+          "genre": "Action RPG",
+          "creator": "Dualpoint Interactive",
+          "matchScore": 61,
+          "score": 51.812,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 22,
+        "preferredGenreShare": 55.00000000000001,
+        "baselinePreferredGenreShare": 37.5,
+        "preferredGenreLiftPoints": 17.500000000000007,
+        "meanMatchScore": 76.45,
+        "topGenres": [
+          {
+            "genre": "Racing",
+            "count": 17,
+            "share": 42.5
+          },
+          {
+            "genre": "Action RPG",
+            "count": 9,
+            "share": 22.5
+          },
+          {
+            "genre": "Co-op",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 4,
+            "share": 10
+          },
+          {
+            "genre": "Horror",
+            "count": 3,
+            "share": 7.5
+          },
+          {
+            "genre": "Exploration",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.19402985074626866,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "collector",
+      "label": "Collector",
+      "preferences": [
+        "Simulation",
+        "Action RPG"
+      ],
+      "topResults": [
+        {
+          "id": "5569032992",
+          "title": "🎟️Dandy's World [ALPHA]",
+          "genre": "Horror",
+          "creator": "BlushCrunch Studio",
+          "matchScore": 99,
+          "score": 76.552,
+          "position": 1
+        },
+        {
+          "id": "6035872082",
+          "title": "RIVALS",
+          "genre": "Action RPG",
+          "creator": "Nosniy Games",
+          "matchScore": 97,
+          "score": 75.753,
+          "position": 2
+        },
+        {
+          "id": "2992873140",
+          "title": "Emergency Hamburg",
+          "genre": "Co-op",
+          "creator": "Emergency Hamburg",
+          "matchScore": 99,
+          "score": 74.232,
+          "position": 3
+        },
+        {
+          "id": "5254920366",
+          "title": "Secret Staycation",
+          "genre": "Exploration",
+          "creator": "ひみつのおるすばん：Secret Staycation",
+          "matchScore": 99,
+          "score": 73.901,
+          "position": 4
+        },
+        {
+          "id": "6371309794",
+          "title": "💪 Ninja Challenge [Beta]",
+          "genre": "Puzzle",
+          "creator": "Ninja Challenge",
+          "matchScore": 95,
+          "score": 72.063,
+          "position": 5
+        },
+        {
+          "id": "1719305066",
+          "title": "ROBLOX Rally Racing",
+          "genre": "Racing",
+          "creator": "Roblox Rallying Group",
+          "matchScore": 96,
+          "score": 70.5,
+          "position": 6
+        },
+        {
+          "id": "4778845442",
+          "title": "[⚔️RANKED] Toilet Tower Defense",
+          "genre": "Simulation",
+          "creator": "Telanthric Development",
+          "matchScore": 99,
+          "score": 69.485,
+          "position": 7
+        },
+        {
+          "id": "2619619496",
+          "title": "BedWars [⌚ REBOOT]",
+          "genre": "Action RPG",
+          "creator": "Easy.gg",
+          "matchScore": 98,
+          "score": 68.745,
+          "position": 8
+        },
+        {
+          "id": "2655311011",
+          "title": "[👑 EXTREME] Anime Dimensions Simulator",
+          "genre": "Action RPG",
+          "creator": "Albatross Games",
+          "matchScore": 99,
+          "score": 67.959,
+          "position": 9
+        },
+        {
+          "id": "2729513759",
+          "title": "[UPDATE!] Speed Draw!",
+          "genre": "Co-op",
+          "creator": "Studio Giraffe",
+          "matchScore": 98,
+          "score": 66.9,
+          "position": 10
+        },
+        {
+          "id": "3240075297",
+          "title": "Berry Avenue 🏠 RP",
+          "genre": "Co-op",
+          "creator": "Amberry Games",
+          "matchScore": 99,
+          "score": 65.997,
+          "position": 11
+        },
+        {
+          "id": "1054526971",
+          "title": "Blackhawk Rescue Mission 5",
+          "genre": "Action RPG",
+          "creator": "PLATINUM FIVE",
+          "matchScore": 99,
+          "score": 65.906,
+          "position": 12
+        },
+        {
+          "id": "88070565",
+          "title": "Welcome to Bloxburg",
+          "genre": "Co-op",
+          "creator": "Bloxburg Development",
+          "matchScore": 98,
+          "score": 65.891,
+          "position": 13
+        },
+        {
+          "id": "383310974",
+          "title": "Adopt Me!",
+          "genre": "Co-op",
+          "creator": "Uplift Games",
+          "matchScore": 92,
+          "score": 65.77,
+          "position": 14
+        },
+        {
+          "id": "5166944221",
+          "title": "Death Ball",
+          "genre": "Action RPG",
+          "creator": "Anime Boys Developers",
+          "matchScore": 98,
+          "score": 65.624,
+          "position": 15
+        },
+        {
+          "id": "2380077519",
+          "title": "Slap Battles👏",
+          "genre": "Action RPG",
+          "creator": "Slap Battles",
+          "matchScore": 99,
+          "score": 65.197,
+          "position": 16
+        },
+        {
+          "id": "1742264997",
+          "title": "SCP: Roleplay",
+          "genre": "Co-op",
+          "creator": "SCP | Roleplay Community",
+          "matchScore": 99,
+          "score": 64.767,
+          "position": 17
+        },
+        {
+          "id": "5203828273",
+          "title": "Dress To Impress 💜",
+          "genre": "Co-op",
+          "creator": "Dress To Impress Group",
+          "matchScore": 91,
+          "score": 64.634,
+          "position": 18
+        },
+        {
+          "id": "4342047058",
+          "title": "Guts &amp; Blackpowder",
+          "genre": "Action RPG",
+          "creator": "Guts &amp; Blackpowder",
+          "matchScore": 92,
+          "score": 64.553,
+          "position": 19
+        },
+        {
+          "id": "245662005",
+          "title": "Jailbreak 🍁",
+          "genre": "Action RPG",
+          "creator": "Badimo",
+          "matchScore": 97,
+          "score": 64.32,
+          "position": 20
+        },
+        {
+          "id": "3808081382",
+          "title": "The Strongest Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Yielding Arts",
+          "matchScore": 92,
+          "score": 64.32,
+          "position": 21
+        },
+        {
+          "id": "1281592938",
+          "title": "ENTRENCHED WW1 BETA",
+          "genre": "Action RPG",
+          "creator": "Edot",
+          "matchScore": 96,
+          "score": 64.27,
+          "position": 22
+        },
+        {
+          "id": "2049551477",
+          "title": "Cheese Escape [Horror]",
+          "genre": "Horror",
+          "creator": "@Spirow734",
+          "matchScore": 96,
+          "score": 64.122,
+          "position": 23
+        },
+        {
+          "id": "2023680558",
+          "title": "🐸Animal Simulator",
+          "genre": "Co-op",
+          "creator": "@ragnar9878",
+          "matchScore": 96,
+          "score": 64.12,
+          "position": 24
+        },
+        {
+          "id": "4130569984",
+          "title": "Jurassic Blocky",
+          "genre": "Co-op",
+          "creator": "Jurassic Blocky",
+          "matchScore": 98,
+          "score": 64.038,
+          "position": 25
+        },
+        {
+          "id": "4348829796",
+          "title": "Murderers VS Sheriffs Duels",
+          "genre": "Action RPG",
+          "creator": "Red21 Games",
+          "matchScore": 95,
+          "score": 64.007,
+          "position": 26
+        },
+        {
+          "id": "1831550657",
+          "title": "⚡ Creatures of Sonaria 💙 Survive Kaiju Animals",
+          "genre": "Co-op",
+          "creator": "Sonar Studios",
+          "matchScore": 90,
+          "score": 64.006,
+          "position": 27
+        },
+        {
+          "id": "4367208330",
+          "title": "Pressure",
+          "genre": "Horror",
+          "creator": "Urbanshade: Hadal Division",
+          "matchScore": 99,
+          "score": 63.92,
+          "position": 28
+        },
+        {
+          "id": "3365661357",
+          "title": "SharkBite 2 🦈",
+          "genre": "Horror",
+          "creator": "Abracadabra",
+          "matchScore": 99,
+          "score": 63.894,
+          "position": 29
+        },
+        {
+          "id": "2549475383",
+          "title": "Livetopia🏡 New House",
+          "genre": "Co-op",
+          "creator": "Century Makers",
+          "matchScore": 94,
+          "score": 63.867,
+          "position": 30
+        },
+        {
+          "id": "1998835206",
+          "title": "[🎃] item asylum",
+          "genre": "Action RPG",
+          "creator": "Jean's Bizarre Community",
+          "matchScore": 97,
+          "score": 63.807,
+          "position": 31
+        },
+        {
+          "id": "2087494287",
+          "title": "H2O Mermaid Testing",
+          "genre": "Co-op",
+          "creator": "@ThatPreston",
+          "matchScore": 99,
+          "score": 63.687,
+          "position": 32
+        },
+        {
+          "id": "5720553711",
+          "title": "NewSmith🏠RP Update 14!",
+          "genre": "Co-op",
+          "creator": "ARKverse office",
+          "matchScore": 90,
+          "score": 63.652,
+          "position": 33
+        },
+        {
+          "id": "1686885941",
+          "title": "Brookhaven 🏡RP",
+          "genre": "Co-op",
+          "creator": "@Wolfpaq",
+          "matchScore": 86,
+          "score": 63.594,
+          "position": 34
+        },
+        {
+          "id": "6215464786",
+          "title": "Chained [2 Player Obby]",
+          "genre": "Puzzle",
+          "creator": "1-Day",
+          "matchScore": 96,
+          "score": 63.548,
+          "position": 35
+        },
+        {
+          "id": "3472976893",
+          "title": "Backrooms",
+          "genre": "Horror",
+          "creator": "Red Panda Industries",
+          "matchScore": 97,
+          "score": 63.5,
+          "position": 36
+        },
+        {
+          "id": "3457700596",
+          "title": "[MYTHICAL WOLF] Fruit Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "P O P O",
+          "matchScore": 94,
+          "score": 63.4,
+          "position": 37
+        },
+        {
+          "id": "5265857965",
+          "title": "Legends Battlegrounds",
+          "genre": "Action RPG",
+          "creator": "Arts of Vermillion",
+          "matchScore": 98,
+          "score": 63.33,
+          "position": 38
+        },
+        {
+          "id": "1278035280",
+          "title": "Warrior Cats: Ultimate Edition",
+          "genre": "Co-op",
+          "creator": "WarriorCatsRP",
+          "matchScore": 91,
+          "score": 63.306,
+          "position": 39
+        },
+        {
+          "id": "4540138978",
+          "title": "Metro Life 🏙️ City RP",
+          "genre": "Co-op",
+          "creator": "Century Creators",
+          "matchScore": 90,
+          "score": 63.283,
+          "position": 40
+        }
+      ],
+      "metrics": {
+        "resultCount": 40,
+        "preferredGenreCount": 15,
+        "preferredGenreShare": 37.5,
+        "baselinePreferredGenreShare": 35,
+        "preferredGenreLiftPoints": 2.5,
+        "meanMatchScore": 95.9,
+        "topGenres": [
+          {
+            "genre": "Co-op",
+            "count": 16,
+            "share": 40
+          },
+          {
+            "genre": "Action RPG",
+            "count": 14,
+            "share": 35
+          },
+          {
+            "genre": "Horror",
+            "count": 5,
+            "share": 12.5
+          },
+          {
+            "genre": "Puzzle",
+            "count": 2,
+            "share": 5
+          },
+          {
+            "genre": "Exploration",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Racing",
+            "count": 1,
+            "share": 2.5
+          },
+          {
+            "genre": "Simulation",
+            "count": 1,
+            "share": 2.5
+          }
+        ],
+        "overlapWithBaseline": 0.3559322033898305,
+        "contextEligibility": [
+          {
+            "context": "featured",
+            "eligibleCandidates": 693,
+            "returned": 40
+          },
+          {
+            "context": "trending",
+            "eligibleCandidates": 640,
+            "returned": 40
+          },
+          {
+            "context": "recommended",
+            "eligibleCandidates": 1027,
+            "returned": 40
+          },
+          {
+            "context": "hidden-gems",
+            "eligibleCandidates": 576,
+            "returned": 40
+          },
+          {
+            "context": "recently-launched",
+            "eligibleCandidates": 0,
+            "returned": 0
+          }
+        ]
+      }
+    }
+  ],
+  "pairwiseOverlaps": [
+    {
+      "left": "competitive",
+      "right": "social",
+      "overlap": 0
+    },
+    {
+      "left": "competitive",
+      "right": "builder",
+      "overlap": 0
+    },
+    {
+      "left": "competitive",
+      "right": "thrill-seeker",
+      "overlap": 0.0127
+    },
+    {
+      "left": "competitive",
+      "right": "completionist",
+      "overlap": 0.1429
+    },
+    {
+      "left": "competitive",
+      "right": "casual",
+      "overlap": 0.1429
+    },
+    {
+      "left": "competitive",
+      "right": "story-first",
+      "overlap": 0
+    },
+    {
+      "left": "competitive",
+      "right": "speedrunner",
+      "overlap": 0.6
+    },
+    {
+      "left": "competitive",
+      "right": "tactician",
+      "overlap": 0
+    },
+    {
+      "left": "competitive",
+      "right": "adventurer",
+      "overlap": 0.2903
+    },
+    {
+      "left": "competitive",
+      "right": "party-player",
+      "overlap": 0.1268
+    },
+    {
+      "left": "competitive",
+      "right": "collector",
+      "overlap": 0.1594
+    },
+    {
+      "left": "social",
+      "right": "builder",
+      "overlap": 0
+    },
+    {
+      "left": "social",
+      "right": "thrill-seeker",
+      "overlap": 0
+    },
+    {
+      "left": "social",
+      "right": "completionist",
+      "overlap": 0
+    },
+    {
+      "left": "social",
+      "right": "casual",
+      "overlap": 0.0811
+    },
+    {
+      "left": "social",
+      "right": "story-first",
+      "overlap": 0.3559
+    },
+    {
+      "left": "social",
+      "right": "speedrunner",
+      "overlap": 0
+    },
+    {
+      "left": "social",
+      "right": "tactician",
+      "overlap": 0
+    },
+    {
+      "left": "social",
+      "right": "adventurer",
+      "overlap": 0.2698
+    },
+    {
+      "left": "social",
+      "right": "party-player",
+      "overlap": 0.0959
+    },
+    {
+      "left": "social",
+      "right": "collector",
+      "overlap": 0
+    },
+    {
+      "left": "builder",
+      "right": "thrill-seeker",
+      "overlap": 0
+    },
+    {
+      "left": "builder",
+      "right": "completionist",
+      "overlap": 0.3559
+    },
+    {
+      "left": "builder",
+      "right": "casual",
+      "overlap": 0.0811
+    },
+    {
+      "left": "builder",
+      "right": "story-first",
+      "overlap": 0
+    },
+    {
+      "left": "builder",
+      "right": "speedrunner",
+      "overlap": 0
+    },
+    {
+      "left": "builder",
+      "right": "tactician",
+      "overlap": 0.4286
+    },
+    {
+      "left": "builder",
+      "right": "adventurer",
+      "overlap": 0
+    },
+    {
+      "left": "builder",
+      "right": "party-player",
+      "overlap": 0.0667
+    },
+    {
+      "left": "builder",
+      "right": "collector",
+      "overlap": 0.4286
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "completionist",
+      "overlap": 0
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "casual",
+      "overlap": 0.0256
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "story-first",
+      "overlap": 0.2903
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "speedrunner",
+      "overlap": 0.0127
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "tactician",
+      "overlap": 0
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "adventurer",
+      "overlap": 0
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "party-player",
+      "overlap": 0.039
+    },
+    {
+      "left": "thrill-seeker",
+      "right": "collector",
+      "overlap": 0
+    },
+    {
+      "left": "completionist",
+      "right": "casual",
+      "overlap": 0.1429
+    },
+    {
+      "left": "completionist",
+      "right": "story-first",
+      "overlap": 0
+    },
+    {
+      "left": "completionist",
+      "right": "speedrunner",
+      "overlap": 0.1429
+    },
+    {
+      "left": "completionist",
+      "right": "tactician",
+      "overlap": 0.3333
+    },
+    {
+      "left": "completionist",
+      "right": "adventurer",
+      "overlap": 0.1111
+    },
+    {
+      "left": "completionist",
+      "right": "party-player",
+      "overlap": 0.0959
+    },
+    {
+      "left": "completionist",
+      "right": "collector",
+      "overlap": 0.4545
+    },
+    {
+      "left": "casual",
+      "right": "story-first",
+      "overlap": 0.0811
+    },
+    {
+      "left": "casual",
+      "right": "speedrunner",
+      "overlap": 0.1429
+    },
+    {
+      "left": "casual",
+      "right": "tactician",
+      "overlap": 0.1111
+    },
+    {
+      "left": "casual",
+      "right": "adventurer",
+      "overlap": 0.1268
+    },
+    {
+      "left": "casual",
+      "right": "party-player",
+      "overlap": 0.5686
+    },
+    {
+      "left": "casual",
+      "right": "collector",
+      "overlap": 0.1429
+    },
+    {
+      "left": "story-first",
+      "right": "speedrunner",
+      "overlap": 0
+    },
+    {
+      "left": "story-first",
+      "right": "tactician",
+      "overlap": 0
+    },
+    {
+      "left": "story-first",
+      "right": "adventurer",
+      "overlap": 0.1765
+    },
+    {
+      "left": "story-first",
+      "right": "party-player",
+      "overlap": 0.0959
+    },
+    {
+      "left": "story-first",
+      "right": "collector",
+      "overlap": 0
+    },
+    {
+      "left": "speedrunner",
+      "right": "tactician",
+      "overlap": 0.0127
+    },
+    {
+      "left": "speedrunner",
+      "right": "adventurer",
+      "overlap": 0.3115
+    },
+    {
+      "left": "speedrunner",
+      "right": "party-player",
+      "overlap": 0.1268
+    },
+    {
+      "left": "speedrunner",
+      "right": "collector",
+      "overlap": 0.1594
+    },
+    {
+      "left": "tactician",
+      "right": "adventurer",
+      "overlap": 0
+    },
+    {
+      "left": "tactician",
+      "right": "party-player",
+      "overlap": 0.0667
+    },
+    {
+      "left": "tactician",
+      "right": "collector",
+      "overlap": 0.3559
+    },
+    {
+      "left": "adventurer",
+      "right": "party-player",
+      "overlap": 0.1268
+    },
+    {
+      "left": "adventurer",
+      "right": "collector",
+      "overlap": 0.0959
+    },
+    {
+      "left": "party-player",
+      "right": "collector",
+      "overlap": 0.0959
+    }
+  ]
+}

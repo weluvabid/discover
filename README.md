@@ -89,3 +89,16 @@ The command reads `DATABASE_PATH` from the process environment or `.env`, defaul
 The API uses four ranking workers by default. Set `RANKING_WORKERS=0` to run the synchronous baseline, or provide another worker count when reproducing the benchmark. SQLite catalog reads remain on the HTTP thread.
 
 See [Moving discovery ranking off the HTTP thread](docs/architecture/ranking-worker-investigation.md) for the reason behind the change, benchmark results, memory trade-offs, and reproduction commands.
+
+
+## Evaluating play-style recommendations
+
+Run the offline evaluation against the local SQLite catalog:
+
+```sh
+pnpm evaluate:personas
+```
+
+The evaluator opens the catalog read-only and ranks the same valid catalog for all 12 play styles, alongside an unpersonalized baseline. It reports preferred-genre share and lift, match-score averages, top-result overlap, unique games across profiles, per-context eligibility counts, and the ranked titles for each profile. It writes `reports/persona-evaluation.md` and `reports/persona-evaluation.json`.
+
+Use `PERSONA_EVALUATION_NOW=2026-11-21T00:00:00.000Z` to reproduce a fixed time boundary, `PERSONA_EVALUATION_LIMIT=40` to change the result window (1–100), `DATABASE_PATH` to select a catalog, and `PERSONA_REPORT_DIR` to change the report destination. The evaluator does not modify the database. Match scores are deterministic synthetic inputs, so the report measures profile differentiation and ranking behavior rather than real-world recommendation accuracy.
