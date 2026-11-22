@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 @import './foundation.css';
 
-
 /* Keep Astro view transitions short and avoid persistent compositing layers. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -29,7 +28,9 @@
   content: '';
   opacity: 0.18;
   filter: blur(9px);
-  transition: opacity 180ms ease, filter 180ms ease;
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease;
 }
 .tune-discovery-glow:hover::before,
 .tune-discovery-glow:focus-visible::before {
@@ -37,5 +38,7 @@
   filter: blur(11px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .tune-discovery-glow::before { transition: none; }
+  .tune-discovery-glow::before {
+    transition: none;
+  }
 }

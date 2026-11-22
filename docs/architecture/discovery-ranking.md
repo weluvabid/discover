@@ -85,7 +85,6 @@ These are engine-only measurements in the implementation container, not browser 
 
 The context pipeline uses a bounded top-candidate heap before diversity reranking. The maximum reranking penalty scales with the configured diversity weight (baseline: eight points; capped at twenty points), so it retains the top `8 × resultLimit` candidates plus every candidate within the active penalty budget of that cutoff. A candidate below that bound cannot outrank the retained cutoff candidate even if the latter receives the maximum diversity penalty. At zero diversity weight, the engine skips the extra candidate expansion and greedy reranking entirely. This avoids sorting and pairwise-comparing the entire catalog for small visible result windows while preserving the bounded reranking result.
 
-
 ## API execution model
 
 The API runs ranking in a four-thread Node.js worker pool by default. Candidate retrieval remains on the HTTP thread and uses the local SQLite read model. Set `RANKING_WORKERS=0` to use synchronous ranking, or override the worker count for benchmarking. The worker queue is bounded by `RANKING_QUEUE_CAPACITY` (default `128`); when capacity is exhausted, discovery returns HTTP 503.
@@ -97,7 +96,6 @@ I moved ranking to workers after API measurements showed that synchronous CPU wo
 The discovery API exposes the catalog's 12 play-style profiles through `GET /api/personas`. The Explore filter lets a visitor choose a profile such as Competitive climber, Social explorer or Creative builder. The selected profile is stored in the URL as `persona`, so a discovery view can be shared and refreshed without losing the selection.
 
 Discovery requests pass that profile to the catalog query. Each experience receives a deterministic genre-affinity score computed from the selected profile preferences and the experience genre. Exact preferred genres score highest, adjacent genres receive a middle score, and unrelated genres receive a lower score. A separate persona-relevance score measures whether persona-specific keywords appear in the title, description, subgenre or tags; each keyword contributes at most once, and description length alone cannot increase the score. Genre affinity feeds the affinity signal, while topical keyword alignment feeds relevance. With no persona selected, affinity and relevance are removed from effective weighting and the remaining enabled signals are renormalized; the engine does not invent a default persona score. Leaving the profile set to “All play styles” keeps discovery broad and does not attach a profile match score.
-
 
 ## Play-style evaluation
 

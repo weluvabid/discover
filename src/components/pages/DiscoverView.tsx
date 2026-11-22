@@ -8,7 +8,12 @@ import { FeaturedExperience } from '@/components/experience/FeaturedExperience';
 import { FeaturedExperienceSkeleton } from '@/components/experience/FeaturedExperienceSkeleton';
 import { CollectionsView } from './CollectionsView';
 import { PageIntro } from './PageIntro';
-import type { DiscoveryPersona, DiscoveryView, Experience, ExperienceGenre } from '@/types/experience';
+import type {
+  DiscoveryPersona,
+  DiscoveryView,
+  Experience,
+  ExperienceGenre,
+} from '@/types/experience';
 
 interface DiscoverViewProps {
   activeView: DiscoveryView;
@@ -85,7 +90,12 @@ export function DiscoverView({
 
   if (activeView === 'collections') {
     return (
-      <CollectionsView experiences={collectionExperiences} bookmarks={bookmarks} onToggleBookmark={onToggleBookmark} onPlay={onPlay} />
+      <CollectionsView
+        experiences={collectionExperiences}
+        bookmarks={bookmarks}
+        onToggleBookmark={onToggleBookmark}
+        onPlay={onPlay}
+      />
     );
   }
 
@@ -141,9 +151,19 @@ export function DiscoverView({
     <>
       <PageIntro
         title="Explore"
-        description={selectedPersona ? `Discover worlds matched to the ${selectedPersona.label.toLowerCase()} play style.` : 'Find worlds worth your time, ranked by engagement, relevance and discovery signals.'}
+        description={
+          selectedPersona
+            ? `Discover worlds matched to the ${selectedPersona.label.toLowerCase()} play style.`
+            : 'Find worlds worth your time, ranked by engagement, relevance and discovery signals.'
+        }
       />
-      <ExploreFilterBar genre={genre} onGenreChange={onGenreChange} personas={personas} persona={persona} onPersonaChange={onPersonaChange} />
+      <ExploreFilterBar
+        genre={genre}
+        onGenreChange={onGenreChange}
+        personas={personas}
+        persona={persona}
+        onPersonaChange={onPersonaChange}
+      />
       {loading ? (
         <FeaturedExperienceSkeleton />
       ) : featured ? (
@@ -178,7 +198,11 @@ export function DiscoverView({
       />
       <ExperienceSection
         title="Recommended For You"
-        subtitle={selectedPersona ? `Ranked against the ${selectedPersona.label} profile and experience signals.` : "Ranked by engagement quality, relevance and discovery signals."}
+        subtitle={
+          selectedPersona
+            ? `Ranked against the ${selectedPersona.label} profile and experience signals.`
+            : 'Ranked by engagement quality, relevance and discovery signals.'
+        }
         experiences={recommendations}
         rankingById={rankingMaps.recommended}
         rankingLabel="RECOMMENDED SCORE"

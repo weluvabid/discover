@@ -70,7 +70,11 @@ describe('Discover API adversarial inputs', () => {
 
   it('orders search matches by title relevance before player popularity', () => {
     insertGame(db, { universeId: '1004', title: 'Adventure Quest' });
-    insertGame(db, { universeId: '1005', title: 'Ordinary Adventure', description: 'Adventure game' });
+    insertGame(db, {
+      universeId: '1005',
+      title: 'Ordinary Adventure',
+      description: 'Adventure game',
+    });
 
     const results = getCatalog(db, { query: 'Adventure' });
 
@@ -99,15 +103,18 @@ describe('Discover API adversarial inputs', () => {
     expect(detail.status).toBe(404);
   });
 
-  it.each(['0', '-1', '1.5', '501', 'NaN', 'Infinity'])('rejects hostile pagination limit %s', async (limit) => {
-    const result = await handleApiRequest(
-      db,
-      'GET',
-      new URL(`http://localhost/api/experiences?limit=${encodeURIComponent(limit)}`),
-    );
+  it.each(['0', '-1', '1.5', '501', 'NaN', 'Infinity'])(
+    'rejects hostile pagination limit %s',
+    async (limit) => {
+      const result = await handleApiRequest(
+        db,
+        'GET',
+        new URL(`http://localhost/api/experiences?limit=${encodeURIComponent(limit)}`),
+      );
 
-    expect(result.status).toBe(400);
-  });
+      expect(result.status).toBe(400);
+    },
+  );
 
   it('rejects oversized search strings before querying SQLite', async () => {
     const result = await handleApiRequest(

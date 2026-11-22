@@ -27,13 +27,20 @@ interface RankingWhyPopoverProps {
 
 function getSignalColor(id: string): string {
   switch (id) {
-    case 'quality': return 'bg-blue-500';
-    case 'relevance': return 'bg-violet-500';
-    case 'affinity': return 'bg-emerald-500';
-    case 'diversity': return 'bg-amber-500';
-    case 'freshness': return 'bg-cyan-500';
-    case 'popularity': return 'bg-slate-500';
-    default: return 'bg-muted-foreground';
+    case 'quality':
+      return 'bg-blue-500';
+    case 'relevance':
+      return 'bg-violet-500';
+    case 'affinity':
+      return 'bg-emerald-500';
+    case 'diversity':
+      return 'bg-amber-500';
+    case 'freshness':
+      return 'bg-cyan-500';
+    case 'popularity':
+      return 'bg-slate-500';
+    default:
+      return 'bg-muted-foreground';
   }
 }
 
@@ -154,7 +161,9 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
             </div>
             <div className="flex items-center justify-between gap-6 border-t border-border pt-3">
               <dt className="font-semibold">Final Score</dt>
-              <dd className={`shrink-0 text-lg font-bold tabular-nums ${getRankScoreClass(ranking.score)}`}>
+              <dd
+                className={`shrink-0 text-lg font-bold tabular-nums ${getRankScoreClass(ranking.score)}`}
+              >
                 {displayedFinalScore.toFixed(1)}
               </dd>
             </div>
@@ -171,6 +180,7 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
                   .filter((signal) => signal.enabled && signal.effectiveWeight > 0)
                   .map((signal) => {
                     const width = Math.max(0, Math.min(100, signal.effectiveWeight * 100));
+
                     return (
                       <span
                         key={signal.id}
@@ -209,7 +219,10 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
                     >
                       <Info size={14} aria-hidden="true" />
                     </PopoverTrigger>
-                    <PopoverContent align="end" className="w-[min(20rem,calc(100vw-2rem))] gap-2 text-sm">
+                    <PopoverContent
+                      align="end"
+                      className="w-[min(20rem,calc(100vw-2rem))] gap-2 text-sm"
+                    >
                       <strong className="font-semibold">{signal.label}</strong>
                       <p className="text-muted-foreground">
                         {signal.normalizedScore.toFixed(0)} signal ×{' '}

@@ -15,7 +15,6 @@ export function openDatabase(
   return db;
 }
 
-
 /**
  * Opens an existing catalog without creating directories, applying schema, or
  * acquiring a write-capable connection. Intended for diagnostics/benchmarks.

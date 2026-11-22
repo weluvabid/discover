@@ -9,11 +9,7 @@ import { Sidebar } from '@/components/layout/Navigation';
 import { Button } from '@/components/ui/button';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { useBookmarks } from '@/hooks/use-bookmarks';
-import {
-  fetchCatalog,
-  fetchExperience,
-  fetchGenreCounts,
-} from '@/lib/api/discover-api';
+import { fetchCatalog, fetchExperience, fetchGenreCounts } from '@/lib/api/discover-api';
 import { resolveRobloxLaunchUrl } from '@/lib/roblox-launch';
 import { formatCount } from '@/lib/utils';
 import type { Experience, ExperienceGenre } from '@/types/experience';
@@ -39,6 +35,7 @@ function DetailShell({ children, genreCounts, query, onQueryChange }: DetailShel
         nativeNavigation
         onSelectGenre={(genre: ExperienceGenre | 'All') => {
           const destination = genre === 'All' ? '/' : `/?genre=${encodeURIComponent(genre)}`;
+
           window.location.assign(destination);
         }}
       />
@@ -73,14 +70,17 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
 
   useEffect(() => {
     const controller = new AbortController();
+
     fetchGenreCounts(controller.signal)
       .then((result) => setGenreCounts(result.data))
       .catch(() => undefined);
+
     return () => controller.abort();
   }, []);
 
   useEffect(() => {
     const trimmed = query.trim();
+
     if (!trimmed) return;
 
     const timeout = window.setTimeout(() => {
@@ -96,16 +96,19 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
     if (!/^\d{1,20}$/.test(requestedId)) {
       setError('This experience could not be found.');
       setLoading(false);
+
       return;
     }
 
     const controller = new AbortController();
+
     setLoading(true);
     setError(null);
 
     fetchExperience(requestedId, controller.signal)
       .then((item) => {
         setExperience(item);
+
         return fetchCatalog(500, controller.signal)
           .then((catalog) => {
             setRelated(
@@ -118,6 +121,7 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
       })
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
+
         setError(cause instanceof Error ? cause.message : 'Unable to load this experience.');
       })
       .finally(() => {
@@ -138,22 +142,29 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
     if (!experience?.robloxUrl) return;
 
     const url = resolveRobloxLaunchUrl(experience.robloxUrl);
+
     if (!url) {
       toast.error('This experience has an invalid Roblox launch URL.');
+
       return;
     }
 
     const opened = window.open(url.toString(), '_blank');
+
     if (!opened) {
       toast.error('Your browser blocked the Roblox launch. Allow pop-ups and try again.');
+
       return;
     }
+
     opened.opener = null;
   };
 
   const openRelatedExperience = (item: Experience) => {
     if (!item.robloxUrl) return;
+
     const url = resolveRobloxLaunchUrl(item.robloxUrl);
+
     if (url) window.open(url.toString(), '_blank', 'noopener,noreferrer');
   };
 

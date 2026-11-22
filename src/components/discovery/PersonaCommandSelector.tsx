@@ -111,6 +111,7 @@ export function PersonaCommandSelector({
               {!selectedPersona && allPlayStylesItem}
               {orderedPersonas.map((persona) => {
                 const selected = persona.id === selectedPersonaId;
+
                 return (
                   <Fragment key={persona.id}>
                     <CommandItem
@@ -129,7 +130,10 @@ export function PersonaCommandSelector({
                           {persona.description}
                         </span>
                       </span>
-                      <span className="flex size-8 shrink-0 items-center justify-center" aria-hidden="true">
+                      <span
+                        className="flex size-8 shrink-0 items-center justify-center"
+                        aria-hidden="true"
+                      >
                         {selected && <Check className="size-4 text-primary" />}
                       </span>
                     </CommandItem>

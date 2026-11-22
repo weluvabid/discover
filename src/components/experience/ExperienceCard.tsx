@@ -61,11 +61,10 @@ export function ExperienceCard({
         />
         {overlayLabel && (
           <span
-            className={`absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold shadow-sm backdrop-blur ${
-              'border-border bg-background/90 text-foreground'
-            }`}
+            className={`absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold shadow-sm backdrop-blur ${'border-border bg-background/90 text-foreground'}`}
           >
-            {variant === 'trending' && weeklyChange !== undefined &&
+            {variant === 'trending' &&
+              weeklyChange !== undefined &&
               (weeklyChange > 0 ? (
                 <TrendingUp size={13} className="text-emerald-400" />
               ) : weeklyChange < 0 ? (

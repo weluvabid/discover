@@ -388,6 +388,7 @@ function rawSignals(
     ? clamp(rating * 0.35 + playtime * 0.2 + retention * 0.25 + repeatPlay * 0.15 + session * 0.05)
     : rating;
   const popularity = clamp(Math.log10(Math.max(0, experience.metrics.activePlayers) + 1) / 5);
+
   return {
     affinity: hasPersona ? match : 0,
     quality: hasSyntheticEngagement ? quality : clamp(rating * 0.65 + playtime * 0.35),
@@ -504,16 +505,14 @@ function getDiversityStrength(
   const configured = normalizeSignals(configuration.signals);
   const contextMultipliers = CONTEXT_MULTIPLIERS[context];
   const effectiveTotal = configured.reduce(
-    (sum, signal) =>
-      sum + (signal.enabled ? signal.weight * contextMultipliers[signal.id] : 0),
+    (sum, signal) => sum + (signal.enabled ? signal.weight * contextMultipliers[signal.id] : 0),
     0,
   );
   const diversity = configured.find((signal) => signal.id === 'diversity');
 
   if (!diversity?.enabled || diversity.weight <= 0 || effectiveTotal <= 0) return 0;
 
-  const effectiveShare =
-    (diversity.weight * contextMultipliers.diversity) / effectiveTotal;
+  const effectiveShare = (diversity.weight * contextMultipliers.diversity) / effectiveTotal;
 
   const baseline = normalizeSignals(DEFAULT_RANKING_CONFIGURATION.signals);
   const baselineTotal = baseline.reduce(
@@ -633,6 +632,7 @@ function rerankForDiversity(
       .sort(compareRanked)
       .map((item, index) => ({ ...item, position: index + 1 }));
   }
+
   const remaining = [...candidates];
   const selected: RankedExperience[] = [];
   const tagSets = new Map(
@@ -658,9 +658,7 @@ function rerankForDiversity(
         0,
       );
       const adjustment =
-        selected.length === 0
-          ? 0
-          : -MAX_DIVERSITY_PENALTY * diversityStrength * maxSimilarity;
+        selected.length === 0 ? 0 : -MAX_DIVERSITY_PENALTY * diversityStrength * maxSimilarity;
       const adjustedScore = candidate.score + adjustment;
       const currentBestId = remaining[bestIndex]?.experience.id ?? '';
 
@@ -767,11 +765,7 @@ export function rankExperiences(
   const diversityStrength = getDiversityStrength(configuration, 'recommended');
 
   return rerankForDiversity(
-    selectTopCandidates(
-      scored,
-      scored.length,
-      MAX_DIVERSITY_PENALTY * diversityStrength,
-    ),
+    selectTopCandidates(scored, scored.length, MAX_DIVERSITY_PENALTY * diversityStrength),
     scored.length,
     diversityStrength,
   );

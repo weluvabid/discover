@@ -110,6 +110,7 @@ describe('discovery ranking', () => {
 
   it('ranks persona-specific topical matches through relevance independently of affinity', () => {
     const fixture = experiences[0];
+
     if (!fixture) throw new Error('Expected an experience fixture.');
 
     const strongTopic = {
@@ -138,6 +139,7 @@ describe('discovery ranking', () => {
 
   it('makes zero diversity weight disable both the rarity signal and greedy reranking', () => {
     const fixture = experiences[0];
+
     if (!fixture) throw new Error('Expected an experience fixture.');
 
     const candidates = Array.from({ length: 6 }, (_, index) => ({
@@ -160,6 +162,7 @@ describe('discovery ranking', () => {
 
   it('increases greedy reranking pressure when the diversity weight increases', () => {
     const fixture = experiences[0];
+
     if (!fixture) throw new Error('Expected an experience fixture.');
 
     const candidates = Array.from({ length: 6 }, (_, index) => ({
@@ -188,6 +191,7 @@ describe('discovery ranking', () => {
 
   it('does not use description length as a relevance signal', () => {
     const fixture = experiences[0];
+
     if (!fixture) throw new Error('Expected an experience fixture.');
 
     const concise = {
@@ -208,6 +212,7 @@ describe('discovery ranking', () => {
 
   it('removes persona-only signal weights when no persona is selected', () => {
     const fixture = experiences[0];
+
     if (!fixture) throw new Error('Expected an experience fixture.');
 
     const unpersonalized = {
@@ -290,7 +295,6 @@ describe('discovery ranking', () => {
       }),
     ).toBe(true);
   });
-
 
   it('uses the catalog observation clock for freshness and Recently Launched', () => {
     const fixture = experiences[0];
@@ -504,6 +508,7 @@ describe('discovery ranking', () => {
 
     expect(ranked).toBeDefined();
     const relevance = ranked?.explanation.signals.find((signal) => signal.id === 'relevance');
+
     expect(relevance).toMatchObject({ enabled: true });
     expect(relevance?.effectiveWeight).toBeGreaterThan(0);
   });

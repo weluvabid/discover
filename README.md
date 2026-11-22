@@ -57,7 +57,6 @@ Discover uses Astro for filesystem routing and document composition, with the in
 
 See [Backend data pipeline](docs/architecture/backend-data-pipeline.md) for the SQLite schema, Roblox enrichment, deterministic synthetic metrics, Turso synchronization and API contract. Copy `.env.example` to `.env`, configure the Turso token only when you are ready to sync, then run `pnpm api:build` and `pnpm db:ingest -- --limit 100` for the first ingestion smoke test.
 
-
 ## Frontend and API integration
 
 The static frontend calls the Discover API for catalog search and all five ranked discovery contexts. In local development, start the API and Astro in separate terminals:
@@ -83,13 +82,11 @@ pnpm test:acceptance
 
 The command reads `DATABASE_PATH` from the process environment or `.env`, defaulting to `data/roblox-games.db`. The acceptance suite opens the database in read-only mode and verifies SQLite integrity, foreign keys, the Catalog v1 row counts, uniqueness, metadata and synthetic metric bounds, snapshot consistency, all five discovery contexts, persona requests, catalog pagination, search, and detail lookups. Set `DATABASE_PATH=/absolute/path/to/roblox-games.db` to target another local copy.
 
-
 ### Ranking performance
 
 The API uses four ranking workers by default. Set `RANKING_WORKERS=0` to run the synchronous baseline, or provide another worker count when reproducing the benchmark. SQLite catalog reads remain on the HTTP thread.
 
 See [Moving discovery ranking off the HTTP thread](docs/architecture/ranking-worker-investigation.md) for the reason behind the change, benchmark results, memory trade-offs, and reproduction commands.
-
 
 ## Evaluating play-style recommendations
 

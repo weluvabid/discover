@@ -39,7 +39,6 @@ describe('synthetic metrics', () => {
   });
 });
 
-
 describe('persona match scoring', () => {
   it('prioritizes exact preferred genres over adjacent and unrelated genres', () => {
     const preferences = ['Simulation', 'Puzzle'];

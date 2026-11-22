@@ -52,7 +52,8 @@ function jaccard(left: Set<string>, right: Set<string>): number {
 function topGenres(items: Array<{ experience: { genre: string } }>) {
   const counts = new Map<string, number>();
 
-  for (const item of items) counts.set(item.experience.genre, (counts.get(item.experience.genre) ?? 0) + 1);
+  for (const item of items)
+    counts.set(item.experience.genre, (counts.get(item.experience.genre) ?? 0) + 1);
 
   return [...counts.entries()]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
@@ -63,6 +64,7 @@ function normalizedGenreEntropy(items: Array<{ experience: { genre: string } }>)
   if (items.length < 2) return 0;
 
   const counts = new Map<string, number>();
+
   for (const item of items) {
     counts.set(item.experience.genre, (counts.get(item.experience.genre) ?? 0) + 1);
   }
@@ -71,6 +73,7 @@ function normalizedGenreEntropy(items: Array<{ experience: { genre: string } }>)
 
   const entropy = [...counts.values()].reduce((sum, count) => {
     const probability = count / items.length;
+
     return sum - probability * Math.log(probability);
   }, 0);
 
@@ -87,12 +90,16 @@ function meanPairwiseSimilarity(
 
   for (let leftIndex = 0; leftIndex < items.length; leftIndex += 1) {
     const left = items[leftIndex];
+
     if (!left) continue;
+
     const leftTags = new Set(left.experience.tags.map((tag) => tag.toLowerCase()));
 
     for (let rightIndex = leftIndex + 1; rightIndex < items.length; rightIndex += 1) {
       const right = items[rightIndex];
+
       if (!right) continue;
+
       const rightTags = new Set(right.experience.tags.map((tag) => tag.toLowerCase()));
       let intersection = 0;
 
@@ -100,6 +107,7 @@ function meanPairwiseSimilarity(
 
       const union = leftTags.size + rightTags.size - intersection;
       const tagSimilarity = union > 0 ? intersection / union : 0;
+
       total += (left.experience.genre === right.experience.genre ? 0.55 : 0) + tagSimilarity * 0.45;
       pairs += 1;
     }
@@ -118,7 +126,10 @@ try {
   if (!Number.isFinite(now.getTime())) throw new Error('Evaluation clock must be a valid date.');
 
   const personas = seedPersonas();
-  const baseline = rankForContext(catalog, DEFAULT_RANKING_CONFIGURATION, 'recommended', { now, limit });
+  const baseline = rankForContext(catalog, DEFAULT_RANKING_CONFIGURATION, 'recommended', {
+    now,
+    limit,
+  });
   const baselineIds = new Set(baseline.map((item) => item.experience.id));
   const evaluations = personas.map((persona) => {
     const personalizedCatalog = getCatalog(db, { limit: 10_000, persona: persona.id });
@@ -130,7 +141,9 @@ try {
     );
     const preferred = new Set(persona.preferences);
     const preferredCount = ranked.filter((item) => preferred.has(item.experience.genre)).length;
-    const baselinePreferredCount = baseline.filter((item) => preferred.has(item.experience.genre)).length;
+    const baselinePreferredCount = baseline.filter((item) =>
+      preferred.has(item.experience.genre),
+    ).length;
     const contextEligibility = contexts.map((context) => ({
       context,
       eligibleCandidates: filterEligibleCandidates(personalizedCatalog, context, now).length,
@@ -160,7 +173,8 @@ try {
         preferredGenreShare: percentage(preferredCount, ranked.length),
         baselinePreferredGenreShare: percentage(baselinePreferredCount, baseline.length),
         preferredGenreLiftPoints:
-          percentage(preferredCount, ranked.length) - percentage(baselinePreferredCount, baseline.length),
+          percentage(preferredCount, ranked.length) -
+          percentage(baselinePreferredCount, baseline.length),
         meanMatchScore: mean(ranked.map((item) => item.experience.matchScore ?? 0)),
         topGenres: topGenres(ranked),
         normalizedGenreEntropy: normalizedGenreEntropy(ranked),
@@ -185,11 +199,7 @@ try {
       runs: diversityWeights.map((weight) => {
         const configuration = {
           ...DEFAULT_RANKING_CONFIGURATION,
-          signals: updateSignalWeight(
-            DEFAULT_RANKING_CONFIGURATION.signals,
-            'diversity',
-            weight,
-          ),
+          signals: updateSignalWeight(DEFAULT_RANKING_CONFIGURATION.signals, 'diversity', weight),
         };
         const ranked = rankForContext(personalizedCatalog, configuration, 'recommended', {
           now,
@@ -204,7 +214,9 @@ try {
           maximumGenreShare: Math.max(0, ...genres.map((item) => item.share)),
           meanPairwiseSimilarity: meanPairwiseSimilarity(ranked),
           totalAppliedDiversityPenalty: Number(
-            ranked.reduce((sum, item) => sum + Math.abs(item.explanation.diversityPenalty), 0).toFixed(3),
+            ranked
+              .reduce((sum, item) => sum + Math.abs(item.explanation.diversityPenalty), 0)
+              .toFixed(3),
           ),
         };
       }),
@@ -223,11 +235,14 @@ try {
       const a = resultSets[left];
       const b = resultSets[right];
 
-      if (a && b) pairwiseOverlaps.push({ left: a.id, right: b.id, overlap: jaccard(a.ids, b.ids) });
+      if (a && b)
+        pairwiseOverlaps.push({ left: a.id, right: b.id, overlap: jaccard(a.ids, b.ids) });
     }
   }
 
-  const allPersonaResultIds = new Set(evaluations.flatMap((evaluation) => evaluation.topResults.map((item) => item.id)));
+  const allPersonaResultIds = new Set(
+    evaluations.flatMap((evaluation) => evaluation.topResults.map((item) => item.id)),
+  );
   const meanPairwiseOverlap = mean(pairwiseOverlaps.map((item) => item.overlap));
   const maxPairwiseOverlap = Math.max(0, ...pairwiseOverlaps.map((item) => item.overlap));
   const summary = {
@@ -239,22 +254,40 @@ try {
     resultLimit: limit,
     baseline: {
       resultCount: baseline.length,
-      topResults: baseline.map((item) => ({ id: item.experience.id, title: item.experience.title, genre: item.experience.genre })),
+      topResults: baseline.map((item) => ({
+        id: item.experience.id,
+        title: item.experience.title,
+        genre: item.experience.genre,
+      })),
       topGenres: topGenres(baseline),
     },
     aggregate: {
       uniqueGamesAcrossPersonas: allPersonaResultIds.size,
-      possiblePersonaResultSlots: evaluations.reduce((sum, evaluation) => sum + evaluation.topResults.length, 0),
+      possiblePersonaResultSlots: evaluations.reduce(
+        (sum, evaluation) => sum + evaluation.topResults.length,
+        0,
+      ),
       meanPairwiseTopResultJaccard: meanPairwiseOverlap,
       maxPairwiseTopResultJaccard: maxPairwiseOverlap,
-      meanPreferredGenreShare: mean(evaluations.map((evaluation) => evaluation.metrics.preferredGenreShare)),
-      meanPreferredGenreLiftPoints: mean(evaluations.map((evaluation) => evaluation.metrics.preferredGenreLiftPoints)),
-      meanNormalizedGenreEntropy: mean(evaluations.map((evaluation) => evaluation.metrics.normalizedGenreEntropy)),
-      meanPairwiseSimilarity: mean(evaluations.map((evaluation) => evaluation.metrics.meanPairwiseSimilarity)),
+      meanPreferredGenreShare: mean(
+        evaluations.map((evaluation) => evaluation.metrics.preferredGenreShare),
+      ),
+      meanPreferredGenreLiftPoints: mean(
+        evaluations.map((evaluation) => evaluation.metrics.preferredGenreLiftPoints),
+      ),
+      meanNormalizedGenreEntropy: mean(
+        evaluations.map((evaluation) => evaluation.metrics.normalizedGenreEntropy),
+      ),
+      meanPairwiseSimilarity: mean(
+        evaluations.map((evaluation) => evaluation.metrics.meanPairwiseSimilarity),
+      ),
     },
     evaluations,
     diversitySensitivity,
-    pairwiseOverlaps: pairwiseOverlaps.map((item) => ({ ...item, overlap: Number(item.overlap.toFixed(4)) })),
+    pairwiseOverlaps: pairwiseOverlaps.map((item) => ({
+      ...item,
+      overlap: Number(item.overlap.toFixed(4)),
+    })),
   };
 
   const markdown = [
@@ -279,7 +312,10 @@ try {
     '| Profile | Preferred genres | Preferred share | Baseline share | Lift | Mean match | Genre entropy | Mean similarity | Top genres |',
     '|---|---|---:|---:|---:|---:|---:|---:|---|',
     ...evaluations.map((evaluation) => {
-      const genres = evaluation.metrics.topGenres.slice(0, 3).map((item) => `${item.genre} (${item.count})`).join(', ');
+      const genres = evaluation.metrics.topGenres
+        .slice(0, 3)
+        .map((item) => `${item.genre} (${item.count})`)
+        .join(', ');
       const lift = evaluation.metrics.preferredGenreLiftPoints;
 
       return `| ${evaluation.label} | ${evaluation.preferences.join(', ')} | ${evaluation.metrics.preferredGenreShare.toFixed(1)}% | ${evaluation.metrics.baselinePreferredGenreShare.toFixed(1)}% | ${lift >= 0 ? '+' : ''}${lift.toFixed(1)} pp | ${evaluation.metrics.meanMatchScore.toFixed(1)} | ${evaluation.metrics.normalizedGenreEntropy.toFixed(3)} | ${evaluation.metrics.meanPairwiseSimilarity.toFixed(3)} | ${genres || '—'} |`;
@@ -294,13 +330,18 @@ try {
       '',
       '| # | Experience | Genre | Match | Score |',
       '|---:|---|---|---:|---:|',
-      ...evaluation.topResults.map((item) => `| ${item.position} | ${item.title.replaceAll('|', '\\|')} | ${item.genre} | ${item.matchScore ?? '—'} | ${item.score.toFixed(2)} |`),
+      ...evaluation.topResults.map(
+        (item) =>
+          `| ${item.position} | ${item.title.replaceAll('|', '\\|')} | ${item.genre} | ${item.matchScore ?? '—'} | ${item.score.toFixed(2)} |`,
+      ),
       '',
       'Context eligibility:',
       '',
       '| Context | Eligible catalog | Returned |',
       '|---|---:|---:|',
-      ...evaluation.metrics.contextEligibility.map((item) => `| ${item.context} | ${item.eligibleCandidates} | ${item.returned} |`),
+      ...evaluation.metrics.contextEligibility.map(
+        (item) => `| ${item.context} | ${item.eligibleCandidates} | ${item.returned} |`,
+      ),
       '',
     ]),
     '## Diversity control sensitivity',
@@ -312,7 +353,10 @@ try {
       '',
       '| Diversity weight | Genre entropy | Maximum genre share | Mean similarity | Applied penalty |',
       '|---:|---:|---:|---:|---:|',
-      ...profile.runs.map((run) => `| ${run.configuredDiversityWeight} | ${run.normalizedGenreEntropy.toFixed(3)} | ${run.maximumGenreShare.toFixed(1)}% | ${run.meanPairwiseSimilarity.toFixed(3)} | ${run.totalAppliedDiversityPenalty.toFixed(3)} |`),
+      ...profile.runs.map(
+        (run) =>
+          `| ${run.configuredDiversityWeight} | ${run.normalizedGenreEntropy.toFixed(3)} | ${run.maximumGenreShare.toFixed(1)}% | ${run.meanPairwiseSimilarity.toFixed(3)} | ${run.totalAppliedDiversityPenalty.toFixed(3)} |`,
+      ),
       '',
     ]),
     '## Interpretation',
@@ -323,7 +367,10 @@ try {
 
   mkdirSync(reportDirectory, { recursive: true });
   writeFileSync(resolve(reportDirectory, 'persona-evaluation.md'), markdown);
-  writeFileSync(resolve(reportDirectory, 'persona-evaluation.json'), `${JSON.stringify(summary, null, 2)}\n`);
+  writeFileSync(
+    resolve(reportDirectory, 'persona-evaluation.json'),
+    `${JSON.stringify(summary, null, 2)}\n`,
+  );
 
   process.stdout.write(
     `Persona evaluation complete\nCatalog: ${catalog.length}\nProfiles: ${personas.length}\nUnique games across profiles: ${allPersonaResultIds.size}\nMean pairwise top-${limit} overlap: ${(meanPairwiseOverlap * 100).toFixed(1)}%\nMean preferred-genre share: ${summary.aggregate.meanPreferredGenreShare.toFixed(1)}%\nMean lift over baseline: ${summary.aggregate.meanPreferredGenreLiftPoints >= 0 ? '+' : ''}${summary.aggregate.meanPreferredGenreLiftPoints.toFixed(1)} pp\nReports: ${resolve(reportDirectory, 'persona-evaluation.md')} and ${resolve(reportDirectory, 'persona-evaluation.json')}\n`,

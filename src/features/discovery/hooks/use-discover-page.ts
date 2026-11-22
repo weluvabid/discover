@@ -57,14 +57,21 @@ export function useDiscoverPage(initialLocation = '/') {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
   const [controlsOpen, setControlsOpen] = useState(false);
-  const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(DEFAULT_RANKING_CONFIGURATION);
+  const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(
+    DEFAULT_RANKING_CONFIGURATION,
+  );
   const requestedGenre = searchParams.get('genre');
-  const genre: ExperienceGenre | 'All' = requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
-    ? (requestedGenre as ExperienceGenre)
-    : 'All';
+  const genre: ExperienceGenre | 'All' =
+    requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
+      ? (requestedGenre as ExperienceGenre)
+      : 'All';
   const query = searchParams.get('q') ?? '';
   const requestedSort = searchParams.get('sort') as SearchSort | null;
-  const searchSort: SearchSort = requestedSort && ['relevance', 'players', 'rating', 'reviews', 'launched', 'updated'].includes(requestedSort) ? requestedSort : 'relevance';
+  const searchSort: SearchSort =
+    requestedSort &&
+    ['relevance', 'players', 'rating', 'reviews', 'launched', 'updated'].includes(requestedSort)
+      ? requestedSort
+      : 'relevance';
   const requestedPersona = searchParams.get('persona') ?? '';
   const [personas, setPersonas] = useState<DiscoveryPersona[]>([]);
   const [genreCounts, setGenreCounts] = useState<Record<string, number>>({});
@@ -84,7 +91,9 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchGenreCounts(controller.signal).then((result) => setGenreCounts(result.data)).catch(() => undefined);
+    fetchGenreCounts(controller.signal)
+      .then((result) => setGenreCounts(result.data))
+      .catch(() => undefined);
     fetchPersonas(controller.signal)
       .then((result) => setPersonas(result.data))
       .catch((cause: unknown) => {
@@ -105,6 +114,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
     setControlsOpen(true);
     const nextUrl = new URL(window.location.href);
+
     nextUrl.searchParams.delete('tune');
     window.history.replaceState(null, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
   }, [searchParams]);
@@ -131,26 +141,29 @@ export function useDiscoverPage(initialLocation = '/') {
           persona || undefined,
         ),
       ),
-    ).then((responses) => {
-      if (!active) return;
+    )
+      .then((responses) => {
+        if (!active) return;
 
-      const next = Object.fromEntries(
-        responses.map((response) => [response.context, response.results]),
-      ) as Record<RankingContext, RankedExperience[]>;
-      const featuredId = next.featured[0]?.experience.id;
+        const next = Object.fromEntries(
+          responses.map((response) => [response.context, response.results]),
+        ) as Record<RankingContext, RankedExperience[]>;
+        const featuredId = next.featured[0]?.experience.id;
 
-      next.recommended = next.recommended
-        .filter((item) => item.experience.id !== featuredId)
-        .slice(0, 6)
-        .map((item, index) => ({ ...item, position: index + 1 }));
-      setRankedSections(next);
-    }).catch((cause: unknown) => {
-      if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        next.recommended = next.recommended
+          .filter((item) => item.experience.id !== featuredId)
+          .slice(0, 6)
+          .map((item, index) => ({ ...item, position: index + 1 }));
+        setRankedSections(next);
+      })
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
 
-      setError(cause instanceof Error ? cause.message : 'Unable to load discovery results.');
-    }).finally(() => {
-      if (active) setLoading(false);
-    });
+        setError(cause instanceof Error ? cause.message : 'Unable to load discovery results.');
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
     return () => {
       active = false;
@@ -173,15 +186,18 @@ export function useDiscoverPage(initialLocation = '/') {
     setSearchLoading(true);
     setError(null);
     const debounce = window.setTimeout(() => {
-      searchCatalog(query, genre, searchSort, controller.signal).then((results) => {
-        if (active) setVisibleResults(results);
-      }).catch((cause: unknown) => {
-        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+      searchCatalog(query, genre, searchSort, controller.signal)
+        .then((results) => {
+          if (active) setVisibleResults(results);
+        })
+        .catch((cause: unknown) => {
+          if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
 
-        setError(cause instanceof Error ? cause.message : 'Search failed.');
-      }).finally(() => {
-        if (active) setSearchLoading(false);
-      });
+          setError(cause instanceof Error ? cause.message : 'Search failed.');
+        })
+        .finally(() => {
+          if (active) setSearchLoading(false);
+        });
     }, 160);
 
     return () => {
@@ -201,10 +217,11 @@ export function useDiscoverPage(initialLocation = '/') {
       return () => controller.abort();
     }
 
-    Promise.all(bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)))
-      .then((items) => {
-        if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
-      });
+    Promise.all(
+      bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
+    ).then((items) => {
+      if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
+    });
 
     return () => {
       active = false;
@@ -228,7 +245,10 @@ export function useDiscoverPage(initialLocation = '/') {
         setError(cause instanceof Error ? cause.message : 'Unable to load collections.');
       });
 
-    return () => { active = false; controller.abort(); };
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [activeView]);
 
   const rankedRecommendations = useMemo(
@@ -237,72 +257,97 @@ export function useDiscoverPage(initialLocation = '/') {
   );
   const hasCustomRanking = !isDefaultRankingConfiguration(rankingConfiguration);
 
-  const updateQuery = useCallback((next: string) => {
-    const params = new URLSearchParams();
+  const updateQuery = useCallback(
+    (next: string) => {
+      const params = new URLSearchParams();
 
-    if (next.trim()) params.set('q', next);
+      if (next.trim()) params.set('q', next);
 
-    if (genre !== 'All') params.set('genre', genre);
+      if (genre !== 'All') params.set('genre', genre);
 
-    if (persona) params.set('persona', persona);
-    if (searchSort !== 'relevance') params.set('sort', searchSort);
+      if (persona) params.set('persona', persona);
 
-    if (next.trim()) navigateTo(`/search?${params.toString()}`, { replace: true });
-    else if (pathname === '/search') navigateTo(`/${params.size ? `?${params}` : ''}`);
-  }, [genre, pathname, persona, searchSort]);
+      if (searchSort !== 'relevance') params.set('sort', searchSort);
 
-  const setSearchSort = useCallback((next: SearchSort) => {
-    const params = new URLSearchParams(searchParams);
-    if (next === 'relevance') params.delete('sort');
-    else params.set('sort', next);
-    navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
-  }, [pathname, searchParams]);
+      if (next.trim()) navigateTo(`/search?${params.toString()}`, { replace: true });
+      else if (pathname === '/search') navigateTo(`/${params.size ? `?${params}` : ''}`);
+    },
+    [genre, pathname, persona, searchSort],
+  );
 
-  const setGenre = useCallback((next: ExperienceGenre | 'All') => {
-    const params = new URLSearchParams(searchParams);
-    const targetPath = pathname === '/search' ? '/' : pathname;
+  const setSearchSort = useCallback(
+    (next: SearchSort) => {
+      const params = new URLSearchParams(searchParams);
 
-    if (pathname === '/search') params.delete('q');
+      if (next === 'relevance') params.delete('sort');
+      else params.set('sort', next);
 
-    if (next === 'All') params.delete('genre');
-    else params.set('genre', next);
+      navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
+    },
+    [pathname, searchParams],
+  );
 
-    navigateTo(`${targetPath}${params.size ? `?${params}` : ''}`, { replace: true });
-  }, [pathname, searchParams]);
+  const setGenre = useCallback(
+    (next: ExperienceGenre | 'All') => {
+      const params = new URLSearchParams(searchParams);
+      const targetPath = pathname === '/search' ? '/' : pathname;
 
-  const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
-    const params = new URLSearchParams();
+      if (pathname === '/search') params.delete('q');
 
-    if (next !== 'All') params.set('genre', next);
+      if (next === 'All') params.delete('genre');
+      else params.set('genre', next);
 
-    if (persona) params.set('persona', persona);
+      navigateTo(`${targetPath}${params.size ? `?${params}` : ''}`, { replace: true });
+    },
+    [pathname, searchParams],
+  );
 
-    navigateTo(`/${params.size ? `?${params}` : ''}`);
-  }, [persona]);
+  const selectGenre = useCallback(
+    (next: ExperienceGenre | 'All') => {
+      const params = new URLSearchParams();
 
-  const navigate = useCallback((view: DiscoveryView) => {
-    const params = new URLSearchParams();
+      if (next !== 'All') params.set('genre', next);
 
-    if (genre !== 'All') params.set('genre', genre);
+      if (persona) params.set('persona', persona);
 
-    if (persona) params.set('persona', persona);
+      navigateTo(`/${params.size ? `?${params}` : ''}`);
+    },
+    [persona],
+  );
 
-    navigateTo(`${VIEW_TO_PATH[view]}${params.size ? `?${params}` : ''}`);
-  }, [genre, persona]);
+  const navigate = useCallback(
+    (view: DiscoveryView) => {
+      const params = new URLSearchParams();
 
-  const setPersona = useCallback((next: string) => {
-    const params = new URLSearchParams(searchParams);
+      if (genre !== 'All') params.set('genre', genre);
 
-    if (next) params.set('persona', next);
-    else params.delete('persona');
+      if (persona) params.set('persona', persona);
 
-    navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
-  }, [pathname, searchParams]);
+      navigateTo(`${VIEW_TO_PATH[view]}${params.size ? `?${params}` : ''}`);
+    },
+    [genre, persona],
+  );
+
+  const setPersona = useCallback(
+    (next: string) => {
+      const params = new URLSearchParams(searchParams);
+
+      if (next) params.set('persona', next);
+      else params.delete('persona');
+
+      navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
+    },
+    [pathname, searchParams],
+  );
 
   const closeControls = useCallback(() => setControlsOpen(false), []);
 
   return {
-    activeView, controlsOpen, setControlsOpen, rankingConfiguration, setRankingConfiguration,
+    activeView,
+    controlsOpen,
+    setControlsOpen,
+    rankingConfiguration,
+    setRankingConfiguration,
     genre,
     setGenre,
     selectGenre,

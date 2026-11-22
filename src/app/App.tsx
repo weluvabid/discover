@@ -93,7 +93,10 @@ export default function App({ initialLocation = '/' }: AppProps) {
           id="main-content"
         >
           {page.error && (
-            <div role="alert" className="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            <div
+              role="alert"
+              className="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+            >
               {page.error}
             </div>
           )}

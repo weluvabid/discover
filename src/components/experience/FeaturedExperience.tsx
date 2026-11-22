@@ -1,12 +1,4 @@
-import {
-  ArrowUpRight,
-  BadgeCheck,
-  Bookmark,
-  Heart,
-  Sparkles,
-  Star,
-  ThumbsUp,
-} from 'lucide-react';
+import { ArrowUpRight, BadgeCheck, Bookmark, Heart, Sparkles, Star, ThumbsUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount, getRankScoreClass } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -80,7 +72,9 @@ export function FeaturedExperience({
           {experience.creatorVerified && <BadgeCheck size={15} />}
         </p>
         <div className="relative">
-          <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{experience.description}</p>
+          <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+            {experience.description}
+          </p>
           <a
             href={`/games/?id=${encodeURIComponent(experience.id)}`}
             className="absolute bottom-0 right-0 inline-flex items-center gap-1 bg-card pl-1 text-sm font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

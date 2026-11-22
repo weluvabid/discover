@@ -30,7 +30,9 @@ describe('PersonaCommandSelector', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: /Play style: Competitive climber/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Play style: Competitive climber/ }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole('group', { name: 'Choose a play style' })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Play style: Competitive climber/ }));
@@ -42,13 +44,8 @@ describe('PersonaCommandSelector', () => {
 
   it('selects a persona and closes the command palette', () => {
     const onSelect = vi.fn();
-    render(
-      <PersonaCommandSelector
-        personas={personas}
-        selectedPersonaId=""
-        onSelect={onSelect}
-      />,
-    );
+
+    render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={onSelect} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
     fireEvent.click(screen.getByText('Social explorer'));
@@ -58,13 +55,7 @@ describe('PersonaCommandSelector', () => {
   });
 
   it('explains the completed ranking fixes inside the palette', () => {
-    render(
-      <PersonaCommandSelector
-        personas={personas}
-        selectedPersonaId=""
-        onSelect={vi.fn()}
-      />,
-    );
+    render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
 

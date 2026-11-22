@@ -1,8 +1,14 @@
 import type { DatabaseSync } from 'node:sqlite';
 import type { Experience, ExperienceGenre } from '@/types/experience';
-import { calculatePersonaMatchScore, calculatePersonaRelevanceScore, seedPersonas } from '../ingestion/synthetic';
+import {
+  calculatePersonaMatchScore,
+  calculatePersonaRelevanceScore,
+  seedPersonas,
+} from '../ingestion/synthetic';
 
-const PERSONA_PREFERENCES = new Map(seedPersonas().map((persona) => [persona.id, persona.preferences]));
+const PERSONA_PREFERENCES = new Map(
+  seedPersonas().map((persona) => [persona.id, persona.preferences]),
+);
 
 const GENRES: ExperienceGenre[] = [
   'Action RPG',
@@ -93,18 +99,23 @@ function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: str
     updatedAt: row.source_updated_at ?? row.updated_at ?? undefined,
     freshnessReferenceAt,
     tags: tags.length > 0 ? tags : [row.genre],
-    matchScore: persona && PERSONA_PREFERENCES.has(persona)
-      ? (() => {
-          const persistedScores = JSON.parse(row.match_scores_json || '{}') as Record<string, number>;
-          const persistedScore = persistedScores[persona];
-          return Number.isFinite(persistedScore)
-            ? persistedScore
-            : calculatePersonaMatchScore(
-                mapGenre(row.genre),
-                PERSONA_PREFERENCES.get(persona) ?? [],
-              );
-        })()
-      : undefined,
+    matchScore:
+      persona && PERSONA_PREFERENCES.has(persona)
+        ? (() => {
+            const persistedScores = JSON.parse(row.match_scores_json || '{}') as Record<
+              string,
+              number
+            >;
+            const persistedScore = persistedScores[persona];
+
+            return Number.isFinite(persistedScore)
+              ? persistedScore
+              : calculatePersonaMatchScore(
+                  mapGenre(row.genre),
+                  PERSONA_PREFERENCES.get(persona) ?? [],
+                );
+          })()
+        : undefined,
     personaRelevanceScore: persona
       ? calculatePersonaRelevanceScore(persona, {
           title: row.title,
@@ -133,14 +144,17 @@ export function getCatalog(
   const parameters: (string | number)[] = [];
 
   if (options.query) {
-    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\' OR genre LIKE ? ESCAPE '\\' OR subgenre LIKE ? ESCAPE '\\' OR tags_json LIKE ? ESCAPE '\\')");
+    conditions.push(
+      "(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\' OR genre LIKE ? ESCAPE '\\' OR subgenre LIKE ? ESCAPE '\\' OR tags_json LIKE ? ESCAPE '\\')",
+    );
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
 
     parameters.push(query, query, query, query, query, query);
   }
 
-  const queryOrder = options.query && (!options.sort || options.sort === 'relevance')
-    ? `CASE
+  const queryOrder =
+    options.query && (!options.sort || options.sort === 'relevance')
+      ? `CASE
          WHEN lower(title) = lower(?) THEN 0
          WHEN lower(title) LIKE lower(?) ESCAPE '\\' THEN 1
          WHEN lower(creator) = lower(?) THEN 2
@@ -148,18 +162,21 @@ export function getCatalog(
          WHEN lower(title) LIKE lower(?) ESCAPE '\\' THEN 4
          ELSE 5
        END,`
-    : '';
-  const queryOrderParameters = options.query && (!options.sort || options.sort === 'relevance')
-    ? [
-        options.query,
-        `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
-        options.query,
-        `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
-        `%${options.query.replace(/[\\%_]/g, '\\$&')}%`,
-      ]
-    : [];
+      : '';
+  const queryOrderParameters =
+    options.query && (!options.sort || options.sort === 'relevance')
+      ? [
+          options.query,
+          `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
+          options.query,
+          `${options.query.replace(/[\\%_]/g, '\\$&')}%`,
+          `%${options.query.replace(/[\\%_]/g, '\\$&')}%`,
+        ]
+      : [];
   const freshnessReferenceAt = db
-    .prepare('SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL')
+    .prepare(
+      'SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL',
+    )
     .get() as { reference_at: string | null };
   const sortOrder: Record<NonNullable<typeof options.sort>, string> = {
     relevance: 'active_players DESC',
@@ -180,8 +197,13 @@ export function getCatalog(
     )
     .all(...parameters, ...queryOrderParameters) as unknown as GameRow[];
   const experiences = rows
-    .map((row) => toExperience(row, options.persona, freshnessReferenceAt.reference_at ?? undefined))
-    .filter((experience) => !options.genre || options.genre === 'All' || experience.genre === options.genre);
+    .map((row) =>
+      toExperience(row, options.persona, freshnessReferenceAt.reference_at ?? undefined),
+    )
+    .filter(
+      (experience) =>
+        !options.genre || options.genre === 'All' || experience.genre === options.genre,
+    );
 
   return experiences.slice(offset, offset + limit);
 }
@@ -194,7 +216,9 @@ export function getCatalogCount(
   const parameters: string[] = [];
 
   if (options.query) {
-    conditions.push("(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\' OR genre LIKE ? ESCAPE '\\' OR subgenre LIKE ? ESCAPE '\\' OR tags_json LIKE ? ESCAPE '\\')");
+    conditions.push(
+      "(title LIKE ? ESCAPE '\\' OR creator LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\' OR genre LIKE ? ESCAPE '\\' OR subgenre LIKE ? ESCAPE '\\' OR tags_json LIKE ? ESCAPE '\\')",
+    );
     const query = `%${options.query.replace(/[\\%_]/g, '\\$&')}%`;
 
     parameters.push(query, query, query, query, query, query);
@@ -211,7 +235,9 @@ export function getCatalogCount(
 
 export function getGenreCounts(db: DatabaseSync): Record<ExperienceGenre | 'All', number> {
   const rows = db
-    .prepare("SELECT genre, COUNT(DISTINCT universe_id) AS count FROM games WHERE source_status = 'valid' GROUP BY genre")
+    .prepare(
+      "SELECT genre, COUNT(DISTINCT universe_id) AS count FROM games WHERE source_status = 'valid' GROUP BY genre",
+    )
     .all() as Array<{ genre: string; count: number }>;
   const counts: Record<ExperienceGenre | 'All', number> = {
     All: 0,
@@ -226,6 +252,7 @@ export function getGenreCounts(db: DatabaseSync): Record<ExperienceGenre | 'All'
 
   for (const row of rows) {
     const genre = mapGenre(row.genre);
+
     counts[genre] += row.count;
     counts.All += row.count;
   }
@@ -239,8 +266,12 @@ export function getExperience(db: DatabaseSync, universeId: string): Experience 
     .get(universeId) as GameRow | undefined;
 
   const freshnessReferenceAt = db
-    .prepare('SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL')
+    .prepare(
+      'SELECT MAX(source_date_fetched) AS reference_at FROM games WHERE source_date_fetched IS NOT NULL',
+    )
     .get() as { reference_at: string | null };
 
-  return row ? toExperience(row, undefined, freshnessReferenceAt.reference_at ?? undefined) : undefined;
+  return row
+    ? toExperience(row, undefined, freshnessReferenceAt.reference_at ?? undefined)
+    : undefined;
 }

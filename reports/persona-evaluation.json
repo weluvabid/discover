@@ -259,10 +259,7 @@
     {
       "id": "competitive",
       "label": "Competitive climber",
-      "preferences": [
-        "Action RPG",
-        "Racing"
-      ],
+      "preferences": ["Action RPG", "Racing"],
       "topResults": [
         {
           "id": "6035872082",
@@ -687,10 +684,7 @@
     {
       "id": "social",
       "label": "Social explorer",
-      "preferences": [
-        "Co-op",
-        "Exploration"
-      ],
+      "preferences": ["Co-op", "Exploration"],
       "topResults": [
         {
           "id": "383310974",
@@ -1120,10 +1114,7 @@
     {
       "id": "builder",
       "label": "Creative builder",
-      "preferences": [
-        "Simulation",
-        "Puzzle"
-      ],
+      "preferences": ["Simulation", "Puzzle"],
       "topResults": [
         {
           "id": "4967899845",
@@ -1548,10 +1539,7 @@
     {
       "id": "thrill-seeker",
       "label": "Thrill seeker",
-      "preferences": [
-        "Horror",
-        "Co-op"
-      ],
+      "preferences": ["Horror", "Co-op"],
       "topResults": [
         {
           "id": "5569032992",
@@ -1971,10 +1959,7 @@
     {
       "id": "completionist",
       "label": "Completionist",
-      "preferences": [
-        "Action RPG",
-        "Simulation"
-      ],
+      "preferences": ["Action RPG", "Simulation"],
       "topResults": [
         {
           "id": "994732206",
@@ -2409,10 +2394,7 @@
     {
       "id": "casual",
       "label": "Casual browser",
-      "preferences": [
-        "Puzzle",
-        "Racing"
-      ],
+      "preferences": ["Puzzle", "Racing"],
       "topResults": [
         {
           "id": "6371309794",
@@ -2837,10 +2819,7 @@
     {
       "id": "story-first",
       "label": "Story seeker",
-      "preferences": [
-        "Exploration",
-        "Horror"
-      ],
+      "preferences": ["Exploration", "Horror"],
       "topResults": [
         {
           "id": "5650396773",
@@ -3265,10 +3244,7 @@
     {
       "id": "speedrunner",
       "label": "Speedrunner",
-      "preferences": [
-        "Racing",
-        "Action RPG"
-      ],
+      "preferences": ["Racing", "Action RPG"],
       "topResults": [
         {
           "id": "4949420752",
@@ -3693,10 +3669,7 @@
     {
       "id": "tactician",
       "label": "Tactician",
-      "preferences": [
-        "Puzzle",
-        "Simulation"
-      ],
+      "preferences": ["Puzzle", "Simulation"],
       "topResults": [
         {
           "id": "4778845442",
@@ -4121,10 +4094,7 @@
     {
       "id": "adventurer",
       "label": "Open-world adventurer",
-      "preferences": [
-        "Exploration",
-        "Action RPG"
-      ],
+      "preferences": ["Exploration", "Action RPG"],
       "topResults": [
         {
           "id": "1235188606",
@@ -4554,10 +4524,7 @@
     {
       "id": "party-player",
       "label": "Party player",
-      "preferences": [
-        "Co-op",
-        "Racing"
-      ],
+      "preferences": ["Co-op", "Racing"],
       "topResults": [
         {
           "id": "383310974",
@@ -4997,10 +4964,7 @@
     {
       "id": "collector",
       "label": "Collector",
-      "preferences": [
-        "Simulation",
-        "Action RPG"
-      ],
+      "preferences": ["Simulation", "Action RPG"],
       "topResults": [
         {
           "id": "1235188606",

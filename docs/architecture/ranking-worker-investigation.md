@@ -16,25 +16,25 @@ I ran the production API build against the same local SQLite catalog, which cont
 
 ### Throughput under concurrent recommended discovery
 
-| Concurrent requests | Synchronous | 2 workers | 4 workers | 8 workers |
-| ------------------: | ----------: | --------: | --------: | --------: |
-| 1   | 36.1 req/s | 34.8 req/s | 36.4 req/s | 35.9 req/s |
-| 5   | 37.6 req/s | 56.2 req/s | 68.1 req/s | 67.7 req/s |
-| 10  | 37.2 req/s | 57.2 req/s | 70.1 req/s | 76.5 req/s |
-| 25  | 37.5 req/s | 55.8 req/s | 71.1 req/s | 80.3 req/s |
-| 50  | 37.3 req/s | 57.3 req/s | 74.2 req/s | 81.7 req/s |
-| 100 | 37.6 req/s | 59.1 req/s | 77.1 req/s | 83.8 req/s |
+| Concurrent requests | Synchronous |  2 workers |  4 workers |  8 workers |
+| ------------------: | ----------: | ---------: | ---------: | ---------: |
+|                   1 |  36.1 req/s | 34.8 req/s | 36.4 req/s | 35.9 req/s |
+|                   5 |  37.6 req/s | 56.2 req/s | 68.1 req/s | 67.7 req/s |
+|                  10 |  37.2 req/s | 57.2 req/s | 70.1 req/s | 76.5 req/s |
+|                  25 |  37.5 req/s | 55.8 req/s | 71.1 req/s | 80.3 req/s |
+|                  50 |  37.3 req/s | 57.3 req/s | 74.2 req/s | 81.7 req/s |
+|                 100 |  37.6 req/s | 59.1 req/s | 77.1 req/s | 83.8 req/s |
 
 At 100 concurrent requests, the eight-worker run reached 83.8 requests per second, compared with 37.6 for the synchronous baseline. The four-worker run reached 77.1 requests per second. The improvement came from allowing ranking work for different requests to execute in parallel instead of serializing all ranking on the HTTP thread.
 
 ### Event-loop delay
 
-| Configuration | Mean | p95 | Maximum |
-| ------------- | ---: | ---: | -------: |
-| Synchronous | 38.07 ms | 126.48 ms | 2,403.34 ms |
-| 2 workers | 15.00 ms | 18.74 ms | 935.85 ms |
-| 4 workers | 15.07 ms | 17.17 ms | 822.08 ms |
-| 8 workers | 15.66 ms | 17.71 ms | 819.99 ms |
+| Configuration |     Mean |       p95 |     Maximum |
+| ------------- | -------: | --------: | ----------: |
+| Synchronous   | 38.07 ms | 126.48 ms | 2,403.34 ms |
+| 2 workers     | 15.00 ms |  18.74 ms |   935.85 ms |
+| 4 workers     | 15.07 ms |  17.17 ms |   822.08 ms |
+| 8 workers     | 15.66 ms |  17.71 ms |   819.99 ms |
 
 The event loop became substantially more responsive after ranking moved to workers. The mean and p95 delay fell sharply. The maximum delay also fell, although occasional long pauses remained during these benchmark runs.
 
@@ -44,9 +44,9 @@ At 100 concurrent requests, average queue wait and worker execution time were:
 
 | Workers | Average queue wait | Average worker execution |
 | ------: | -----------------: | -----------------------: |
-| 2 | 108.47 ms | 21.39 ms |
-| 4 | 65.81 ms | 26.06 ms |
-| 8 | 43.52 ms | 34.02 ms |
+|       2 |          108.47 ms |                 21.39 ms |
+|       4 |           65.81 ms |                 26.06 ms |
+|       8 |           43.52 ms |                 34.02 ms |
 
 Adding workers reduced time waiting for an available worker. Worker execution time increased as the pool grew, which is consistent with more CPU contention. The eight-worker pool completed more requests, but each worker took longer on average to execute its ranking task.
 
@@ -54,10 +54,10 @@ Adding workers reduced time waiting for an available worker. Worker execution ti
 
 | Configuration | RSS after run |
 | ------------- | ------------: |
-| Synchronous | 254.9 MiB |
-| 2 workers | 639.4 MiB |
-| 4 workers | 684.8 MiB |
-| 8 workers | 911.8 MiB |
+| Synchronous   |     254.9 MiB |
+| 2 workers     |     639.4 MiB |
+| 4 workers     |     684.8 MiB |
+| 8 workers     |     911.8 MiB |
 
 Worker threads improved throughput, but they also increased memory use. The jump from four to eight workers added about 227 MiB of RSS for a smaller throughput gain than the move from the synchronous implementation to four workers.
 

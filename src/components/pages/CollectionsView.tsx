@@ -11,12 +11,29 @@ interface CollectionsViewProps {
 }
 
 const collectionDefinitions = [
-  { title: 'Into the Unknown', description: 'Atmospheric worlds made for curious explorers.', genre: 'Exploration' },
-  { title: 'Play Together', description: 'Bring your crew. These worlds are better together.', genre: 'Co-op' },
-  { title: 'Think Different', description: 'Unusual mechanics and clever worlds worth exploring.', genre: 'Puzzle' },
+  {
+    title: 'Into the Unknown',
+    description: 'Atmospheric worlds made for curious explorers.',
+    genre: 'Exploration',
+  },
+  {
+    title: 'Play Together',
+    description: 'Bring your crew. These worlds are better together.',
+    genre: 'Co-op',
+  },
+  {
+    title: 'Think Different',
+    description: 'Unusual mechanics and clever worlds worth exploring.',
+    genre: 'Puzzle',
+  },
 ] as const;
 
-export function CollectionsView({ experiences, bookmarks, onToggleBookmark, onPlay }: CollectionsViewProps) {
+export function CollectionsView({
+  experiences,
+  bookmarks,
+  onToggleBookmark,
+  onPlay,
+}: CollectionsViewProps) {
   return (
     <div className="min-w-0">
       <PageIntro
@@ -26,7 +43,9 @@ export function CollectionsView({ experiences, bookmarks, onToggleBookmark, onPl
         icon={<Sparkles size={17} />}
       />
       {collectionDefinitions.map((collection) => {
-        const items = experiences.filter((experience) => experience.genre === collection.genre).slice(0, 3);
+        const items = experiences
+          .filter((experience) => experience.genre === collection.genre)
+          .slice(0, 3);
 
         return (
           <section className="mt-8 space-y-4" key={collection.title}>

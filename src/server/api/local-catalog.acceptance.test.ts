@@ -29,7 +29,9 @@ afterAll(() => db.close());
 
 describe('Local catalog acceptance (read-only)', () => {
   it('passes SQLite integrity and foreign-key checks', () => {
-    const integrity = db.prepare('PRAGMA integrity_check').all() as Array<{ integrity_check: string }>;
+    const integrity = db.prepare('PRAGMA integrity_check').all() as Array<{
+      integrity_check: string;
+    }>;
     const foreignKeys = db.prepare('PRAGMA foreign_key_check').all();
 
     expect(integrity).toEqual([{ integrity_check: 'ok' }]);
@@ -38,12 +40,12 @@ describe('Local catalog acceptance (read-only)', () => {
 
   it('contains the synchronized Catalog v1 dataset', () => {
     const games = db.prepare('SELECT COUNT(*) AS count FROM games').get() as { count: number };
-    const snapshots = db
-      .prepare('SELECT COUNT(*) AS count FROM game_metric_snapshots')
-      .get() as { count: number };
-    const personas = db
-      .prepare('SELECT COUNT(*) AS count FROM synthetic_personas')
-      .get() as { count: number };
+    const snapshots = db.prepare('SELECT COUNT(*) AS count FROM game_metric_snapshots').get() as {
+      count: number;
+    };
+    const personas = db.prepare('SELECT COUNT(*) AS count FROM synthetic_personas').get() as {
+      count: number;
+    };
 
     expect(Number(games.count)).toBe(1307);
     expect(Number(snapshots.count)).toBe(11962);
@@ -52,9 +54,11 @@ describe('Local catalog acceptance (read-only)', () => {
 
   it('has unique universe IDs and no invalid source status values', () => {
     const result = db
-      .prepare(`SELECT COUNT(*) AS total, COUNT(DISTINCT universe_id) AS unique_ids,
+      .prepare(
+        `SELECT COUNT(*) AS total, COUNT(DISTINCT universe_id) AS unique_ids,
         SUM(CASE WHEN source_status NOT IN ('pending','valid','unavailable','invalid') THEN 1 ELSE 0 END) AS bad_status
-        FROM games`)
+        FROM games`,
+      )
       .get() as { total: number; unique_ids: number; bad_status: number };
 
     expect(Number(result.total)).toBe(Number(result.unique_ids));
@@ -63,14 +67,16 @@ describe('Local catalog acceptance (read-only)', () => {
 
   it('has valid core metadata and bounded synthetic metrics', () => {
     const result = db
-      .prepare(`SELECT
+      .prepare(
+        `SELECT
         SUM(CASE WHEN title IS NULL OR trim(title) = '' THEN 1 ELSE 0 END) AS missing_title,
         SUM(CASE WHEN roblox_url NOT LIKE 'https://www.roblox.com/games/%' THEN 1 ELSE 0 END) AS bad_url,
         SUM(CASE WHEN active_players < 0 OR rating < 0 OR rating > 100 OR review_count < 0 THEN 1 ELSE 0 END) AS bad_core_metrics,
         SUM(CASE WHEN d1_retention NOT BETWEEN 0 AND 1 OR d7_retention NOT BETWEEN 0 AND d1_retention OR d30_retention NOT BETWEEN 0 AND d7_retention OR repeat_play_rate NOT BETWEEN 0 AND 1 THEN 1 ELSE 0 END) AS bad_rates,
         SUM(CASE WHEN average_playtime_minutes < 0 OR average_session_minutes < 0 THEN 1 ELSE 0 END) AS bad_durations,
         SUM(CASE WHEN json_valid(tags_json) = 0 OR json_valid(match_scores_json) = 0 OR json_type(match_scores_json) != 'object' THEN 1 ELSE 0 END) AS bad_json
-        FROM games`)
+        FROM games`,
+      )
       .get() as Record<string, number>;
 
     for (const value of Object.values(result)) expect(Number(value)).toBe(0);
@@ -78,14 +84,18 @@ describe('Local catalog acceptance (read-only)', () => {
 
   it('has no duplicate historical observations and every snapshot references a game', () => {
     const duplicates = db
-      .prepare(`SELECT COUNT(*) AS count FROM (
+      .prepare(
+        `SELECT COUNT(*) AS count FROM (
         SELECT universe_id, observed_at, source FROM game_metric_snapshots
         GROUP BY universe_id, observed_at, source HAVING COUNT(*) > 1
-      )`)
+      )`,
+      )
       .get() as { count: number };
     const orphaned = db
-      .prepare(`SELECT COUNT(*) AS count FROM game_metric_snapshots s
-        LEFT JOIN games g ON g.universe_id = s.universe_id WHERE g.universe_id IS NULL`)
+      .prepare(
+        `SELECT COUNT(*) AS count FROM game_metric_snapshots s
+        LEFT JOIN games g ON g.universe_id = s.universe_id WHERE g.universe_id IS NULL`,
+      )
       .get() as { count: number };
 
     expect(Number(duplicates.count)).toBe(0);
@@ -119,13 +129,18 @@ describe('Local catalog acceptance (read-only)', () => {
       const body = response.body as {
         context: string;
         totalCandidates: number;
-        results: Array<{ experience: Experience; score: number; position: number; explanation: { context: string; eligibilityReasons: string[] } }>;
+        results: Array<{
+          experience: Experience;
+          score: number;
+          position: number;
+          explanation: { context: string; eligibilityReasons: string[] };
+        }>;
       };
 
       expect(body.context).toBe(context);
       expect(body.totalCandidates).toBeGreaterThan(0);
-      const eligibleCount = catalog.filter((experience) =>
-        getEligibility(context, experience, now).eligible,
+      const eligibleCount = catalog.filter(
+        (experience) => getEligibility(context, experience, now).eligible,
       ).length;
 
       expect(body.results.length).toBe(Math.min(100, eligibleCount));
@@ -136,7 +151,11 @@ describe('Local catalog acceptance (read-only)', () => {
         expect(item.explanation.eligibilityReasons.length).toBeGreaterThan(0);
         expect(getEligibility(context, item.experience, now).eligible).toBe(true);
       });
-      expect(body.results.every((item, index, rows) => index === 0 || rows[index - 1]!.score >= item.score)).toBe(true);
+      expect(
+        body.results.every(
+          (item, index, rows) => index === 0 || rows[index - 1]!.score >= item.score,
+        ),
+      ).toBe(true);
     }
 
     expect(DISCOVERY_POLICY.featured.minimumRating).toBe(85);
@@ -201,7 +220,9 @@ describe('Local catalog acceptance (read-only)', () => {
 
   it('searches real catalog titles and resolves real experience details', async () => {
     const sample = db
-      .prepare("SELECT universe_id, title FROM games WHERE source_status = 'valid' ORDER BY universe_id LIMIT 1")
+      .prepare(
+        "SELECT universe_id, title FROM games WHERE source_status = 'valid' ORDER BY universe_id LIMIT 1",
+      )
       .get() as { universe_id: string; title: string } | undefined;
 
     expect(sample).toBeDefined();
@@ -218,8 +239,13 @@ describe('Local catalog acceptance (read-only)', () => {
     );
 
     expect(search.status).toBe(200);
-    expect((search.body as { data: Experience[] }).data.some((item) => item.id === sample!.universe_id)).toBe(true);
-    expect(detail).toMatchObject({ status: 200, body: { id: sample!.universe_id, title: sample!.title } });
+    expect(
+      (search.body as { data: Experience[] }).data.some((item) => item.id === sample!.universe_id),
+    ).toBe(true);
+    expect(detail).toMatchObject({
+      status: 200,
+      body: { id: sample!.universe_id, title: sample!.title },
+    });
   });
 
   it('reports health consistently with the eligible local catalog', async () => {
@@ -228,6 +254,9 @@ describe('Local catalog acceptance (read-only)', () => {
       .prepare("SELECT COUNT(*) AS count FROM games WHERE source_status = 'valid'")
       .get() as { count: number };
 
-    expect(response).toMatchObject({ status: 200, body: { status: 'ok', catalogCount: Number(count.count) } });
+    expect(response).toMatchObject({
+      status: 200,
+      body: { status: 'ok', catalogCount: Number(count.count) },
+    });
   });
 });

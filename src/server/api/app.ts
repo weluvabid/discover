@@ -34,7 +34,12 @@ export type DiscoverInput = {
   limit?: number;
 };
 
-export type DiscoveryRanker = (catalog: ReturnType<typeof getCatalog>, configuration: RankingConfiguration, context: RankingContext, options?: RankingOptions) => ReturnType<typeof rankForContext> | Promise<ReturnType<typeof rankForContext>>;
+export type DiscoveryRanker = (
+  catalog: ReturnType<typeof getCatalog>,
+  configuration: RankingConfiguration,
+  context: RankingContext,
+  options?: RankingOptions,
+) => ReturnType<typeof rankForContext> | Promise<ReturnType<typeof rankForContext>>;
 
 export async function handleApiRequest(
   db: DatabaseSync,
@@ -115,9 +120,12 @@ export async function handleApiRequest(
           ? getCatalog(db, {
               query,
               genre: url.searchParams.get('genre') ?? undefined,
-              sort: (['relevance', 'players', 'rating', 'reviews', 'launched', 'updated'].includes(url.searchParams.get('sort') ?? '')
+              sort: (['relevance', 'players', 'rating', 'reviews', 'launched', 'updated'].includes(
+                url.searchParams.get('sort') ?? '',
+              )
                 ? url.searchParams.get('sort')
-                : 'relevance') as 'relevance' | 'players' | 'rating' | 'reviews' | 'launched' | 'updated',
+                : 'relevance') as
+                'relevance' | 'players' | 'rating' | 'reviews' | 'launched' | 'updated',
               limit: 100,
             })
           : [],

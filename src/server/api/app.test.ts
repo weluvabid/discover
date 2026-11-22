@@ -72,8 +72,13 @@ describe('Discover API handler', () => {
 
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ context: 'recommended', persona: 'builder' });
-    expect((result.body as { results: Array<{ experience: { matchScore?: number } }> }).results).toHaveLength(1);
-    expect((result.body as { results: Array<{ experience: { matchScore?: number } }> }).results[0]?.experience.matchScore).toBe(94);
+    expect(
+      (result.body as { results: Array<{ experience: { matchScore?: number } }> }).results,
+    ).toHaveLength(1);
+    expect(
+      (result.body as { results: Array<{ experience: { matchScore?: number } }> }).results[0]
+        ?.experience.matchScore,
+    ).toBe(94);
   });
 
   it('exposes live genre counts for valid distinct catalog records', async () => {

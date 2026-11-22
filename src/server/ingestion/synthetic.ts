@@ -137,15 +137,7 @@ const PERSONA_KEYWORDS: Record<string, string[]> = {
     'factory',
     'restaurant',
   ],
-  'thrill-seeker': [
-    'horror',
-    'scary',
-    'survival',
-    'escape',
-    'monster',
-    'nightmare',
-    'haunted',
-  ],
+  'thrill-seeker': ['horror', 'scary', 'survival', 'escape', 'monster', 'nightmare', 'haunted'],
   completionist: [
     'quest',
     'level',
@@ -229,7 +221,9 @@ export function calculatePersonaMatchScore(
   preferences: readonly ExperienceGenre[],
 ): number {
   const direct = preferences.includes(genre);
-  const adjacent = (RELATED_GENRES[genre] ?? []).some((candidate) => preferences.includes(candidate));
+  const adjacent = (RELATED_GENRES[genre] ?? []).some((candidate) =>
+    preferences.includes(candidate),
+  );
 
   return direct ? 84 : adjacent ? 58 : 28;
 }
@@ -248,6 +242,7 @@ export function calculatePersonaRelevanceScore(
   },
 ): number {
   const keywords = PERSONA_KEYWORDS[personaId] ?? [];
+
   if (keywords.length === 0) return 0;
 
   const fields = [
@@ -265,6 +260,7 @@ export function calculatePersonaRelevanceScore(
       (best, field) => (pattern.test(field.value) ? Math.max(best, field.weight) : best),
       0,
     );
+
     score += strongestMatch;
   }
 

@@ -2,7 +2,12 @@ import { Worker } from 'node:worker_threads';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath } from 'node:url';
 import type { Experience } from '@/types/experience';
-import type { RankingConfiguration, RankingContext, RankedExperience, RankingOptions } from '@/features/discovery/engine/ranking';
+import type {
+  RankingConfiguration,
+  RankingContext,
+  RankedExperience,
+  RankingOptions,
+} from '@/features/discovery/engine/ranking';
 
 type Task = {
   id: number;
@@ -30,16 +35,29 @@ export class RankingWorkerPool {
   private totalExecutionMs = 0;
 
   getStats() {
-    return { workers: this.size, busy: this.slots.filter((slot) => slot?.task).length, queued: this.queue.length, pending: this.pending.size, completed: this.completed, failed: this.failed, avgQueueWaitMs: this.completed + this.failed ? this.totalQueueWaitMs / (this.completed + this.failed) : 0, avgExecutionMs: this.completed + this.failed ? this.totalExecutionMs / (this.completed + this.failed) : 0 };
+    return {
+      workers: this.size,
+      busy: this.slots.filter((slot) => slot?.task).length,
+      queued: this.queue.length,
+      pending: this.pending.size,
+      completed: this.completed,
+      failed: this.failed,
+      avgQueueWaitMs:
+        this.completed + this.failed ? this.totalQueueWaitMs / (this.completed + this.failed) : 0,
+      avgExecutionMs:
+        this.completed + this.failed ? this.totalExecutionMs / (this.completed + this.failed) : 0,
+    };
   }
 
   constructor(
     private readonly size = 2,
     private readonly maxQueue = 128,
   ) {
-    if (!Number.isInteger(size) || size < 1 || size > 32) throw new RangeError('Worker count must be 1–32.');
+    if (!Number.isInteger(size) || size < 1 || size > 32)
+      throw new RangeError('Worker count must be 1–32.');
 
-    if (!Number.isInteger(maxQueue) || maxQueue < 0) throw new RangeError('Queue capacity must be non-negative.');
+    if (!Number.isInteger(maxQueue) || maxQueue < 0)
+      throw new RangeError('Queue capacity must be non-negative.');
 
     for (let i = 0; i < size; i += 1) this.spawn(i, 0);
   }
@@ -53,7 +71,9 @@ export class RankingWorkerPool {
     if (this.closed) return Promise.reject(new Error('Ranking worker pool is closed.'));
 
     if (this.queue.length >= this.maxQueue && this.slots.every((slot) => slot.task)) {
-      return Promise.reject(Object.assign(new Error('Ranking capacity exhausted.'), { code: 'RANKING_OVERLOADED' }));
+      return Promise.reject(
+        Object.assign(new Error('Ranking capacity exhausted.'), { code: 'RANKING_OVERLOADED' }),
+      );
     }
 
     return new Promise((resolve, reject) => {
@@ -92,8 +112,13 @@ export class RankingWorkerPool {
 
       if (task.startedAt !== undefined) this.totalExecutionMs += performance.now() - task.startedAt;
 
-      if (message.error) { this.failed += 1; task.reject(new Error(message.error)); }
-      else { this.completed += 1; task.resolve(message.result ?? []); }
+      if (message.error) {
+        this.failed += 1;
+        task.reject(new Error(message.error));
+      } else {
+        this.completed += 1;
+        task.resolve(message.result ?? []);
+      }
 
       this.dispatch();
     });

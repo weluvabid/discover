@@ -6,7 +6,10 @@ import { RankingWorkerPool } from './ranking/worker-pool';
 
 const db = openDatabase();
 const workerCount = Number(process.env.RANKING_WORKERS ?? 4);
-const rankingPool = workerCount > 0 ? new RankingWorkerPool(workerCount, Number(process.env.RANKING_QUEUE_CAPACITY ?? 128)) : undefined;
+const rankingPool =
+  workerCount > 0
+    ? new RankingWorkerPool(workerCount, Number(process.env.RANKING_QUEUE_CAPACITY ?? 128))
+    : undefined;
 const port = Number(process.env.PORT ?? 8787);
 const host = process.env.HOST ?? '127.0.0.1';
 
@@ -47,7 +50,13 @@ const server = createServer(async (request, response) => {
       body = raw ? JSON.parse(raw) : {};
     }
 
-    const result = await handleApiRequest(db, request.method ?? 'GET', url, body, rankingPool?.rank);
+    const result = await handleApiRequest(
+      db,
+      request.method ?? 'GET',
+      url,
+      body,
+      rankingPool?.rank,
+    );
 
     response.writeHead(result.status, {
       'Content-Type': 'application/json; charset=utf-8',
