@@ -98,17 +98,20 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
         if (!/^\\d{1,20}$/.test(requestedId)) {
           setError('This experience could not be found.');
           setLoading(false);
+
           return null;
         }
 
         setLoading(true);
         setError(null);
+
         return fetchExperience(requestedId, controller.signal);
       })
       .then((item) => {
         if (!item || controller.signal.aborted) return;
 
         setExperience(item);
+
         return fetchCatalog(500, controller.signal)
           .then((catalog) => {
             setRelated(
@@ -121,6 +124,7 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
       })
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
+
         setError(cause instanceof Error ? cause.message : 'Unable to load this experience.');
       })
       .finally(() => {

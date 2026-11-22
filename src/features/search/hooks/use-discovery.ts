@@ -21,17 +21,20 @@ export function useDiscovery() {
           setResults([]);
           setError(null);
           setLoading(false);
+
           return;
         }
 
         setLoading(true);
         setError(null);
+
         return searchCatalog(normalized, 'All', 'relevance', controller.signal)
           .then((nextResults) => {
             if (active) setResults(nextResults);
           })
           .catch((cause: unknown) => {
             if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+
             setError(cause instanceof Error ? cause.message : 'Search failed.');
           })
           .finally(() => {
@@ -40,6 +43,7 @@ export function useDiscovery() {
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+
         setError(cause instanceof Error ? cause.message : 'Search failed.');
         setLoading(false);
       });

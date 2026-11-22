@@ -193,6 +193,7 @@ export function useDiscoverPage(initialLocation = '/') {
         if (!query.trim()) {
           setVisibleResults([]);
           setSearchLoading(false);
+
           return;
         }
 
@@ -216,12 +217,15 @@ export function useDiscoverPage(initialLocation = '/') {
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+
         setError(cause instanceof Error ? cause.message : 'Search failed.');
       });
 
     return () => {
       active = false;
+
       if (debounce !== undefined) window.clearTimeout(debounce);
+
       controller.abort();
     };
   }, [genre, query, searchSort]);
@@ -249,6 +253,7 @@ export function useDiscoverPage(initialLocation = '/') {
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+
         setError(cause instanceof Error ? cause.message : 'Unable to load saved experiences.');
       });
 

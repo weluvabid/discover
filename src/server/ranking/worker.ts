@@ -7,6 +7,7 @@ import {
 import type { Experience } from '@/types/experience';
 
 const port = parentPort;
+
 if (!port) throw new Error('Ranking worker requires a parent port.');
 
 port.on(

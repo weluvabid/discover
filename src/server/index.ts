@@ -77,6 +77,7 @@ const shutdown = () => {
     rankingPool?.close()
       .catch((error: unknown) => {
         const message = error instanceof Error ? error.message : 'Unknown worker shutdown error';
+
         process.stderr.write(`Ranking worker shutdown failed: ${message}\\n`);
       })
       .finally(() => {

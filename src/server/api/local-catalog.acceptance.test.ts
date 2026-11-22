@@ -154,6 +154,7 @@ describe('Local catalog acceptance (read-only)', () => {
       expect(
         body.results.every((item, index, rows) => {
           const previous = rows[index - 1];
+
           return index === 0 || (previous !== undefined && previous.score >= item.score);
         }),
       ).toBe(true);
