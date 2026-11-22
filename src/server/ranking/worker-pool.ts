@@ -193,9 +193,7 @@ export class RankingWorkerPool {
       }
     }
 
-    const terminations = this.slots.flatMap((slot) =>
-      slot ? [slot.worker.terminate()] : [],
-    );
+    const terminations = this.slots.flatMap((slot) => (slot ? [slot.worker.terminate()] : []));
 
     await Promise.all(terminations);
   }

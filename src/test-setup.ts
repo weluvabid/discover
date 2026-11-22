@@ -43,3 +43,23 @@ if (typeof window !== 'undefined' && !browserStorage) {
     value: createMemoryStorage(),
   });
 }
+
+// cmdk measures its command list on mount. jsdom has no native ResizeObserver,
+// so provide the minimal browser contract required by component tests.
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  class ResizeObserverMock implements ResizeObserver {
+    constructor(_callback: ResizeObserverCallback) {}
+
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  }
+
+  globalThis.ResizeObserver = ResizeObserverMock;
+}
+
+// cmdk scrolls the active command into view. jsdom does not implement this
+// layout-dependent browser method, and scrolling is irrelevant to these tests.
+if (typeof Element !== 'undefined' && !Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = function scrollIntoView(): void {};
+}

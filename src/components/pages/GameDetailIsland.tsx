@@ -95,7 +95,7 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
 
     Promise.resolve()
       .then(() => {
-        if (!/^\\d{1,20}$/.test(requestedId)) {
+        if (!/^\d{1,20}$/.test(requestedId)) {
           setError('This experience could not be found.');
           setLoading(false);
 

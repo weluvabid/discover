@@ -235,9 +235,15 @@ export function useDiscoverPage(initialLocation = '/') {
     let active = true;
 
     if (bookmarks.length === 0) {
-      Promise.resolve().then(() => {
-        if (active) setSavedExperiences([]);
-      });
+      Promise.resolve()
+        .then(() => {
+          if (active) setSavedExperiences([]);
+        })
+        .catch((cause: unknown) => {
+          if (!active) return;
+
+          setError(cause instanceof Error ? cause.message : 'Unable to clear saved experiences.');
+        });
 
       return () => {
         active = false;
@@ -245,9 +251,7 @@ export function useDiscoverPage(initialLocation = '/') {
       };
     }
 
-    Promise.all(
-      bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
-    )
+    Promise.all(bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)))
       .then((items) => {
         if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
       })

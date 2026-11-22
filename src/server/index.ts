@@ -74,7 +74,8 @@ const server = createServer(async (request, response) => {
 
 const shutdown = () => {
   server.close(() => {
-    rankingPool?.close()
+    rankingPool
+      ?.close()
       .catch((error: unknown) => {
         const message = error instanceof Error ? error.message : 'Unknown worker shutdown error';
 

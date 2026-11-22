@@ -103,23 +103,22 @@ function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: str
     updatedAt: row.source_updated_at ?? row.updated_at ?? undefined,
     freshnessReferenceAt,
     tags: tags.length > 0 ? tags : [row.genre],
-    matchScore:
-      selectedPersona
-        ? (() => {
-            const persistedScores = JSON.parse(row.match_scores_json || '{}') as Record<
-              string,
-              number
-            >;
-            const persistedScore = persistedScores[persona];
+    matchScore: selectedPersona
+      ? (() => {
+          const persistedScores = JSON.parse(row.match_scores_json || '{}') as Record<
+            string,
+            number
+          >;
+          const persistedScore = persistedScores[selectedPersona];
 
-            return Number.isFinite(persistedScore)
-              ? persistedScore
-              : calculatePersonaMatchScore(
-                  mapGenre(row.genre),
-                  PERSONA_PREFERENCES.get(selectedPersona) ?? [],
-                );
-          })()
-        : undefined,
+          return Number.isFinite(persistedScore)
+            ? persistedScore
+            : calculatePersonaMatchScore(
+                mapGenre(row.genre),
+                PERSONA_PREFERENCES.get(selectedPersona) ?? [],
+              );
+        })()
+      : undefined,
     personaRelevanceScore: selectedPersona
       ? calculatePersonaRelevanceScore(selectedPersona, {
           title: row.title,
