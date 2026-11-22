@@ -4,11 +4,14 @@ import {
   calculatePersonaMatchScore,
   calculatePersonaRelevanceScore,
   seedPersonas,
+  type PersonaId,
 } from '../ingestion/synthetic';
 
-const PERSONA_PREFERENCES = new Map(
+const PERSONA_PREFERENCES = new Map<PersonaId, ExperienceGenre[]>(
   seedPersonas().map((persona) => [persona.id, persona.preferences]),
 );
+const isPersonaId = (value: string): value is PersonaId =>
+  PERSONA_PREFERENCES.has(value as PersonaId);
 
 const GENRES: ExperienceGenre[] = [
   'Action RPG',
@@ -69,6 +72,7 @@ function mapGenre(value: string): ExperienceGenre {
 
 function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: string): Experience {
   const tags = JSON.parse(row.tags_json || '[]') as string[];
+  const selectedPersona = persona && isPersonaId(persona) ? persona : undefined;
 
   return {
     id: row.universe_id,
@@ -100,7 +104,7 @@ function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: str
     freshnessReferenceAt,
     tags: tags.length > 0 ? tags : [row.genre],
     matchScore:
-      persona && PERSONA_PREFERENCES.has(persona)
+      selectedPersona
         ? (() => {
             const persistedScores = JSON.parse(row.match_scores_json || '{}') as Record<
               string,
@@ -112,12 +116,12 @@ function toExperience(row: GameRow, persona?: string, freshnessReferenceAt?: str
               ? persistedScore
               : calculatePersonaMatchScore(
                   mapGenre(row.genre),
-                  PERSONA_PREFERENCES.get(persona) ?? [],
+                  PERSONA_PREFERENCES.get(selectedPersona) ?? [],
                 );
           })()
         : undefined,
-    personaRelevanceScore: persona
-      ? calculatePersonaRelevanceScore(persona, {
+    personaRelevanceScore: selectedPersona
+      ? calculatePersonaRelevanceScore(selectedPersona, {
           title: row.title,
           description: row.description,
           subgenre: row.subgenre || row.genre,

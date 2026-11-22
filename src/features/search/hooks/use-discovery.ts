@@ -10,31 +10,44 @@ export function useDiscovery() {
 
   useEffect(() => {
     const normalized = query.trim();
-
-    if (!normalized) {
-      setResults([]);
-      setError(null);
-      setLoading(false);
-
-      return;
-    }
-
     const controller = new AbortController();
+    let active = true;
 
-    setLoading(true);
-    setError(null);
-    searchCatalog(normalized, 'All', 'relevance', controller.signal)
-      .then(setResults)
-      .catch((cause: unknown) => {
-        if (cause instanceof DOMException && cause.name === 'AbortError') return;
+    Promise.resolve()
+      .then(() => {
+        if (!active) return;
 
-        setError(cause instanceof Error ? cause.message : 'Search failed.');
+        if (!normalized) {
+          setResults([]);
+          setError(null);
+          setLoading(false);
+          return;
+        }
+
+        setLoading(true);
+        setError(null);
+        return searchCatalog(normalized, 'All', 'relevance', controller.signal)
+          .then((nextResults) => {
+            if (active) setResults(nextResults);
+          })
+          .catch((cause: unknown) => {
+            if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+            setError(cause instanceof Error ? cause.message : 'Search failed.');
+          })
+          .finally(() => {
+            if (active) setLoading(false);
+          });
       })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        setError(cause instanceof Error ? cause.message : 'Search failed.');
+        setLoading(false);
       });
 
-    return () => controller.abort();
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [query]);
 
   return { query, setQuery, results, loading, error };

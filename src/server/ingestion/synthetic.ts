@@ -86,6 +86,8 @@ export const PERSONAS = [
   ],
 ] as const;
 
+export type PersonaId = (typeof PERSONAS)[number][0];
+
 function hash32(input: string): number {
   let hash = 2166136261;
 

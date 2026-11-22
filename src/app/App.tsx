@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Navigation';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -132,7 +132,6 @@ export default function App({ initialLocation = '/' }: AppProps) {
           )}
         </main>
       </div>
-      <Toaster position="bottom-center" theme="dark" />
       <Suspense fallback={null}>
         {page.controlsOpen && (
           <DiscoveryControlsDialog

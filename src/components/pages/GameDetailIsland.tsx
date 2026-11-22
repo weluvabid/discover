@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, BadgeCheck, Bookmark, Star, Users } from 'lucide-react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import { ExperienceCard } from '@/components/experience/ExperienceCard';
 import { ExperienceArtwork } from '@/components/experience/ExperienceArtwork';
 import { ExperiencePlayButton } from '@/components/experience/ExperiencePlayButton';
@@ -54,7 +54,6 @@ function DetailShell({ children, genreCounts, query, onQueryChange }: DetailShel
           <div className="mx-auto w-full max-w-6xl space-y-8">{children}</div>
         </main>
       </div>
-      <Toaster position="bottom-center" theme="dark" />
     </SidebarProvider>
   );
 }
@@ -92,23 +91,24 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
 
   useEffect(() => {
     const requestedId = initialId || new URLSearchParams(window.location.search).get('id') || '';
-
-    if (!/^\d{1,20}$/.test(requestedId)) {
-      setError('This experience could not be found.');
-      setLoading(false);
-
-      return;
-    }
-
     const controller = new AbortController();
 
-    setLoading(true);
-    setError(null);
+    Promise.resolve()
+      .then(() => {
+        if (!/^\\d{1,20}$/.test(requestedId)) {
+          setError('This experience could not be found.');
+          setLoading(false);
+          return null;
+        }
 
-    fetchExperience(requestedId, controller.signal)
+        setLoading(true);
+        setError(null);
+        return fetchExperience(requestedId, controller.signal);
+      })
       .then((item) => {
-        setExperience(item);
+        if (!item || controller.signal.aborted) return;
 
+        setExperience(item);
         return fetchCatalog(500, controller.signal)
           .then((catalog) => {
             setRelated(
@@ -121,7 +121,6 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
       })
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
-
         setError(cause instanceof Error ? cause.message : 'Unable to load this experience.');
       })
       .finally(() => {

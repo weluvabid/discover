@@ -74,11 +74,15 @@ const server = createServer(async (request, response) => {
 
 const shutdown = () => {
   server.close(() => {
-    void (async () => {
-      await rankingPool?.close();
-      db.close();
-      process.exit(0);
-    })();
+    rankingPool?.close()
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : 'Unknown worker shutdown error';
+        process.stderr.write(`Ranking worker shutdown failed: ${message}\\n`);
+      })
+      .finally(() => {
+        db.close();
+        process.exit(0);
+      });
   });
 };
 

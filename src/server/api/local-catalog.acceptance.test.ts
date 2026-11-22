@@ -152,9 +152,10 @@ describe('Local catalog acceptance (read-only)', () => {
         expect(getEligibility(context, item.experience, now).eligible).toBe(true);
       });
       expect(
-        body.results.every(
-          (item, index, rows) => index === 0 || rows[index - 1]!.score >= item.score,
-        ),
+        body.results.every((item, index, rows) => {
+          const previous = rows[index - 1];
+          return index === 0 || (previous !== undefined && previous.score >= item.score);
+        }),
       ).toBe(true);
     }
 
@@ -225,8 +226,11 @@ describe('Local catalog acceptance (read-only)', () => {
       )
       .get() as { universe_id: string; title: string } | undefined;
 
-    expect(sample).toBeDefined();
-    const query = sample!.title.slice(0, Math.min(12, sample!.title.length));
+    if (!sample) {
+      throw new Error('The local catalog must contain at least one valid experience.');
+    }
+
+    const query = sample.title.slice(0, Math.min(12, sample.title.length));
     const search = await handleApiRequest(
       db,
       'GET',
@@ -235,16 +239,16 @@ describe('Local catalog acceptance (read-only)', () => {
     const detail = await handleApiRequest(
       db,
       'GET',
-      new URL(`http://localhost/api/experiences/${sample!.universe_id}`),
+      new URL(`http://localhost/api/experiences/${sample.universe_id}`),
     );
 
     expect(search.status).toBe(200);
     expect(
-      (search.body as { data: Experience[] }).data.some((item) => item.id === sample!.universe_id),
+      (search.body as { data: Experience[] }).data.some((item) => item.id === sample.universe_id),
     ).toBe(true);
     expect(detail).toMatchObject({
       status: 200,
-      body: { id: sample!.universe_id, title: sample!.title },
+      body: { id: sample.universe_id, title: sample.title },
     });
   });
 

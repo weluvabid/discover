@@ -24,6 +24,7 @@ export default defineConfig(
       '**/node_modules/**',
       '**/coverage/**',
       '**/dist/**',
+      '**/dist-server/**',
       '**/build/**',
       '**/target/**',
       '**/.astro/**',

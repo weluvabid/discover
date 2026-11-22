@@ -1,6 +1,7 @@
 ---
 import '../styles/index.css';
 import { ClientRouter } from 'astro:transitions';
+import ToastHost from '@/components/react/ToastHost';
 interface Props {
   title?: string;
   description?: string;
@@ -22,6 +23,7 @@ const {
     <ClientRouter />
   </head>
   <body class="h-full overflow-y-auto scroll-smooth">
+    <ToastHost client:load transition:persist="discover-toast-host" />
     <slot />
   </body>
 </html>

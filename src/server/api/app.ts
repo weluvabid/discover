@@ -8,7 +8,7 @@ import {
   type RankedExperience,
   type RankingOptions,
 } from '@/features/discovery/engine/ranking';
-import { EXPERIENCE_GENRES, type ExperienceGenre } from '@/types/experience';
+import { EXPERIENCE_GENRES } from '@/types/experience';
 import { seedPersonas } from '../ingestion/synthetic';
 import { getCatalog, getCatalogCount, getExperience, getGenreCounts } from '../ranking/catalog';
 

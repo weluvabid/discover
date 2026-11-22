@@ -70,7 +70,7 @@ export class RankingWorkerPool {
   ): Promise<RankedExperience[]> => {
     if (this.closed) return Promise.reject(new Error('Ranking worker pool is closed.'));
 
-    if (this.queue.length >= this.maxQueue && this.slots.every((slot) => slot.task)) {
+    if (this.queue.length >= this.maxQueue && this.slots.every((slot) => slot?.task)) {
       return Promise.reject(
         Object.assign(new Error('Ranking capacity exhausted.'), { code: 'RANKING_OVERLOADED' }),
       );
@@ -193,6 +193,10 @@ export class RankingWorkerPool {
       }
     }
 
-    await Promise.all(this.slots.filter(Boolean).map((slot) => slot.worker.terminate()));
+    const terminations = this.slots.flatMap((slot) =>
+      slot ? [slot.worker.terminate()] : [],
+    );
+
+    await Promise.all(terminations);
   }
 }

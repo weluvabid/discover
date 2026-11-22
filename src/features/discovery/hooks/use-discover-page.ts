@@ -32,9 +32,13 @@ const CONTEXTS: RankingContext[] = [
   'hidden-gems',
   'recently-launched',
 ];
-const EMPTY_RANKED_SECTIONS = Object.fromEntries(
-  CONTEXTS.map((context) => [context, []]),
-) as Record<RankingContext, RankedExperience[]>;
+const EMPTY_RANKED_SECTIONS: Record<RankingContext, RankedExperience[]> = {
+  featured: [],
+  trending: [],
+  recommended: [],
+  'hidden-gems': [],
+  'recently-launched': [],
+};
 
 const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/': 'explore',
@@ -56,7 +60,9 @@ export function useDiscoverPage(initialLocation = '/') {
   const [pathname, search = ''] = browserLocation.split('?');
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
-  const [controlsOpen, setControlsOpen] = useState(false);
+  const [controlsOpen, setControlsOpen] = useState(
+    () => new URLSearchParams(initialLocation.split('?')[1] ?? '').get('tune') === '1',
+  );
   const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(
     DEFAULT_RANKING_CONFIGURATION,
   );
@@ -112,7 +118,6 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     if (searchParams.get('tune') !== '1') return;
 
-    setControlsOpen(true);
     const nextUrl = new URL(window.location.href);
 
     nextUrl.searchParams.delete('tune');
@@ -127,23 +132,28 @@ export function useDiscoverPage(initialLocation = '/') {
     const controller = new AbortController();
     let active = true;
 
-    setLoading(true);
-    setError(null);
+    Promise.resolve()
+      .then(() => {
+        if (!active) return undefined;
 
-    Promise.all(
-      CONTEXTS.map((context) =>
-        fetchDiscovery(
-          context,
-          rankingConfiguration,
-          genre,
-          controller.signal,
-          undefined,
-          persona || undefined,
-        ),
-      ),
-    )
+        setLoading(true);
+        setError(null);
+
+        return Promise.all(
+          CONTEXTS.map((context) =>
+            fetchDiscovery(
+              context,
+              rankingConfiguration,
+              genre,
+              controller.signal,
+              undefined,
+              persona || undefined,
+            ),
+          ),
+        );
+      })
       .then((responses) => {
-        if (!active) return;
+        if (!active || !responses) return;
 
         const next = Object.fromEntries(
           responses.map((response) => [response.context, response.results]),
@@ -174,35 +184,44 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     const controller = new AbortController();
     let active = true;
+    let debounce: number | undefined;
 
-    if (!query.trim()) {
-      setVisibleResults([]);
-      setSearchLoading(false);
+    Promise.resolve()
+      .then(() => {
+        if (!active) return;
 
-      return () => controller.abort();
-    }
+        if (!query.trim()) {
+          setVisibleResults([]);
+          setSearchLoading(false);
+          return;
+        }
 
-    setVisibleResults([]);
-    setSearchLoading(true);
-    setError(null);
-    const debounce = window.setTimeout(() => {
-      searchCatalog(query, genre, searchSort, controller.signal)
-        .then((results) => {
-          if (active) setVisibleResults(results);
-        })
-        .catch((cause: unknown) => {
-          if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        setVisibleResults([]);
+        setSearchLoading(true);
+        setError(null);
+        debounce = window.setTimeout(() => {
+          searchCatalog(query, genre, searchSort, controller.signal)
+            .then((results) => {
+              if (active) setVisibleResults(results);
+            })
+            .catch((cause: unknown) => {
+              if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
 
-          setError(cause instanceof Error ? cause.message : 'Search failed.');
-        })
-        .finally(() => {
-          if (active) setSearchLoading(false);
-        });
-    }, 160);
+              setError(cause instanceof Error ? cause.message : 'Search failed.');
+            })
+            .finally(() => {
+              if (active) setSearchLoading(false);
+            });
+        }, 160);
+      })
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        setError(cause instanceof Error ? cause.message : 'Search failed.');
+      });
 
     return () => {
       active = false;
-      window.clearTimeout(debounce);
+      if (debounce !== undefined) window.clearTimeout(debounce);
       controller.abort();
     };
   }, [genre, query, searchSort]);
@@ -212,16 +231,26 @@ export function useDiscoverPage(initialLocation = '/') {
     let active = true;
 
     if (bookmarks.length === 0) {
-      setSavedExperiences([]);
+      Promise.resolve().then(() => {
+        if (active) setSavedExperiences([]);
+      });
 
-      return () => controller.abort();
+      return () => {
+        active = false;
+        controller.abort();
+      };
     }
 
     Promise.all(
       bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
-    ).then((items) => {
-      if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
-    });
+    )
+      .then((items) => {
+        if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
+      })
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        setError(cause instanceof Error ? cause.message : 'Unable to load saved experiences.');
+      });
 
     return () => {
       active = false;

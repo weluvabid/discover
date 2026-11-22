@@ -6,9 +6,10 @@ import {
 } from '@/features/discovery/engine/ranking';
 import type { Experience } from '@/types/experience';
 
-if (!parentPort) throw new Error('Ranking worker requires a parent port.');
+const port = parentPort;
+if (!port) throw new Error('Ranking worker requires a parent port.');
 
-parentPort.on(
+port.on(
   'message',
   (message: {
     id: number;
@@ -25,9 +26,9 @@ parentPort.on(
         message.options,
       );
 
-      parentPort!.postMessage({ id: message.id, result });
+      port.postMessage({ id: message.id, result });
     } catch (error) {
-      parentPort!.postMessage({
+      port.postMessage({
         id: message.id,
         error: error instanceof Error ? error.message : 'Unknown ranking worker error.',
       });

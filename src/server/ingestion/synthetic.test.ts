@@ -41,7 +41,7 @@ describe('synthetic metrics', () => {
 
 describe('persona match scoring', () => {
   it('prioritizes exact preferred genres over adjacent and unrelated genres', () => {
-    const preferences = ['Simulation', 'Puzzle'];
+    const preferences = ['Simulation', 'Puzzle'] as const;
     const direct = calculatePersonaMatchScore('Simulation', preferences);
     const adjacent = calculatePersonaMatchScore('Co-op', preferences);
     const unrelated = calculatePersonaMatchScore('Horror', preferences);
@@ -51,7 +51,7 @@ describe('persona match scoring', () => {
   });
 
   it('keeps genre affinity independent from topical keyword relevance', () => {
-    const preferences = ['Simulation', 'Puzzle'];
+    const preferences = ['Simulation', 'Puzzle'] as const;
     const genreAffinity = calculatePersonaMatchScore('Simulation', preferences);
 
     const builderRelevance = calculatePersonaRelevanceScore('builder', {
