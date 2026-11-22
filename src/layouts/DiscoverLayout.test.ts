@@ -14,6 +14,7 @@ describe('shared layout rendering contract', () => {
 
   it('keeps the Safari body-scrolling contract while enabling page transitions', () => {
     expect(layout).toContain("import { ClientRouter } from 'astro:transitions';");
+    expect(layout).toContain("import 'sonner/dist/styles.css';");
     expect(layout).toContain('<ClientRouter />');
   });
 });
