@@ -147,8 +147,7 @@ export function PersonaCommandSelector({
           <div className="flex items-start gap-2 border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">
             <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-500" aria-hidden="true" />
             <p>
-              Ranking fixes are in place: diversity now follows its slider, and relevance no longer
-              rewards longer descriptions.
+              Your selected play style is saved on this device and used across discovery.
             </p>
           </div>
         </Command>

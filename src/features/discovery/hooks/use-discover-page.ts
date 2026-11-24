@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBrowserLocation, navigateTo } from '@/hooks/use-browser-location';
 import {
-  DEFAULT_RANKING_CONFIGURATION,
   isDefaultRankingConfiguration,
   type RankedExperience,
   type RankingConfiguration,
@@ -17,6 +16,7 @@ import {
   type SearchSort,
 } from '@/lib/api/discover-api';
 import { useBookmarks } from '@/hooks/use-bookmarks';
+import { useDiscoveryPreferences } from '@/features/discovery/preferences';
 import { DISCOVERY_CONTEXTS, isSearchSort } from '@/config/discovery';
 import {
   EXPERIENCE_GENRES,
@@ -36,6 +36,7 @@ const EMPTY_RANKED_SECTIONS: Record<RankingContext, RankedExperience[]> = {
 
 const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/': 'explore',
+  '/search': 'search',
   '/trending': 'trending',
   '/hidden-gems': 'hidden-gems',
   '/collections': 'collections',
@@ -43,6 +44,7 @@ const PATH_TO_VIEW: Record<string, DiscoveryView> = {
 };
 const VIEW_TO_PATH: Record<DiscoveryView, string> = {
   explore: '/',
+  search: '/search',
   trending: '/trending',
   'hidden-gems': '/hidden-gems',
   collections: '/collections',
@@ -51,33 +53,49 @@ const VIEW_TO_PATH: Record<DiscoveryView, string> = {
 
 export function useDiscoverPage(initialLocation = '/') {
   const browserLocation = useBrowserLocation(initialLocation);
-  const [pathname, search = ''] = browserLocation.split('?');
+  const [rawPathname, search = ''] = browserLocation.split('?');
+  const pathname = rawPathname.length > 1 ? rawPathname.replace(/\/+$/, '') : rawPathname;
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
+  const isGenreRoute = pathname.startsWith('/genre/');
   const [controlsOpen, setControlsOpen] = useState(
     () => new URLSearchParams(initialLocation.split('?')[1] ?? '').get('tune') === '1',
   );
-  const [rankingConfiguration, setRankingConfiguration] = useState<RankingConfiguration>(
-    DEFAULT_RANKING_CONFIGURATION,
+  const { preferences, updatePreferences } = useDiscoveryPreferences();
+  const rankingConfiguration = preferences.ranking;
+  const setRankingConfiguration = useCallback(
+    (ranking: RankingConfiguration) => {
+      updatePreferences((current) => ({ ...current, ranking }));
+    },
+    [updatePreferences],
   );
   const requestedGenre = searchParams.get('genre');
+  const pathGenre = pathname.startsWith('/genre/')
+    ? EXPERIENCE_GENRES.find(
+        (item) =>
+          item.toLowerCase().replace(/[^a-z0-9]+/g, '-') ===
+          pathname.slice('/genre/'.length),
+      )
+    : undefined;
   const genre: ExperienceGenre | 'All' =
-    requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
+    pathGenre ??
+    (requestedGenre && EXPERIENCE_GENRES.includes(requestedGenre as ExperienceGenre)
       ? (requestedGenre as ExperienceGenre)
-      : 'All';
+      : 'All');
   const query = searchParams.get('q') ?? '';
   const requestedSort = searchParams.get('sort');
   const searchSort: SearchSort = isSearchSort(requestedSort) ? requestedSort : 'relevance';
-  const requestedPersona = searchParams.get('persona') ?? '';
   const [personas, setPersonas] = useState<DiscoveryPersona[]>([]);
   const [genreCounts, setGenreCounts] = useState<Record<string, number>>({});
   const persona =
-    personas.length === 0 || personas.some((item) => item.id === requestedPersona)
-      ? requestedPersona
+    preferences.personaId &&
+    (personas.length === 0 || personas.some((item) => item.id === preferences.personaId))
+      ? preferences.personaId
       : '';
   const { bookmarks, toggleBookmark } = useBookmarks();
   const [rankedSections, setRankedSections] = useState(EMPTY_RANKED_SECTIONS);
   const [visibleResults, setVisibleResults] = useState<Experience[]>([]);
+  const [genreExperiences, setGenreExperiences] = useState<Experience[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
   const [collectionCatalog, setCollectionCatalog] = useState<Experience[]>([]);
@@ -102,8 +120,11 @@ export function useDiscoverPage(initialLocation = '/') {
   }, []);
 
   useEffect(() => {
-    if (pathname === '/search' && !query.trim()) navigateTo('/', { replace: true });
-  }, [pathname, query]);
+    if (personas.length === 0 || !preferences.personaId) return;
+    if (!personas.some((item) => item.id === preferences.personaId)) {
+      updatePreferences((current) => ({ ...current, personaId: null }));
+    }
+  }, [personas, preferences.personaId, updatePreferences]);
 
   useEffect(() => {
     if (searchParams.get('tune') !== '1') return;
@@ -119,6 +140,7 @@ export function useDiscoverPage(initialLocation = '/') {
   }, [pathname]);
 
   useEffect(() => {
+    if (isGenreRoute || activeView === 'search') return;
     const controller = new AbortController();
     let active = true;
 
@@ -169,7 +191,36 @@ export function useDiscoverPage(initialLocation = '/') {
       active = false;
       controller.abort();
     };
-  }, [genre, persona, rankingConfiguration]);
+  }, [activeView, genre, persona, rankingConfiguration, isGenreRoute]);
+
+  useEffect(() => {
+    if (!isGenreRoute || genre === 'All') {
+      setGenreExperiences([]);
+      return;
+    }
+
+    const controller = new AbortController();
+    let active = true;
+    setLoading(true);
+    setError(null);
+
+    fetchCatalog(100, controller.signal, genre)
+      .then((result) => {
+        if (active) setGenreExperiences(result.data);
+      })
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+        setError(cause instanceof Error ? cause.message : `Unable to load ${genre} experiences.`);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [genre, isGenreRoute]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -293,14 +344,17 @@ export function useDiscoverPage(initialLocation = '/') {
 
       if (genre !== 'All') params.set('genre', genre);
 
-      if (persona) params.set('persona', persona);
-
       if (searchSort !== 'relevance') params.set('sort', searchSort);
 
       if (next.trim()) navigateTo(`/search?${params.toString()}`, { replace: true });
-      else if (pathname === '/search') navigateTo(`/${params.size ? `?${params}` : ''}`);
+      else if (pathname === '/search') {
+        const params = new URLSearchParams();
+        if (genre !== 'All') params.set('genre', genre);
+        if (searchSort !== 'relevance') params.set('sort', searchSort);
+        navigateTo(`/search${params.size ? `?${params}` : ''}`);
+      }
     },
-    [genre, pathname, persona, searchSort],
+    [genre, pathname, searchSort],
   );
 
   const setSearchSort = useCallback(
@@ -318,55 +372,38 @@ export function useDiscoverPage(initialLocation = '/') {
   const setGenre = useCallback(
     (next: ExperienceGenre | 'All') => {
       const params = new URLSearchParams(searchParams);
-      const targetPath = pathname === '/search' ? '/' : pathname;
+      if (pathname === '/search') {
+        if (next === 'All') params.delete('genre');
+        else params.set('genre', next);
+        navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
+        return;
+      }
 
-      if (pathname === '/search') params.delete('q');
-
-      if (next === 'All') params.delete('genre');
-      else params.set('genre', next);
-
-      navigateTo(`${targetPath}${params.size ? `?${params}` : ''}`, { replace: true });
+      const slug = next === 'All' ? '' : `/genre/${next.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+      navigateTo(slug || '/');
     },
     [pathname, searchParams],
   );
 
-  const selectGenre = useCallback(
-    (next: ExperienceGenre | 'All') => {
-      const params = new URLSearchParams();
-
-      if (next !== 'All') params.set('genre', next);
-
-      if (persona) params.set('persona', persona);
-
-      navigateTo(`/${params.size ? `?${params}` : ''}`);
-    },
-    [persona],
-  );
+  const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
+    const destination =
+      next === 'All' ? '/' : `/genre/${next.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+    navigateTo(destination);
+  }, []);
 
   const navigate = useCallback(
     (view: DiscoveryView) => {
-      const params = new URLSearchParams();
-
-      if (genre !== 'All') params.set('genre', genre);
-
-      if (persona) params.set('persona', persona);
-
-      navigateTo(`${VIEW_TO_PATH[view]}${params.size ? `?${params}` : ''}`);
+      const destination = genre !== 'All' && view === 'explore'
+        ? `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+        : VIEW_TO_PATH[view];
+      navigateTo(destination);
     },
-    [genre, persona],
+    [genre],
   );
 
-  const setPersona = useCallback(
-    (next: string) => {
-      const params = new URLSearchParams(searchParams);
-
-      if (next) params.set('persona', next);
-      else params.delete('persona');
-
-      navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
-    },
-    [pathname, searchParams],
-  );
+  const setPersona = useCallback((next: string) => {
+    updatePreferences((current) => ({ ...current, personaId: next || null }));
+  }, [updatePreferences]);
 
   const closeControls = useCallback(() => setControlsOpen(false), []);
 
@@ -381,6 +418,8 @@ export function useDiscoverPage(initialLocation = '/') {
     selectGenre,
     personas,
     genreCounts,
+    genreExperiences,
+    isGenreRoute,
     persona,
     setPersona,
     bookmarks,

@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { Check, RotateCcw, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,13 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useRankingDraft } from '@/features/discovery/hooks/use-ranking-draft';
 import { DISCOVERY_SIGNAL_IDS, DISCOVERY_STRATEGIES } from '@/config/discovery';
@@ -45,19 +50,6 @@ export function DiscoveryControlsDialog({
     resetDraft,
     discardDraft,
   } = useRankingDraft(configuration);
-  const strategyListRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const selected = strategyListRef.current?.querySelector<HTMLElement>(
-      '[data-selected-strategy="true"]',
-    );
-
-    if (selected && typeof selected.scrollIntoView === 'function') {
-      selected.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    }
-  }, [draft.strategy, open]);
 
   const handleApply = () => {
     onApply(draft);
@@ -149,37 +141,33 @@ export function DiscoveryControlsDialog({
                     <p className="text-sm text-muted-foreground">Choose a starting point</p>
                   </div>
                 </div>
-                <div ref={strategyListRef} className="min-w-0 max-w-full">
-                  <Tabs
-                    value={draft.strategy}
-                    onValueChange={(value) => {
-                      if (strategyOptions.some((option) => option.id === value)) {
-                        selectStrategy(value as RankingStrategyId);
-                      }
-                    }}
-                    className="min-w-0 max-w-full"
+                <Select
+                  value={draft.strategy}
+                  onValueChange={(value) => {
+                    if (strategyOptions.some((option) => option.id === value)) {
+                      selectStrategy(value as RankingStrategyId);
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label="Ranking strategy"
+                    className="h-12 w-full rounded-xl bg-background sm:max-w-md"
                   >
-                    <TabsList
-                      aria-label="Ranking strategies"
-                      className="flex h-auto w-full max-w-full justify-start gap-2 overflow-x-auto rounded-xl bg-transparent p-0"
-                    >
-                      {strategyOptions.map((option) => (
-                        <TabsTrigger
-                          key={option.id}
-                          value={option.id}
-                          aria-label={`${option.label} ${option.description}`}
-                          data-selected-strategy={draft.strategy === option.id ? 'true' : 'false'}
-                          className="h-auto min-h-12 w-56 max-w-[80vw] min-w-0 flex-none flex-col items-start gap-1 overflow-hidden rounded-xl border border-border bg-secondary px-3 py-2 text-left whitespace-normal data-active:bg-accent data-active:text-foreground"
-                        >
-                          <strong className="block w-full truncate text-sm">{option.label}</strong>
-                          <span className="block w-full min-w-0 truncate text-xs text-muted-foreground">
+                    <SelectValue>{DISCOVERY_STRATEGIES[draft.strategy].label}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="min-w-(--anchor-width)">
+                    {strategyOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
+                        <span className="flex min-w-0 flex-col gap-0.5">
+                          <strong>{option.label}</strong>
+                          <span className="text-xs text-muted-foreground">
                             {option.description}
                           </span>
-                        </TabsTrigger>
-                      ))}
-                    </TabsList>
-                  </Tabs>
-                </div>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </section>
 
               <section className="flex flex-col gap-3" aria-labelledby="ranking-signals-heading">

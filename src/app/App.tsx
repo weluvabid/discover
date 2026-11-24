@@ -68,7 +68,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
 
     controlsWereOpen.current = page.controlsOpen;
   }, [page.controlsOpen]);
-  const hasSearch = Boolean(page.query.trim());
+  const hasSearch = page.activeView === 'search';
 
   return (
     <SidebarProvider className="min-h-svh w-full [--sidebar-width:11rem]">
@@ -87,6 +87,9 @@ export default function App({ initialLocation = '/' }: AppProps) {
           resultCount={page.visibleResults.length}
           onOpenDiscoveryControls={() => page.setControlsOpen(true)}
           hasCustomRanking={page.hasCustomRanking}
+          personas={page.personas}
+          persona={page.persona}
+          onPersonaChange={page.setPersona}
         />
         <main
           className="mx-auto w-full max-w-screen-2xl space-y-8 px-4 py-6 md:px-6 lg:px-8"
@@ -110,6 +113,9 @@ export default function App({ initialLocation = '/' }: AppProps) {
               onToggleBookmark={toggleBookmark}
               onPlay={launchExperience}
               loading={page.searchLoading}
+              genre={page.genre}
+              onGenreChange={page.setGenre}
+              onClearQuery={() => page.setQuery('')}
             />
           ) : (
             <DiscoverView
@@ -122,7 +128,8 @@ export default function App({ initialLocation = '/' }: AppProps) {
               genre={page.genre}
               personas={page.personas}
               persona={page.persona}
-              onPersonaChange={page.setPersona}
+              genreExperiences={page.genreExperiences}
+              isGenreRoute={page.isGenreRoute}
               onGenreChange={page.setGenre}
               onToggleBookmark={toggleBookmark}
               onPlay={launchExperience}

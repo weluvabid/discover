@@ -1,5 +1,4 @@
 import {
-  ArrowUpRight,
   Bookmark,
   Minus,
   Sparkles,
@@ -49,11 +48,7 @@ export function ExperienceCard({
 
   return (
     <article className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-ring/60">
-      <a
-        href={`/games/?id=${encodeURIComponent(experience.id)}`}
-        className="relative block overflow-hidden bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-        aria-label={`Learn more about ${experience.title}`}
-      >
+      <div className="relative block overflow-hidden bg-muted">
         <ExperienceArtwork
           src={experience.artwork.thumbnail}
           alt={experience.artwork.alt}
@@ -93,15 +88,10 @@ export function ExperienceCard({
             )}
           </span>
         )}
-      </a>
+      </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex min-w-0 items-center gap-2">
-          <a
-            href={`/games/?id=${encodeURIComponent(experience.id)}`}
-            className="min-w-0 truncate text-base font-bold text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {experience.title}
-          </a>
+          <h3 className="min-w-0 truncate text-base font-bold text-foreground">{experience.title}</h3>
           <div className="ml-auto flex shrink-0 items-center gap-1">
             <Tooltip>
               <TooltipTrigger
@@ -128,20 +118,6 @@ export function ExperienceCard({
               <TooltipContent>
                 {isBookmarked ? 'Remove from library' : 'Save to library'}
               </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <a
-                    href={`/games/?id=${encodeURIComponent(experience.id)}`}
-                    className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                    aria-label={`Learn more about ${experience.title}`}
-                  />
-                }
-              >
-                <ArrowUpRight size={16} />
-              </TooltipTrigger>
-              <TooltipContent>Learn more</TooltipContent>
             </Tooltip>
           </div>
         </div>

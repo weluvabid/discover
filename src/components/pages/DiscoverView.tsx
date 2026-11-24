@@ -25,7 +25,8 @@ interface DiscoverViewProps {
   genre: ExperienceGenre | 'All';
   personas: DiscoveryPersona[];
   persona: string;
-  onPersonaChange: (persona: string) => void;
+  genreExperiences: Experience[];
+  isGenreRoute: boolean;
   onGenreChange: (genre: ExperienceGenre | 'All') => void;
   onToggleBookmark: (id: string) => void;
   onPlay: (experience: Experience) => void;
@@ -43,7 +44,8 @@ export function DiscoverView({
   genre,
   personas,
   persona,
-  onPersonaChange,
+  genreExperiences,
+  isGenreRoute,
   onGenreChange,
   onToggleBookmark,
   onPlay,
@@ -58,6 +60,29 @@ export function DiscoverView({
   ) as Record<RankingContext, Map<string, RankedExperience>>;
   const featured = rankedSections.featured[0];
   const selectedPersona = personas.find((item) => item.id === persona);
+
+  if (isGenreRoute) {
+    return (
+      <div className="min-w-0">
+        <PageIntro
+          eyebrow="BROWSE GENRE"
+          title={genre}
+          description={`Explore ${genre} experiences from the expanded Roblox catalogue.`}
+        />
+        <ExperienceSection
+          title={`${genre} experiences`}
+          experiences={genreExperiences}
+          variant="recommended"
+          bookmarks={bookmarks}
+          onToggleBookmark={onToggleBookmark}
+          onPlay={onPlay}
+          loading={loading}
+          emptyTitle={`No ${genre} experiences found`}
+          emptyMessage="Try another genre or explore all experiences."
+        />
+      </div>
+    );
+  }
 
   if (activeView === 'library') {
     return (
@@ -160,9 +185,6 @@ export function DiscoverView({
       <ExploreFilterBar
         genre={genre}
         onGenreChange={onGenreChange}
-        personas={personas}
-        persona={persona}
-        onPersonaChange={onPersonaChange}
       />
       {loading ? (
         <FeaturedExperienceSkeleton />

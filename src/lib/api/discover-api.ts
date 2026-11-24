@@ -108,9 +108,13 @@ export function fetchExperience(id: string, signal?: AbortSignal): Promise<Exper
 export function fetchCatalog(
   limit = 100,
   signal?: AbortSignal,
-): Promise<{ data: Experience[]; total: number; limit: number; offset: number }> {
-  return request<{ data: Experience[]; total: number; limit: number; offset: number }>(
-    `/experiences?limit=${limit}`,
+  genre: string = 'All',
+  offset = 0,
+): Promise<{ data: Experience[]; total: number; limit: number; offset: number; hasMore?: boolean }> {
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+  if (genre !== 'All') params.set('genre', genre);
+  return request<{ data: Experience[]; total: number; limit: number; offset: number; hasMore?: boolean }>(
+    `/experiences?${params}`,
     { signal },
   );
 }

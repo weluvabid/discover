@@ -1,4 +1,4 @@
-import { ArrowUpRight, BadgeCheck, Bookmark, Heart, Sparkles, Star, ThumbsUp } from 'lucide-react';
+import { BadgeCheck, Bookmark, Heart, Sparkles, Star, ThumbsUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount, getRankScoreClass } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -21,17 +21,20 @@ export function FeaturedExperience({
   ranking,
 }: FeaturedExperienceProps) {
   const voteCount = experience.metrics.voteCount ?? experience.metrics.reviewCount;
+  const genreTags = [
+    ...new Set(
+      [experience.genre, experience.subgenre, experience.tags[0] ?? experience.genre].filter(
+        Boolean,
+      ),
+    ),
+  ];
 
   return (
     <section
       className="grid min-w-0 overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]"
       aria-label="Featured experience"
     >
-      <a
-        href={`/games/?id=${encodeURIComponent(experience.id)}`}
-        className="group relative aspect-video w-full self-center overflow-hidden bg-muted"
-        aria-label={`Learn more about ${experience.title}`}
-      >
+      <div className="group relative aspect-video w-full self-center overflow-hidden bg-muted">
         <ExperienceArtwork
           src={experience.artwork.hero ?? experience.artwork.thumbnail}
           alt={experience.artwork.alt}
@@ -59,19 +62,17 @@ export function FeaturedExperience({
             </span>
           )}
         </span>
-      </a>
-      <div className="flex min-w-0 flex-col justify-center gap-3 p-4 sm:p-5 md:p-6">
+      </div>
+      <div className="flex min-w-0 flex-col gap-3 p-4 sm:p-5 md:p-6">
         <div className="flex flex-wrap gap-1.5 sm:gap-2">
-          {[experience.genre, experience.subgenre, experience.tags[0] ?? experience.genre].map(
-            (tag, index) => (
-              <span
-                key={`${tag}-${index}`}
-                className="rounded-md border border-border bg-secondary px-2 py-1 text-[0.7rem] text-secondary-foreground sm:px-2.5 sm:text-xs"
-              >
-                {tag}
-              </span>
-            ),
-          )}
+          {genreTags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-md border border-border bg-secondary px-2 py-1 text-[0.7rem] text-secondary-foreground sm:px-2.5 sm:text-xs"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
         <h2 className="text-xl font-bold leading-tight tracking-tight text-foreground sm:text-2xl md:text-3xl">
           {experience.title}
@@ -80,19 +81,6 @@ export function FeaturedExperience({
           By {experience.creator}
           {experience.creatorVerified && <BadgeCheck size={15} />}
         </p>
-        <div className="relative">
-          <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-            {experience.description}
-          </p>
-          <a
-            href={`/games/?id=${encodeURIComponent(experience.id)}`}
-            className="absolute bottom-0 right-0 inline-flex items-center gap-1 bg-card pl-1 text-sm font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label={`Read more about ${experience.title}`}
-          >
-            Read more <span className="sr-only">about {experience.title}</span>{' '}
-            <ArrowUpRight size={15} aria-hidden="true" />
-          </a>
-        </div>
         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
           <span>
             {experience.metrics.activePlayers === undefined
@@ -109,27 +97,29 @@ export function FeaturedExperience({
             {voteCount === undefined ? 'Vote count unavailable' : `${formatCount(voteCount)} votes`}
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <ExperiencePlayButton onClick={() => onPlay(experience)} />
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onToggleBookmark(experience.id)}
-            aria-label={isBookmarked ? 'Remove from library' : 'Save to library'}
-            aria-pressed={isBookmarked}
-          >
-            {isBookmarked ? <Heart className="text-rose-500" fill="currentColor" /> : <Bookmark />}
-          </Button>
-        </div>
-        {ranking && (
-          <div className="flex items-center justify-between border-t border-border pt-3">
-            <span className={`text-sm font-semibold ${getRankScoreClass(ranking.score)}`}>
-              {ranking.score.toFixed(1)}{' '}
-              <span className="text-xs text-muted-foreground">FEATURED SCORE</span>
-            </span>
-            <RankingWhyPopover ranking={ranking} showScore={false} />
+        <div className="mt-auto space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <ExperiencePlayButton onClick={() => onPlay(experience)} />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onToggleBookmark(experience.id)}
+              aria-label={isBookmarked ? 'Remove from library' : 'Save to library'}
+              aria-pressed={isBookmarked}
+            >
+              {isBookmarked ? <Heart className="text-rose-500" fill="currentColor" /> : <Bookmark />}
+            </Button>
           </div>
-        )}
+          {ranking && (
+            <div className="flex items-center justify-between border-t border-border pt-3">
+              <span className={`text-sm font-semibold ${getRankScoreClass(ranking.score)}`}>
+                {ranking.score.toFixed(1)}{' '}
+                <span className="text-xs text-muted-foreground">FEATURED SCORE</span>
+              </span>
+              <RankingWhyPopover ranking={ranking} showScore={false} />
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

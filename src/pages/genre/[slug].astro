@@ -1,0 +1,17 @@
+---
+import DiscoverLayout from '@/layouts/DiscoverLayout.astro';
+import { DiscoverIsland } from '@/components/react/DiscoverIsland';
+import { EXPERIENCE_GENRES } from '@/types/experience';
+
+export function getStaticPaths() {
+  return EXPERIENCE_GENRES.map((genre) => ({
+    params: { slug: genre.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+  }));
+}
+
+const initialLocation = `${Astro.url.pathname}${Astro.url.search}`;
+---
+
+<DiscoverLayout title="Browse Genre — Discover" description="Explore Roblox experiences by genre.">
+  <DiscoverIsland initialLocation={initialLocation} client:load />
+</DiscoverLayout>

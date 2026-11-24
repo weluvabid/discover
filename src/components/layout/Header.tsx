@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { Brand } from './Brand';
+import { PersonaCommandSelector } from '@/components/discovery/PersonaCommandSelector';
+import type { DiscoveryPersona } from '@/types/experience';
 
 interface HeaderProps {
   query: string;
@@ -11,6 +13,9 @@ interface HeaderProps {
   resultCount: number;
   onOpenDiscoveryControls: () => void;
   hasCustomRanking: boolean;
+  personas: DiscoveryPersona[];
+  persona: string;
+  onPersonaChange: (persona: string) => void;
 }
 
 export function Header({
@@ -19,6 +24,9 @@ export function Header({
   resultCount,
   onOpenDiscoveryControls,
   hasCustomRanking,
+  personas,
+  persona,
+  onPersonaChange,
 }: HeaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isMobile, openMobile, toggleSidebar } = useSidebar();
@@ -44,6 +52,11 @@ export function Header({
           <Brand compact />
         </div>
         <div className="ml-auto flex items-center gap-2">
+          <PersonaCommandSelector
+            personas={personas}
+            selectedPersonaId={persona}
+            onSelect={onPersonaChange}
+          />
           <Button
             id="tune-discovery-trigger"
             variant="outline"

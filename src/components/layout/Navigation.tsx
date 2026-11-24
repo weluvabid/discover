@@ -1,5 +1,9 @@
-import { Bookmark, Compass, Gem, Layers3, TrendingUp } from 'lucide-react';
-import { GENRE_FILTER_OPTIONS, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
+import { Bookmark, Compass, Gem, Layers3, Search, TrendingUp } from 'lucide-react';
+import {
+  GENRE_FILTER_OPTIONS,
+  type DiscoveryView,
+  type ExperienceGenre,
+} from '@/types/experience';
 import { navigateTo } from '@/hooks/use-browser-location';
 import { Brand } from './Brand';
 import {
@@ -18,6 +22,7 @@ import {
 
 const navigationItems = [
   { id: 'explore', label: 'Explore', icon: Compass },
+  { id: 'search', label: 'Search', icon: Search },
   { id: 'trending', label: 'Trending', icon: TrendingUp },
   { id: 'hidden-gems', label: 'Hidden Gems', icon: Gem },
   { id: 'collections', label: 'Collections', icon: Layers3 },
@@ -25,17 +30,19 @@ const navigationItems = [
 ] as const;
 
 interface SidebarProps {
-  nativeNavigation?: boolean;
   activeView: DiscoveryView;
   selectedGenre: ExperienceGenre | 'All';
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
   genreCounts: Record<string, number>;
 }
 
-function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
-  const path = view === 'explore' ? '/' : `/${view}`;
+function getGenrePath(genre: ExperienceGenre | 'All') {
+  return genre === 'All' ? '/' : `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+}
 
-  return genre === 'All' ? path : `${path}?genre=${encodeURIComponent(genre)}`;
+function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
+  if (view === 'explore' && genre !== 'All') return getGenrePath(genre);
+  return view === 'explore' ? '/' : `/${view}`;
 }
 
 export function Sidebar({
@@ -43,7 +50,6 @@ export function Sidebar({
   selectedGenre,
   onSelectGenre,
   genreCounts,
-  nativeNavigation = false,
 }: SidebarProps) {
   const { isMobile, setOpenMobile, state } = useSidebar();
 
@@ -71,8 +77,6 @@ export function Sidebar({
                         aria-label={label}
                         aria-current={activeView === id ? 'page' : undefined}
                         onClick={(event) => {
-                          if (nativeNavigation) return;
-
                           if (
                             event.button !== 0 ||
                             event.metaKey ||
@@ -111,11 +115,30 @@ export function Sidebar({
                   <SidebarMenuButton
                     isActive={selectedGenre === value}
                     tooltip={label}
-                    onClick={() => {
-                      onSelectGenre(value);
+                    render={
+                      <a
+                        href={getGenrePath(value)}
+                        aria-current={
+                          selectedGenre === value && value !== 'All' ? 'page' : undefined
+                        }
+                        onClick={(event) => {
+                          if (
+                            event.button !== 0 ||
+                            event.metaKey ||
+                            event.ctrlKey ||
+                            event.shiftKey ||
+                            event.altKey
+                          ) {
+                            return;
+                          }
 
-                      if (isMobile) setOpenMobile(false);
-                    }}
+                          event.preventDefault();
+                          onSelectGenre(value);
+
+                          if (isMobile) setOpenMobile(false);
+                        }}
+                      />
+                    }
                   >
                     <span className="min-w-0 flex-1 truncate">{label}</span>
                     {typeof genreCounts[value] === 'number' && (
