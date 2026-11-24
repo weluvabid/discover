@@ -9,7 +9,7 @@ import {
   normalizeExperience,
   type NativeCandidate,
   type RoTunnelClient,
-} from '../api/rotunnel';
+} from '../providers/rotunnel/index';
 
 export function applyPersona(experiences: Experience[], personaId?: string): Experience[] {
   if (!personaId) return experiences;

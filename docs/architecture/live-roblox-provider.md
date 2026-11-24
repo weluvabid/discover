@@ -19,9 +19,18 @@ The browser never calls RoTunnel. RoTunnel requests are server-side so upstream 
 
 ## Provider boundaries
 
-`src/server/api/rotunnel.ts` owns the RoTunnel provider boundary: upstream URLs, query parameters, response-envelope extraction, bounded batch requests and conversion into the existing `Experience` model. It does not import the ranking engine.
+The RoTunnel provider is split by responsibility under `src/server/providers/rotunnel/`:
 
-`src/server/api/live-app.ts` owns HTTP dispatch, request validation and orchestration. Cache lifecycle lives in `src/server/cache/ttl-cache.ts`; experience enrichment and persona application live in `src/server/services/experience-enrichment.ts`; search ordering lives in `src/server/services/search-sorting.ts`; response serialization lives in `src/server/api/http/json-response.ts`. `src/server/live-index.ts` adapts the handler to the local Node HTTP server. The repository currently runs the API as a separate local Node process; it does not contain an active Vercel function adapter.
+- `client.ts` owns endpoint calls, query construction, batching and bounded search pagination.
+- `transport.ts` owns HTTP timeouts, retries, response decoding and upstream error mapping.
+- `response-parsers.ts` owns defensive extraction of sort and candidate envelopes plus primitive value parsing.
+- `normalize-experience.ts` maps provider data into the shared `Experience` contract.
+- `sort-selection.ts` maps discovery contexts to native Explore sorts and extracts candidate IDs.
+- `types.ts` and `urls.ts` own provider contracts and upstream origins.
+
+`src/server/api/rotunnel.ts` remains a small compatibility facade for existing imports; new server code should import from `src/server/providers/rotunnel/` directly. The provider does not import the ranking engine.
+
+`src/server/api/live-app.ts` is the HTTP boundary: CORS, method dispatch and normalized error handling. Route implementations live in `src/server/api/routes/get.ts` and `post.ts`. Candidate retrieval, enrichment caching and search-feed loading live in `src/server/services/discovery-data.ts`; experience enrichment/persona application live in `experience-enrichment.ts`; search ordering lives in `search-sorting.ts`; response serialization lives in `src/server/api/http/json-response.ts`. `src/server/live-index.ts` adapts the handler to the local Node HTTP server. The repository currently runs the API as a separate local Node process; it does not contain an active Vercel function adapter.
 
 The provider keeps `Experience.source.sortId` and `Experience.source.nativePosition`. The ranking engine may reorder a result, but the original Roblox feed identity and ordinal remain available for side-by-side comparison.
 

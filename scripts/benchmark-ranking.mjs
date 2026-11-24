@@ -59,11 +59,13 @@ function measure(catalog, context) {
   };
 }
 
+const boundedCatalog = createSyntheticCatalog(100);
 const syntheticCatalog = createSyntheticCatalog(10_000);
 
 for (const [label, catalog] of [
   [`Mock catalog (${experiences.length})`, experiences],
-  ['Synthetic catalog (10,000)', syntheticCatalog],
+  ['Bounded live pool (100)', boundedCatalog],
+  ['Synthetic stress pool (10,000)', syntheticCatalog],
 ]) {
   console.warn(`\n${label}`);
 
