@@ -35,8 +35,10 @@ describe('RoTunnel provider contract', () => {
   it('fetches independent metadata batches concurrently and merges them in input order', async () => {
     const fetchMock = vi.fn().mockImplementation(async (input: URL) => {
       const ids = new URL(input).searchParams.get('universeIds')?.split(',') ?? [];
+
       return Response.json({ data: ids.map((id) => ({ id, name: `Experience ${id}` })) });
     });
+
     vi.stubGlobal('fetch', fetchMock);
 
     const ids = Array.from({ length: 51 }, (_, index) => String(index + 1));
@@ -94,15 +96,18 @@ describe('RoTunnel provider contract', () => {
           ],
         }),
       );
+
     vi.stubGlobal('fetch', fetchMock);
 
     const candidates = await new RoTunnelClient().search('obby');
     const secondUrl = new URL(fetchMock.mock.calls[1]?.[0] as URL);
 
-    expect(candidates.map((candidate) => [candidate.universeId, candidate.nativePosition])).toEqual([
-      ['123', 1],
-      ['456', 2],
-    ]);
+    expect(candidates.map((candidate) => [candidate.universeId, candidate.nativePosition])).toEqual(
+      [
+        ['123', 1],
+        ['456', 2],
+      ],
+    );
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(secondUrl.searchParams.get('pageToken')).toBe('next-page');
   });
@@ -185,6 +190,7 @@ describe('RoTunnel provider contract', () => {
         undefined,
         undefined,
       );
+
       expect(experience.genre, item.title).toBe(item.expected);
       expect(experience.subgenre, item.title).not.toBe('All');
       expect(experience.tags, item.title).not.toContain('All');
@@ -302,6 +308,7 @@ describe('RoTunnel provider contract', () => {
         undefined,
         undefined,
       );
+
       expect(experience.genre, item.title).toBe(item.expected);
       expect(experience.genreConfidence, item.title).not.toBe('unknown');
       expect(experience.tags, item.title).not.toContain('All');

@@ -9,6 +9,7 @@ export class TtlCache {
 
   constructor(maxEntries: number) {
     this.maxEntries = maxEntries;
+
     if (!Number.isSafeInteger(maxEntries) || maxEntries < 1) {
       throw new RangeError('maxEntries must be a positive safe integer.');
     }
@@ -25,28 +26,36 @@ export class TtlCache {
 
     const now = Date.now();
     const existing = this.entries.get(key) as CacheEntry<T> | undefined;
+
     if (existing && existing.expiresAt > now) {
       // Map insertion order is the LRU order; refresh the hit.
       this.entries.delete(key);
       this.entries.set(key, existing);
+
       return existing.value;
     }
+
     if (existing) this.entries.delete(key);
 
     const pending = this.inFlight.get(key) as Promise<T> | undefined;
+
     if (pending) return pending;
 
     const generation = this.generation;
-    const task = Promise.resolve().then(load).then((value) => {
-      if (generation === this.generation) {
-        this.entries.delete(key);
-        this.entries.set(key, { expiresAt: Date.now() + ttlMs, value });
-        this.evictExpiredAndOverflow(Date.now());
-      }
-      return value;
-    });
+    const task = Promise.resolve()
+      .then(load)
+      .then((value) => {
+        if (generation === this.generation) {
+          this.entries.delete(key);
+          this.entries.set(key, { expiresAt: Date.now() + ttlMs, value });
+          this.evictExpiredAndOverflow(Date.now());
+        }
+
+        return value;
+      });
 
     this.inFlight.set(key, task);
+
     try {
       return await task;
     } finally {
@@ -66,9 +75,12 @@ export class TtlCache {
     for (const [key, entry] of this.entries) {
       if (entry.expiresAt <= now) this.entries.delete(key);
     }
+
     while (this.entries.size > this.maxEntries) {
       const oldest = this.entries.keys().next().value;
+
       if (oldest === undefined) break;
+
       this.entries.delete(oldest);
     }
   }

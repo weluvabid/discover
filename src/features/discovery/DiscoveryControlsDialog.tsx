@@ -30,7 +30,6 @@ const strategyOptions = Object.entries(DISCOVERY_STRATEGIES).map(([id, option]) 
   ...option,
 }));
 
-
 export function DiscoveryControlsDialog({
   open,
   configuration,

@@ -2,10 +2,7 @@ import { builtinModules } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
-const builtins = new Set([
-  ...builtinModules,
-  ...builtinModules.map((name) => `node:${name}`),
-]);
+const builtins = new Set([...builtinModules, ...builtinModules.map((name) => `node:${name}`)]);
 
 export default defineConfig({
   resolve: {

@@ -71,7 +71,6 @@ pnpm dev
 
 The live API listens on `http://127.0.0.1:8787` by default. Astro development uses that origin automatically. `CORS_ORIGIN` is only needed if the frontend and API are served from different local origins.
 
-
 ## Hosting boundary
 
 No hosting provider is configured in this repository. The frontend is built as a static Astro site and the API is a separate Node process. Keep that boundary explicit until a hosting target is selected; do not add provider-specific adapters or caching configuration prematurely.
@@ -83,7 +82,6 @@ The previous SQLite/Turso ingestion pipeline, synthetic metric generation, ranki
 ## Testing
 
 The normal `pnpm test` suite uses isolated fixtures and does not require a live RoTunnel connection or local database. It tests active API routing, response normalization, ranking behavior and frontend behaviour. Historical SQLite/Turso tests are kept under `src/deprecated/` and excluded from the default suite.
-
 
 ### Legacy ranking performance
 

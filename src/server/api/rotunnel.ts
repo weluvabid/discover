@@ -1,5 +1,9 @@
 import type { Experience } from '../../types/experience';
-import { classifyGenre, firstMeaningfulLabel, meaningfulLabel } from '../../domain/taxonomy/genre-classifier';
+import {
+  classifyGenre,
+  firstMeaningfulLabel,
+  meaningfulLabel,
+} from '../../domain/taxonomy/genre-classifier';
 
 const API_ORIGIN = 'https://apis.rotunnel.com';
 const GAMES_ORIGIN = 'https://games.rotunnel.com';
@@ -41,6 +45,7 @@ const isRecord = (value: unknown): value is JsonObject =>
 function stringValue(...values: unknown[]): string | undefined {
   for (const value of values) {
     if (typeof value === 'string' && value.trim()) return value.trim();
+
     if (typeof value === 'number' && Number.isFinite(value)) return String(value);
   }
 
@@ -65,10 +70,12 @@ function collectCandidateObjects(
   inheritedContentType?: string,
 ): void {
   if (!value || typeof value !== 'object' || seen.has(value)) return;
+
   seen.add(value);
 
   if (Array.isArray(value)) {
     for (const item of value) collectCandidateObjects(item, output, seen, inheritedContentType);
+
     return;
   }
 
@@ -133,10 +140,12 @@ function extractSorts(payload: unknown): NativeSort[] {
 
   const visit = (value: unknown) => {
     if (!value || typeof value !== 'object' || seen.has(value)) return;
+
     seen.add(value);
 
     if (Array.isArray(value)) {
       for (const item of value) visit(item);
+
       return;
     }
 
@@ -156,6 +165,7 @@ function extractSorts(payload: unknown): NativeSort[] {
 
   for (const value of values) {
     if (!isRecord(value)) continue;
+
     const id = stringValue(value.sortId, value.id, value.sort_id, value.token);
     const name = stringValue(value.sortDisplayName, value.displayName, value.name, value.title);
 
@@ -193,6 +203,7 @@ async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
           const delay = Number.isFinite(retryAfter)
             ? Math.min(750, Math.max(0, retryAfter * 1000))
             : 250;
+
           await new Promise((resolve) => setTimeout(resolve, delay));
           continue;
         }
@@ -214,13 +225,16 @@ async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
       lastError = error;
 
       if (signal?.aborted) throw error;
+
       if (error instanceof RoTunnelError && error.status < 500 && error.status !== 429) throw error;
+
       if (
         error instanceof DOMException &&
         (error.name === 'TimeoutError' || error.name === 'AbortError')
       ) {
         break;
       }
+
       if (attempt >= MAX_RETRIES) break;
     }
   }
@@ -246,6 +260,7 @@ async function fetchBatchedMap<T>(
   signal?: AbortSignal,
 ): Promise<Map<string, T>> {
   const batches: string[][] = [];
+
   for (let offset = 0; offset < universeIds.length; offset += BATCH_SIZE) {
     batches.push(universeIds.slice(offset, offset + BATCH_SIZE));
   }
@@ -259,9 +274,12 @@ async function fetchBatchedMap<T>(
 
   for (const payload of payloads) {
     const items = isRecord(payload) && Array.isArray(payload.data) ? payload.data : [];
+
     for (const item of items) {
       if (!isRecord(item)) continue;
+
       const entry = readEntry(item);
+
       if (entry) results.set(entry[0], entry[1]);
     }
   }
@@ -272,6 +290,7 @@ async function fetchBatchedMap<T>(
 export class RoTunnelClient {
   async getSorts(signal?: AbortSignal): Promise<NativeSort[]> {
     const url = new URL('/explore-api/v1/get-sorts', API_ORIGIN);
+
     url.search = new URLSearchParams({
       sessionId: sessionId(),
       device: 'computer',
@@ -283,6 +302,7 @@ export class RoTunnelClient {
 
   async getSortContent(sortId: string, signal?: AbortSignal): Promise<NativeCandidate[]> {
     const url = new URL('/explore-api/v1/get-sort-content', API_ORIGIN);
+
     url.search = new URLSearchParams({
       sessionId: sessionId(),
       sortId,
@@ -308,7 +328,9 @@ export class RoTunnelClient {
         SessionId: session,
         pageType: 'all',
       });
+
       if (pageToken) params.set('pageToken', pageToken);
+
       url.search = params.toString();
 
       const payload = await fetchJson<unknown>(url, signal);
@@ -316,6 +338,7 @@ export class RoTunnelClient {
 
       for (const candidate of pageCandidates) {
         if (candidates.has(candidate.universeId)) continue;
+
         candidates.set(candidate.universeId, {
           ...candidate,
           nativePosition: candidates.size + 1,
@@ -325,6 +348,7 @@ export class RoTunnelClient {
       pageToken = isRecord(payload)
         ? stringValue(payload.nextPageToken, payload.nextPageCursor)
         : undefined;
+
       if (!pageToken) break;
     }
 
@@ -336,11 +360,14 @@ export class RoTunnelClient {
       universeIds,
       (batch) => {
         const url = new URL('/v1/games', GAMES_ORIGIN);
+
         url.searchParams.set('universeIds', batch.join(','));
+
         return url;
       },
       (item) => {
         const id = stringValue(item.id, item.universeId);
+
         return id ? [id, item] : undefined;
       },
       signal,
@@ -352,11 +379,14 @@ export class RoTunnelClient {
       universeIds,
       (batch) => {
         const url = new URL('/v1/games/votes', GAMES_ORIGIN);
+
         url.searchParams.set('universeIds', batch.join(','));
+
         return url;
       },
       (item) => {
         const id = stringValue(item.id, item.universeId);
+
         return id ? [id, item] : undefined;
       },
       signal,
@@ -368,17 +398,20 @@ export class RoTunnelClient {
       universeIds,
       (batch) => {
         const url = new URL('/v1/games/icons', THUMBNAILS_ORIGIN);
+
         url.search = new URLSearchParams({
           universeIds: batch.join(','),
           size: '512x512',
           format: 'Png',
           isCircular: 'false',
         }).toString();
+
         return url;
       },
       (item) => {
         const id = stringValue(item.targetId, item.universeId);
         const imageUrl = stringValue(item.imageUrl);
+
         return id && imageUrl && item.state !== 'Blocked' ? [id, imageUrl] : undefined;
       },
       signal,
@@ -439,9 +472,7 @@ export function normalizeExperience(
       : undefined;
   const tags = [
     ...new Set(
-      [nativeGenre, rawSubgenre, inferredGenreTag].filter(
-        (tag): tag is string => Boolean(tag),
-      ),
+      [nativeGenre, rawSubgenre, inferredGenreTag].filter((tag): tag is string => Boolean(tag)),
     ),
   ];
   const experience: Experience = {
@@ -505,4 +536,3 @@ export function selectSortForContext(sorts: NativeSort[], context: string): Nati
 export function candidateIds(candidates: NativeCandidate[]): string[] {
   return [...new Set(candidates.map((candidate) => candidate.universeId))];
 }
-

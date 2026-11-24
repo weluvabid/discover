@@ -9,8 +9,7 @@ export async function handleApiRequest(..._args: unknown[]): Promise<ApiResult> 
   return {
     status: 501,
     body: {
-      error:
-        'The local-catalog API is unsupported. Use live Roblox discovery.',
+      error: 'The local-catalog API is unsupported. Use live Roblox discovery.',
       code: 'LEGACY_CATALOG_UNSUPPORTED',
     },
   };

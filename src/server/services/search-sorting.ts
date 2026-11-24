@@ -4,6 +4,7 @@ export function sortSearchResults(experiences: Experience[], sort: string): Expe
   const results = [...experiences];
   const timestamp = (value?: string) => {
     const parsed = Date.parse(value ?? '');
+
     return Number.isFinite(parsed) ? parsed : -1;
   };
 

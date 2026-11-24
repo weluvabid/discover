@@ -15,6 +15,7 @@ export function applyPersona(experiences: Experience[], personaId?: string): Exp
   if (!personaId) return experiences;
 
   const persona = seedPersonas().find((item) => item.id === personaId);
+
   if (!persona) return experiences;
 
   return experiences.map((experience) => ({

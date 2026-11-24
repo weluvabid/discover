@@ -19,7 +19,6 @@ export interface SyntheticMetrics {
   matchScores: Record<string, number>;
 }
 
-
 function hash32(input: string): number {
   let hash = 2166136261;
 
@@ -125,4 +124,3 @@ export function generateSyntheticMetrics(input: {
     matchScores,
   };
 }
-

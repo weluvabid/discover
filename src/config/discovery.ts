@@ -97,8 +97,7 @@ export function isRankingStrategy(value: unknown): value is RankingStrategyId {
 
 export function isExperienceGenre(value: unknown): value is ExperienceGenreFilter {
   return (
-    typeof value === 'string' &&
-    (EXPERIENCE_GENRE_OPTIONS as readonly string[]).includes(value)
+    typeof value === 'string' && (EXPERIENCE_GENRE_OPTIONS as readonly string[]).includes(value)
   );
 }
 
@@ -113,11 +112,14 @@ export type RankingSignalPreference = Pick<
 
 export function isRankingConfiguration(value: unknown): value is RankingSignalPreference {
   if (!Array.isArray(value) || value.length !== DISCOVERY_SIGNAL_IDS.length) return false;
+
   const ids = new Set<string>();
 
   return value.every((signal: unknown) => {
     if (!signal || typeof signal !== 'object' || Array.isArray(signal)) return false;
+
     const candidate = signal as Record<string, unknown>;
+
     if (
       !isRankingSignalId(candidate.id) ||
       ids.has(candidate.id) ||
@@ -129,7 +131,9 @@ export function isRankingConfiguration(value: unknown): value is RankingSignalPr
     ) {
       return false;
     }
+
     ids.add(candidate.id);
+
     return true;
   });
 }

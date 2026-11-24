@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { handleLiveRequest } from './live-app';
-import type { NativeCandidate } from './rotunnel';
-import { RoTunnelClient } from './rotunnel';
+import type { NativeCandidate, RoTunnelClient } from './rotunnel';
 
 function makeCandidate(id: string, position: number): NativeCandidate {
   return {
@@ -19,9 +18,11 @@ function makeCandidate(id: string, position: number): NativeCandidate {
 
 function makeClient(candidates: NativeCandidate[]) {
   return {
-    getSorts: vi.fn().mockResolvedValue([
-      { id: 'top-trending', name: 'Top Trending', description: 'Popular experiences' },
-    ]),
+    getSorts: vi
+      .fn()
+      .mockResolvedValue([
+        { id: 'top-trending', name: 'Top Trending', description: 'Popular experiences' },
+      ]),
     getSortContent: vi.fn().mockResolvedValue(candidates),
     getDetails: vi.fn().mockResolvedValue(new Map()),
     getVotes: vi.fn().mockResolvedValue(new Map()),
@@ -45,14 +46,19 @@ describe('live Discover API', () => {
       context: string;
       persona: string | null;
       totalCandidates: number;
-      results: Array<{ experience: { id: string; source?: { nativePosition: number } }; position: number }>;
+      results: Array<{
+        experience: { id: string; source?: { nativePosition: number } };
+        position: number;
+      }>;
     };
 
     expect(response.status).toBe(200);
     expect(body).toMatchObject({ context: 'recommended', persona: null, totalCandidates: 2 });
     expect(body.results).toHaveLength(2);
     expect(body.results.map((item) => item.position)).toEqual([1, 2]);
-    expect(body.results.map((item) => item.experience.source?.nativePosition).sort()).toEqual([1, 2]);
+    expect(body.results.map((item) => item.experience.source?.nativePosition).sort()).toEqual([
+      1, 2,
+    ]);
     expect(client.getSortContent).toHaveBeenCalledWith('top-trending');
   });
 
@@ -99,12 +105,18 @@ describe('live Discover API', () => {
 
   it('serves health and personas without contacting RoTunnel', async () => {
     const client = makeClient([]);
-    const health = await handleLiveRequest(new Request('https://discover.example/api/health'), client);
-    const personas = await handleLiveRequest(new Request('https://discover.example/api/personas'), client);
+    const health = await handleLiveRequest(
+      new Request('https://discover.example/api/health'),
+      client,
+    );
+    const personas = await handleLiveRequest(
+      new Request('https://discover.example/api/personas'),
+      client,
+    );
 
     expect(health.status).toBe(200);
     expect(await health.json()).toEqual({ status: 'ok', provider: 'rotunnel' });
-    expect((await personas.json() as { data: unknown[] }).data).toHaveLength(12);
+    expect(((await personas.json()) as { data: unknown[] }).data).toHaveLength(12);
     expect(client.getSorts).not.toHaveBeenCalled();
   });
 });

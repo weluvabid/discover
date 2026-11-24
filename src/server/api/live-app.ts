@@ -6,7 +6,7 @@ import {
   type RankingContext,
   type RankingOptions,
 } from '../../features/discovery/engine/ranking';
-import { EXPERIENCE_GENRES, type Experience, type ExperienceGenre } from '../../types/experience';
+import { type Experience, type ExperienceGenre } from '../../types/experience';
 import { seedPersonas } from '../../domain/personas/personas';
 import { TtlCache } from '../cache/ttl-cache';
 import { jsonResponse } from './http/json-response';
@@ -21,7 +21,6 @@ import {
 import {
   RoTunnelClient,
   RoTunnelError,
-  candidateIds,
   normalizeExperience,
   selectSortForContext,
   type NativeCandidate,
@@ -72,10 +71,7 @@ async function candidatesForContext(
   );
 }
 
-async function searchExperiences(
-  client: RoTunnelClient,
-  query: string,
-): Promise<Experience[]> {
+async function searchExperiences(client: RoTunnelClient, query: string): Promise<Experience[]> {
   const normalizedQuery = query.toLowerCase();
   const candidates = await cached(
     `rotunnel:search:${normalizedQuery}`,
@@ -126,11 +122,9 @@ async function handleGet(client: RoTunnelClient, url: URL): Promise<Response> {
     const query = url.searchParams.get('q')?.trim() ?? '';
 
     if (query.length > DISCOVERY_LIMITS.searchQueryCharacters) {
-      return jsonResponse(
-        { error: 'Search query must be 200 characters or fewer.' },
-        400,
-      );
+      return jsonResponse({ error: 'Search query must be 200 characters or fewer.' }, 400);
     }
+
     if (!query) return jsonResponse({ data: [] });
 
     const requestedGenre = url.searchParams.get('genre');
@@ -163,10 +157,7 @@ async function handleGet(client: RoTunnelClient, url: URL): Promise<Response> {
     }
 
     if (query && query.length > DISCOVERY_LIMITS.searchQueryCharacters) {
-      return jsonResponse(
-        { error: 'Search query must be 200 characters or fewer.' },
-        400,
-      );
+      return jsonResponse({ error: 'Search query must be 200 characters or fewer.' }, 400);
     }
 
     const experiences = query
@@ -186,15 +177,15 @@ async function handleGet(client: RoTunnelClient, url: URL): Promise<Response> {
   if (detailMatch?.[1]) {
     const id = detailMatch[1];
     const [detailsResult, votesResult, iconsResult] = await Promise.allSettled([
-      cached(
-        `rotunnel:detail:${id}`,
-        CACHE_TTL_MS.experienceDetails,
-        () => client.getDetails([id]),
+      cached(`rotunnel:detail:${id}`, CACHE_TTL_MS.experienceDetails, () =>
+        client.getDetails([id]),
       ),
       cached(`rotunnel:votes:${id}`, CACHE_TTL_MS.experienceVotes, () => client.getVotes([id])),
       cached(`rotunnel:icon:${id}`, CACHE_TTL_MS.experienceIcons, () => client.getIcons([id])),
     ]);
+
     if (detailsResult.status === 'rejected') throw detailsResult.reason;
+
     const details = detailsResult.value;
     const votes = votesResult.status === 'fulfilled' ? votesResult.value : new Map();
     const icons = iconsResult.status === 'fulfilled' ? iconsResult.value : new Map();
@@ -218,22 +209,21 @@ async function handleGet(client: RoTunnelClient, url: URL): Promise<Response> {
   return jsonResponse({ error: 'Not found.' }, 404);
 }
 
-async function handlePost(
-  client: RoTunnelClient,
-  url: URL,
-  request: Request,
-): Promise<Response> {
+async function handlePost(client: RoTunnelClient, url: URL, request: Request): Promise<Response> {
   const discover = url.pathname.match(/^\/api\/discover\/([a-z-]+)$/);
 
   if (!discover) return jsonResponse({ error: 'Not found.' }, 404);
 
   const contextValue = discover[1];
+
   if (!isRankingContext(contextValue)) {
     return jsonResponse({ error: 'Unknown discovery context.' }, 404);
   }
+
   const context: RankingContext = contextValue;
 
   const contentLength = Number(request.headers.get('content-length') ?? 0);
+
   if (contentLength > DISCOVERY_LIMITS.requestBodyBytes) {
     return jsonResponse({ error: 'Request body exceeds 64 KiB.' }, 413);
   }
@@ -242,16 +232,20 @@ async function handlePost(
 
   try {
     const raw = await request.text();
+
     if (new TextEncoder().encode(raw).byteLength > DISCOVERY_LIMITS.requestBodyBytes) {
       return jsonResponse({ error: 'Request body exceeds 64 KiB.' }, 413);
     }
+
     const parsed: unknown = raw ? JSON.parse(raw) : {};
+
     input = isRecord(parsed) ? parsed : {};
   } catch {
     return jsonResponse({ error: 'Invalid JSON request body.' }, 400);
   }
 
   const limit = input.limit === undefined ? 40 : input.limit;
+
   if (
     typeof limit !== 'number' ||
     !Number.isInteger(limit) ||
@@ -277,6 +271,7 @@ async function handlePost(
     signals: isRankingConfiguration(requestedSignals)
       ? DEFAULT_RANKING_CONFIGURATION.signals.map((signal) => {
           const requested = requestedSignals.find((item) => item.id === signal.id);
+
           return requested
             ? { ...signal, enabled: requested.enabled, weight: requested.weight }
             : signal;
@@ -335,10 +330,12 @@ export async function handleLiveRequest(
             });
 
     for (const [key, value] of corsHeaders) response.headers.set(key, value);
+
     return response;
   } catch (error) {
     if (error instanceof RoTunnelError) {
       const status = error.status === 429 ? 503 : 502;
+
       return jsonResponse(
         {
           error: error.message,

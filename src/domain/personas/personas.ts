@@ -77,7 +77,6 @@ export const PERSONAS = [
 
 export type PersonaId = (typeof PERSONAS)[number][0];
 
-
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const RELATED_GENRES: Record<ExperienceGenre, ExperienceGenre[]> = {
@@ -235,7 +234,6 @@ export function calculatePersonaRelevanceScore(
   // Two strong topical matches saturate the signal; repeated prose cannot inflate it.
   return Math.round(clamp(score / 2, 0, 1) * 100) / 100;
 }
-
 
 export function seedPersonas() {
   return PERSONAS.map(([id, label, description, preferences]) => ({

@@ -395,7 +395,6 @@ export function getEligibility(
   }
 }
 
-
 /**
  * One-sided 95% Wilson lower confidence bound for a positive-vote proportion.
  * A lower bound is intentionally used instead of the raw percentage so a

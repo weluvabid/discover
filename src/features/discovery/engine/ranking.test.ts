@@ -195,10 +195,12 @@ describe('discovery ranking', () => {
     );
 
     expect(
-      lowRanked.find((item) => item.experience.id === lowConfidence.id)?.explanation.diversityPenalty,
+      lowRanked.find((item) => item.experience.id === lowConfidence.id)?.explanation
+        .diversityPenalty,
     ).toBe(0);
     expect(
-      highRanked.find((item) => item.experience.id === highConfidence.id)?.explanation.diversityPenalty,
+      highRanked.find((item) => item.experience.id === highConfidence.id)?.explanation
+        .diversityPenalty,
     ).toBeLessThan(0);
   });
 
@@ -390,8 +392,10 @@ describe('discovery ranking', () => {
       'recommended',
       { now: FIXED_NOW, limit: 2 },
     );
-    const lowQuality = ranked.find((item) => item.experience.id === lowEvidence.id)?.factors.quality;
-    const strongQuality = ranked.find((item) => item.experience.id === strongEvidence.id)?.factors.quality;
+    const lowQuality = ranked.find((item) => item.experience.id === lowEvidence.id)?.factors
+      .quality;
+    const strongQuality = ranked.find((item) => item.experience.id === strongEvidence.id)?.factors
+      .quality;
 
     expect(strongQuality).toBeGreaterThan(lowQuality ?? 0);
   });
@@ -405,12 +409,10 @@ describe('discovery ranking', () => {
       ...fixture,
       metrics: { rating: 98 },
     };
-    const ranked = rankForContext(
-      [experience],
-      DEFAULT_RANKING_CONFIGURATION,
-      'recommended',
-      { now: FIXED_NOW, limit: 1 },
-    )[0];
+    const ranked = rankForContext([experience], DEFAULT_RANKING_CONFIGURATION, 'recommended', {
+      now: FIXED_NOW,
+      limit: 1,
+    })[0];
 
     expect(ranked?.factors.quality).toBeGreaterThan(0);
   });
@@ -479,7 +481,6 @@ describe('discovery ranking', () => {
     ).toBe(true);
   });
 
-
   it('does not treat unavailable live telemetry as zero-valued ranking evidence', () => {
     const fixture = experiences[0];
 
@@ -492,12 +493,10 @@ describe('discovery ranking', () => {
       metrics: { activePlayers: 1200 },
       source: { provider: 'rotunnel' as const, sortId: 'top-trending', nativePosition: 4 },
     };
-    const ranked = rankForContext(
-      [liveExperience],
-      DEFAULT_RANKING_CONFIGURATION,
-      'recommended',
-      { now: FIXED_NOW, limit: 1 },
-    )[0];
+    const ranked = rankForContext([liveExperience], DEFAULT_RANKING_CONFIGURATION, 'recommended', {
+      now: FIXED_NOW,
+      limit: 1,
+    })[0];
 
     expect(ranked).toBeDefined();
     expect(ranked?.explanation.signals.find((signal) => signal.id === 'quality')).toMatchObject({
@@ -508,9 +507,9 @@ describe('discovery ranking', () => {
       enabled: false,
       effectiveWeight: 0,
     });
-    expect(
-      ranked?.explanation.signals.find((signal) => signal.id === 'popularity')?.enabled,
-    ).toBe(true);
+    expect(ranked?.explanation.signals.find((signal) => signal.id === 'popularity')?.enabled).toBe(
+      true,
+    );
   });
 
   it('uses the native feed when weekly growth is unavailable', () => {

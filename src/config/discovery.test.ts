@@ -34,10 +34,13 @@ describe('discovery configuration', () => {
       weight,
       enabled,
     }));
+
     expect(isRankingConfiguration(signals)).toBe(true);
     expect(isRankingConfiguration([...signals, signals[0]])).toBe(false);
-    expect(isRankingConfiguration(signals.map((signal, index) =>
-      index === 0 ? { ...signal, weight: 101 } : signal,
-    ))).toBe(false);
+    expect(
+      isRankingConfiguration(
+        signals.map((signal, index) => (index === 0 ? { ...signal, weight: 101 } : signal)),
+      ),
+    ).toBe(false);
   });
 });

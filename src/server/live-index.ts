@@ -13,11 +13,13 @@ const server = createServer(async (incoming, outgoing) => {
 
     for await (const chunk of incoming) {
       const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+
       size += buffer.byteLength;
 
       if (size > maxBodyBytes) {
         outgoing.writeHead(413, { 'Content-Type': 'application/json' });
         outgoing.end(JSON.stringify({ error: 'Request body exceeds 64 KiB.' }));
+
         return;
       }
 
@@ -48,6 +50,7 @@ const server = createServer(async (incoming, outgoing) => {
     outgoing.end(body);
   } catch (error) {
     const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
+
     process.stderr.write(`Discover API request failed: ${message}\n`);
     outgoing.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
     outgoing.end(JSON.stringify({ error: 'Internal server error.' }));
