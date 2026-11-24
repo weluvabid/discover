@@ -20,6 +20,8 @@ export function FeaturedExperience({
   onPlay,
   ranking,
 }: FeaturedExperienceProps) {
+  const voteCount = experience.metrics.voteCount ?? experience.metrics.reviewCount;
+
   return (
     <section
       className="grid min-w-0 overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]"
@@ -48,7 +50,14 @@ export function FeaturedExperience({
         </span>
         <span className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-lg border border-border bg-background/90 px-3 py-2 text-xs font-bold text-foreground backdrop-blur">
           <ThumbsUp size={14} className="text-emerald-400" />
-          {experience.metrics.rating}% Positive
+          {experience.metrics.rating === undefined
+            ? 'Rating unavailable'
+            : `${experience.metrics.rating.toFixed(1)}% Positive`}
+          {experience.source && (
+            <span className="border-l border-border pl-2 text-muted-foreground">
+              Roblox #{experience.source.nativePosition}
+            </span>
+          )}
         </span>
       </a>
       <div className="flex min-w-0 flex-col justify-center gap-3 p-4 sm:p-5 md:p-6">
@@ -85,12 +94,20 @@ export function FeaturedExperience({
           </a>
         </div>
         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-          <span>{formatCount(experience.metrics.activePlayers)} playing now</span>
+          <span>
+            {experience.metrics.activePlayers === undefined
+              ? 'Player count unavailable'
+              : `${formatCount(experience.metrics.activePlayers)} playing now`}
+          </span>
           <span className="inline-flex items-center gap-1">
             <Star size={12} className="fill-amber-400 text-amber-400" />
-            {experience.metrics.rating}% Positive
+            {experience.metrics.rating === undefined
+              ? 'Rating unavailable'
+              : `${experience.metrics.rating.toFixed(1)}% Positive`}
           </span>
-          <span>{formatCount(experience.metrics.reviewCount)} reviews</span>
+          <span>
+            {voteCount === undefined ? 'Vote count unavailable' : `${formatCount(voteCount)} votes`}
+          </span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <ExperiencePlayButton onClick={() => onPlay(experience)} />

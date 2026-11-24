@@ -1,5 +1,7 @@
 # Discover ranking architecture
 
+> The current request path uses live RoTunnel candidates through the standalone Node API process. The SQLite/catalog and synthetic-metric details later in this document describe the retained legacy implementation unless explicitly stated otherwise. See [Live Roblox provider](live-roblox-provider.md) for the active data path.
+
 ## Pipeline
 
 Discover uses one deterministic ranking engine with independent discovery contexts:
@@ -34,7 +36,7 @@ The weighted score is:
 
 `weightedScore = sum(normalizedSignal * effectiveWeight)`
 
-The second-stage reranker uses genre and tag Jaccard similarity to apply a bounded ordering penalty. Its strength is derived from the configured diversity signal's context-adjusted effective weight relative to the default configuration. Setting diversity to zero disables both the rarity contribution and the greedy reranking penalty; increasing the configured weight increases the penalty monotonically, up to the bounded maximum. Candidate-pool expansion uses the same maximum penalty budget, so a candidate capable of overtaking the retained cutoff is not discarded. The raw penalty and the applied score adjustment are exposed separately. If a score is already at zero, the score adjustment is floored at zero while the raw penalty still explains the ordering decision, so arithmetically:
+The second-stage reranker uses genre similarity and Jaccard similarity over semantic metadata tags to apply a bounded ordering penalty. The normalized genre label is removed from each tag set before Jaccard is computed because genre is already scored independently; specific native metadata such as `FPS` remains eligible, while the broad Roblox `Town and City` category is excluded. This prevents a generated genre tag from counting the same evidence twice. Its strength is derived from the configured diversity signal's context-adjusted effective weight relative to the default configuration. Setting diversity to zero disables both the rarity contribution and the greedy reranking penalty; increasing the configured weight increases the penalty monotonically, up to the bounded maximum. Candidate-pool expansion uses the same maximum penalty budget, so a candidate capable of overtaking the retained cutoff is not discarded. The raw penalty and the applied score adjustment are exposed separately. If a score is already at zero, the score adjustment is floored at zero while the raw penalty still explains the ordering decision, so arithmetically:
 
 `finalScore = weightedScore + appliedDiversityAdjustment`
 
@@ -50,7 +52,11 @@ Ranking accepts an injected `Date`. When no clock is supplied, the engine uses t
 
 ## Current data boundary
 
-The browser requests discovery results from the Hono API. The API ranks the valid local SQLite catalog, populated from a pinned Roblox discovery CSV and enriched through public Roblox metadata endpoints. `matchScore` is a deterministic synthetic persona-affinity input, not a value learned from real player events. For enriched records, the existing quality signal also consumes synthetic D1/D7/D30 retention, repeat-play rate and average session duration; mock records without those fields retain the original rating/playtime calculation. The six-signal interface, context eligibility and ranking strategies remain shared between both data sources. Freshness combines launch recency (180-day decay) with update recency (60-day decay, capped at 75% of the launch component); Recently Launched eligibility always uses the original launch date and the 30-day window.
+The browser calls our same-origin API; the server retrieves live Roblox candidates through RoTunnel and sends normalized `Experience` values into this engine. The provider retains each candidate's native sort ID and original Roblox position so the response can compare the Discover position with Roblox's position.
+
+Live values include current players, vote-derived positive percentage, vote count, visits, favorites, creator metadata, artwork and timestamps when supplied. Roblox's public endpoints do not supply the old synthetic D1/D7/D30 retention, repeat-play, average-session, average-playtime or week-over-week growth values. The live adapter leaves these fields absent. The engine disables a signal for a candidate when the data required by that signal is unavailable, then renormalizes that candidate's remaining effective weights. Missing data is not represented as zero or synthetic telemetry. For live rating-only candidates, quality uses the one-sided 95% Wilson lower confidence bound when vote count is available, reducing the influence of ratings supported by very few votes; when vote count is unavailable, the raw rating remains available without an invented sample size. The application genre is a deterministic mapping into Discover's taxonomy, not a native Roblox genre taxonomy. Classification rules match complete terms/phrases to avoid substring collisions such as `car` inside `card`.
+
+The historical SQLite implementation and its synthetic metrics remain in `src/deprecated/server/api/legacy-app.ts` and the ingestion modules for reference. The six-signal interface, context eligibility and ranking strategies are retained. Freshness combines launch recency (180-day decay) with update recency (60-day decay, capped at 75% of the launch component); Recently Launched eligibility still requires an actual publication timestamp inside the 30-day window.
 
 ## Context ranking profiles
 
@@ -87,9 +93,9 @@ The context pipeline uses a bounded top-candidate heap before diversity rerankin
 
 ## API execution model
 
-The API runs ranking in a four-thread Node.js worker pool by default. Candidate retrieval remains on the HTTP thread and uses the local SQLite read model. Set `RANKING_WORKERS=0` to use synchronous ranking, or override the worker count for benchmarking. The worker queue is bounded by `RANKING_QUEUE_CAPACITY` (default `128`); when capacity is exhausted, discovery returns HTTP 503.
+The active API is a standalone Node HTTP process with no HTTP framework. It makes bounded server-side RoTunnel requests, uses a bounded process-local LRU/TTL cache with in-flight request deduplication, and runs the existing ranking engine in-process. The old worker pool is isolated under `src/deprecated/` and is not imported by the active API.
 
-I moved ranking to workers after API measurements showed that synchronous CPU work was blocking the HTTP event loop. The benchmark, trade-offs, and reasoning behind the four-worker default are documented in [Moving discovery ranking off the HTTP thread](ranking-worker-investigation.md).
+The historical worker investigation and benchmark trade-offs are documented in [Moving discovery ranking off the HTTP thread](ranking-worker-investigation.md).
 
 ## Play-style matching
 
@@ -99,6 +105,6 @@ Discovery requests pass that profile to the catalog query. Each experience recei
 
 ## Play-style evaluation
 
-`pnpm evaluate:personas` evaluates the 12 seeded play styles against the local valid catalog and compares each profile's top results with an unpersonalized baseline. It records preferred-genre share and lift, average match score, top-result overlap, unique games across profiles, and eligibility counts for all five contexts. The evaluator writes a Markdown report for review and JSON output for further analysis. It opens SQLite read-only and accepts an injected evaluation clock through `PERSONA_EVALUATION_NOW`.
+The archived `scripts/deprecated/evaluate-personas.ts` evaluator historically evaluated the 12 seeded play styles against the local valid catalog and compares each profile's top results with an unpersonalized baseline. It records preferred-genre share and lift, average match score, top-result overlap, unique games across profiles, and eligibility counts for all five contexts. The evaluator writes a Markdown report for review and JSON output for further analysis. It opens SQLite read-only and accepts an injected evaluation clock through `PERSONA_EVALUATION_NOW`.
 
 The evaluation is a behavioral check of the current ranking heuristics. The profile match score is a deterministic genre-affinity input derived from declared genre preferences and genre relationships; the separate persona-relevance input is derived from keyword presence. Neither is learned from player events. A higher preferred-genre share demonstrates that the ranking follows its configured profile preferences, not that users will enjoy those results. Synthetic retention, repeat-play and session metrics remain synthetic ranking inputs and are not Roblox telemetry.

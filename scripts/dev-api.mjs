@@ -13,7 +13,7 @@ const buildWatcher = spawn(
 );
 const apiServer = spawn(
   process.execPath,
-  ['--watch', '--env-file-if-exists=.env', 'dist-server/server.mjs'],
+  ['--watch', '--env-file-if-exists=.env', 'dist-server/live-server.mjs'],
   { stdio: 'inherit' },
 );
 

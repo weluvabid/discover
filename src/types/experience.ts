@@ -37,10 +37,15 @@ export interface ExperienceArtwork {
 }
 
 export interface ExperienceMetrics {
-  activePlayers: number;
-  rating: number;
-  reviewCount: number;
-  averagePlaytimeMinutes: number;
+  activePlayers?: number;
+  /** Positive-vote percentage; absent when Roblox exposes no vote data. */
+  rating?: number;
+  /** Retained for legacy catalog compatibility; live Roblox data uses voteCount. */
+  reviewCount?: number;
+  voteCount?: number;
+  averagePlaytimeMinutes?: number;
+  visits?: number;
+  favorites?: number;
   weeklyChange?: number;
   /** Deterministic simulated metrics; these are not Roblox telemetry. */
   averageSessionMinutes?: number;
@@ -59,10 +64,12 @@ export interface Experience {
   creator: string;
   creatorVerified?: boolean;
   genre: ExperienceGenre;
+  /** Confidence in the live provider's inferred genre; low/unknown values are excluded from genre similarity. */
+  genreConfidence?: 'high' | 'medium' | 'low' | 'unknown';
   subgenre: string;
   artwork: ExperienceArtwork;
   metrics: ExperienceMetrics;
-  publishedAt: string;
+  publishedAt?: string;
   updatedAt?: string;
   freshnessReferenceAt?: string;
   tags: string[];
@@ -71,6 +78,12 @@ export interface Experience {
   /** Persona-specific topical relevance, independent of genre affinity. */
   personaRelevanceScore?: number;
   isFeatured?: boolean;
+  /** Original position and feed identity before Discover re-ranking. */
+  source?: {
+    provider: 'rotunnel' | 'catalog';
+    sortId: string;
+    nativePosition: number;
+  };
 }
 
 export type DiscoveryView = 'explore' | 'trending' | 'hidden-gems' | 'collections' | 'library';

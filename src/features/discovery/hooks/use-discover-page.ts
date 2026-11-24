@@ -17,6 +17,7 @@ import {
   type SearchSort,
 } from '@/lib/api/discover-api';
 import { useBookmarks } from '@/hooks/use-bookmarks';
+import { DISCOVERY_CONTEXTS, isSearchSort } from '@/config/discovery';
 import {
   EXPERIENCE_GENRES,
   type DiscoveryPersona,
@@ -25,13 +26,6 @@ import {
   type ExperienceGenre,
 } from '@/types/experience';
 
-const CONTEXTS: RankingContext[] = [
-  'featured',
-  'trending',
-  'recommended',
-  'hidden-gems',
-  'recently-launched',
-];
 const EMPTY_RANKED_SECTIONS: Record<RankingContext, RankedExperience[]> = {
   featured: [],
   trending: [],
@@ -72,12 +66,8 @@ export function useDiscoverPage(initialLocation = '/') {
       ? (requestedGenre as ExperienceGenre)
       : 'All';
   const query = searchParams.get('q') ?? '';
-  const requestedSort = searchParams.get('sort') as SearchSort | null;
-  const searchSort: SearchSort =
-    requestedSort &&
-    ['relevance', 'players', 'rating', 'reviews', 'launched', 'updated'].includes(requestedSort)
-      ? requestedSort
-      : 'relevance';
+  const requestedSort = searchParams.get('sort');
+  const searchSort: SearchSort = isSearchSort(requestedSort) ? requestedSort : 'relevance';
   const requestedPersona = searchParams.get('persona') ?? '';
   const [personas, setPersonas] = useState<DiscoveryPersona[]>([]);
   const [genreCounts, setGenreCounts] = useState<Record<string, number>>({});
@@ -140,7 +130,7 @@ export function useDiscoverPage(initialLocation = '/') {
         setError(null);
 
         return Promise.all(
-          CONTEXTS.map((context) =>
+          DISCOVERY_CONTEXTS.map((context) =>
             fetchDiscovery(
               context,
               rankingConfiguration,

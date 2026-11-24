@@ -202,6 +202,8 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
     );
   }
 
+  const voteCount = experience.metrics.voteCount ?? experience.metrics.reviewCount;
+
   return shell(
     <>
       <a
@@ -251,20 +253,26 @@ export function GameDetailIsland({ initialId }: GameDetailIslandProps) {
               <div className="rounded-xl bg-secondary/60 p-3">
                 <Users size={16} className="text-muted-foreground" />
                 <p className="mt-2 text-lg font-bold tabular-nums">
-                  {formatCount(experience.metrics.activePlayers)}
+                  {experience.metrics.activePlayers === undefined
+                    ? '—'
+                    : formatCount(experience.metrics.activePlayers)}
                 </p>
                 <p className="text-xs text-muted-foreground">Playing now</p>
               </div>
               <div className="rounded-xl bg-secondary/60 p-3">
                 <Star size={16} className="fill-amber-400 text-amber-400" />
-                <p className="mt-2 text-lg font-bold tabular-nums">{experience.metrics.rating}%</p>
+                <p className="mt-2 text-lg font-bold tabular-nums">
+                  {experience.metrics.rating === undefined
+                    ? '—'
+                    : `${experience.metrics.rating.toFixed(1)}%`}
+                </p>
                 <p className="text-xs text-muted-foreground">Positive</p>
               </div>
               <div className="col-span-2 rounded-xl bg-secondary/60 p-3">
                 <p className="text-lg font-bold tabular-nums">
-                  {formatCount(experience.metrics.reviewCount)}
+                  {voteCount === undefined ? '—' : formatCount(voteCount)}
                 </p>
-                <p className="text-xs text-muted-foreground">Reviews</p>
+                <p className="text-xs text-muted-foreground">Votes</p>
               </div>
             </div>
             <ExperiencePlayButton onClick={launch} className="w-full" />

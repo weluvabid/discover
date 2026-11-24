@@ -10,8 +10,9 @@
   },
   "scripts": {
     "benchmark:ranking": "node --experimental-strip-types scripts/benchmark-ranking.mjs",
-    "build": "astro check && astro build && pnpm api:build",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "build": "pnpm build:web",
+    "build:web": "astro check && astro build",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm api:build",
     "dev": "astro dev --host 0.0.0.0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -25,15 +26,8 @@
     "test:watch": "NODE_OPTIONS=--no-experimental-webstorage vitest",
     "typecheck": "astro check",
     "api:dev": "node scripts/dev-api.mjs",
-    "api:start": "node --env-file-if-exists=.env dist-server/server.mjs",
-    "db:ingest": "pnpm api:build && node --env-file-if-exists=.env dist-server/ingest-catalog.mjs",
-    "db:sync": "pnpm api:build && node --env-file-if-exists=.env dist-server/sync-turso.mjs",
-    "db:ingest:sample": "pnpm api:build && node --env-file-if-exists=.env dist-server/ingest-catalog.mjs --limit 100 --no-enrich",
-    "api:build": "vite build --config vite.server.config.ts",
-    "test:acceptance": "node scripts/test-acceptance.mjs",
-    "benchmark:api": "pnpm api:build && node --env-file-if-exists=.env dist-server/benchmark-api.mjs",
-    "benchmark:api:workers": "pnpm api:build && node --env-file-if-exists=.env dist-server/benchmark-api.mjs",
-    "evaluate:personas": "pnpm api:build && node --env-file-if-exists=.env dist-server/evaluate-personas.mjs"
+    "api:start": "node --env-file-if-exists=.env dist-server/live-server.mjs",
+    "api:build": "vite build --config vite.server.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

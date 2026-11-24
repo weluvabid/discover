@@ -134,7 +134,7 @@ export function DiscoverView({
         />
         <ExperienceSection
           title="Hidden Gems"
-          subtitle="Lesser-known worlds with exceptional ratings and dedicated communities."
+          subtitle="Lesser-known worlds with smaller live audiences and positive ratings when available."
           experiences={rankedSections['hidden-gems'].map((item) => item.experience)}
           rankingById={rankingMaps['hidden-gems']}
           variant="recommended"
@@ -214,7 +214,7 @@ export function DiscoverView({
       />
       <ExperienceSection
         title="Hidden Gems"
-        subtitle="Lesser-known worlds with exceptional ratings and dedicated communities."
+        subtitle="Lesser-known worlds with smaller live audiences and positive ratings when available."
         experiences={rankedSections['hidden-gems'].map((item) => item.experience)}
         rankingById={rankingMaps['hidden-gems']}
         rankingLabel="HIDDEN GEMS SCORE"

@@ -1,4 +1,6 @@
 import type { DiscoveryPersona, Experience } from '@/types/experience';
+import type { SearchSort as SearchSortType } from '@/config/discovery';
+export type { SearchSort } from '@/config/discovery';
 import type {
   RankedExperience,
   RankingConfiguration,
@@ -8,8 +10,6 @@ import type {
 export interface DiscoverApiError extends Error {
   status?: number;
 }
-
-export type SearchSort = 'relevance' | 'players' | 'rating' | 'reviews' | 'launched' | 'updated';
 
 export type GenreCounts = Record<
   'All' | 'Action RPG' | 'Exploration' | 'Co-op' | 'Racing' | 'Horror' | 'Simulation' | 'Puzzle',
@@ -89,7 +89,7 @@ export function fetchDiscovery(
 export async function searchCatalog(
   query: string,
   genre: string,
-  sort: SearchSort = 'relevance',
+  sort: SearchSortType = 'relevance',
   signal?: AbortSignal,
 ): Promise<Experience[]> {
   const params = new URLSearchParams({ q: query, sort });

@@ -4,21 +4,10 @@ import { Button } from '@/components/ui/button';
 import { getRankScoreClass } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { RankedExperience } from '@/features/discovery/engine/ranking';
+import { DISCOVERY_CONTEXT_LABELS, DISCOVERY_STRATEGY_LABELS } from '@/config/discovery';
 
-const CONTEXT_LABELS = {
-  featured: 'Featured',
-  trending: 'Trending',
-  recommended: 'Recommended',
-  'hidden-gems': 'Hidden Gems',
-  'recently-launched': 'Recently Launched',
-} as const;
-
-const STRATEGY_LABELS = {
-  balanced: 'Balanced',
-  popularity: 'Popularity-first',
-  personalized: 'Personalized',
-  discovery: 'Discovery-first',
-} as const;
+const CONTEXT_LABELS = DISCOVERY_CONTEXT_LABELS;
+const STRATEGY_LABELS = DISCOVERY_STRATEGY_LABELS;
 
 interface RankingWhyPopoverProps {
   ranking: RankedExperience;

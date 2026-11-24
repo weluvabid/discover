@@ -1,4 +1,6 @@
-# Discover backend and catalog pipeline
+# Discover legacy backend and catalog pipeline
+
+> This document describes the retained, deprecated SQLite/Turso ingestion system. It is not part of the active application request path. The old database-backed API returns HTTP 501 (`LEGACY_CATALOG_UNSUPPORTED`). The active server-side RoTunnel provider is documented in [Live Roblox discovery provider](live-roblox-provider.md).
 
 ## Data flow
 
@@ -37,12 +39,7 @@ Turso receives idempotent JSON snapshots in `discover_games` and `discover_metri
 
 ## Commands
 
-- `pnpm api:build` — bundle the Node API and CLI entry points.
-- `pnpm db:ingest -- --limit 100` — import a small source sample and enrich it from Roblox.
-- `pnpm db:ingest` — import the complete source and enrich it.
-- `pnpm db:ingest -- --sync` — ingest, then synchronize to Turso.
-- `pnpm db:sync` — synchronize existing local data to Turso.
-- `pnpm api:start` — start the API on `127.0.0.1:8787`.
+These commands describe the historical pipeline. Its scripts are retained under `scripts/deprecated/` and are no longer wired into the active package scripts or server build. The active API is started with `pnpm api:dev` or `pnpm api:start`.
 
 `--no-enrich` is intended only for parser/import smoke tests; those rows remain pending and are not exposed by the API until enriched.
 

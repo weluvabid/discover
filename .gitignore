@@ -3,6 +3,10 @@ node_modules/
 .pnpm-store/
 vendor/
 
+# Local inspection / patch artifacts
+tmp/
+mnt/
+
 # Build output
 dist/
 build/
@@ -38,3 +42,6 @@ out/
 /data/*.db-shm
 /data/*.db-wal
 /dist-server/
+
+# Vercel local project metadata
+.vercel/

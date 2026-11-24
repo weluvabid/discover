@@ -15,7 +15,8 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useRankingDraft } from '@/features/discovery/hooks/use-ranking-draft';
-import type { RankingConfiguration, RankingSignalId, RankingStrategyId } from './engine/ranking';
+import { DISCOVERY_SIGNAL_IDS, DISCOVERY_STRATEGIES } from '@/config/discovery';
+import type { RankingConfiguration, RankingStrategyId } from './engine/ranking';
 
 interface DiscoveryControlsDialogProps {
   open: boolean;
@@ -24,21 +25,11 @@ interface DiscoveryControlsDialogProps {
   onApply: (configuration: RankingConfiguration) => void;
 }
 
-const strategyOptions: { id: RankingStrategyId; label: string; description: string }[] = [
-  { id: 'balanced', label: 'Balanced', description: 'Even distribution' },
-  { id: 'popularity', label: 'Popularity-first', description: 'Trending and active players' },
-  { id: 'personalized', label: 'Personalized', description: 'Player affinity focus' },
-  { id: 'discovery', label: 'Discovery-first', description: 'Hidden gems and novelty' },
-];
+const strategyOptions = Object.entries(DISCOVERY_STRATEGIES).map(([id, option]) => ({
+  id: id as RankingStrategyId,
+  ...option,
+}));
 
-const signalOrder: RankingSignalId[] = [
-  'affinity',
-  'quality',
-  'relevance',
-  'freshness',
-  'popularity',
-  'diversity',
-];
 
 export function DiscoveryControlsDialog({
   open,
@@ -201,7 +192,7 @@ export function DiscoveryControlsDialog({
                 </h3>
 
                 <div className="grid gap-3">
-                  {signalOrder.map((id) => {
+                  {DISCOVERY_SIGNAL_IDS.map((id) => {
                     const signal = draft.signals.find((item) => item.id === id);
 
                     if (!signal) return null;

@@ -1,4 +1,4 @@
-import type { Experience, ExperienceGenre } from '@/types/experience';
+import type { Experience, ExperienceGenre } from '../../../types/experience';
 
 export type RankingSignalId =
   'affinity' | 'quality' | 'relevance' | 'freshness' | 'popularity' | 'diversity';
@@ -70,7 +70,7 @@ export const DEFAULT_RANKING_CONFIGURATION: RankingConfiguration = {
     {
       id: 'quality',
       label: 'Engagement quality',
-      description: 'Session length, ratings and repeat-play signals.',
+      description: 'Positive-vote ratings and engagement indicators when available.',
       weight: 25,
       enabled: true,
     },
@@ -91,7 +91,7 @@ export const DEFAULT_RANKING_CONFIGURATION: RankingConfiguration = {
     {
       id: 'popularity',
       label: 'Popularity',
-      description: 'Current active players and sustained demand.',
+      description: 'Current live player count.',
       weight: 10,
       enabled: true,
     },
@@ -156,7 +156,7 @@ const CONTEXT_MULTIPLIERS: Record<RankingContext, Record<RankingSignalId, number
 };
 
 export const DISCOVERY_POLICY = {
-  featured: { minimumRating: 85, minimumReviews: 100 },
+  featured: { minimumRating: 85, minimumVotes: 100 },
   trending: { minimumWeeklyChange: 0 },
   hiddenGems: { maximumActivePlayers: 10_000, minimumRating: 88 },
   recentlyLaunched: { maximumAgeDays: 30 },
@@ -286,75 +286,134 @@ export function getEligibility(
   now: Date,
 ): { eligible: boolean; reasons: string[] } {
   const age = ageInDays(experience.publishedAt, now);
-  const publishedAt = Date.parse(experience.publishedAt);
+  const publishedAt = Date.parse(experience.publishedAt ?? '');
+  const optionalMetricIsValid = (
+    value: number | undefined,
+    min = 0,
+    max = Number.POSITIVE_INFINITY,
+  ) => value === undefined || (Number.isFinite(value) && value >= min && value <= max);
   const metricsValid =
-    Number.isFinite(experience.metrics.activePlayers) &&
-    experience.metrics.activePlayers >= 0 &&
-    Number.isFinite(experience.metrics.rating) &&
-    experience.metrics.rating >= 0 &&
-    experience.metrics.rating <= 100 &&
-    Number.isFinite(experience.metrics.reviewCount) &&
-    experience.metrics.reviewCount >= 0 &&
-    Number.isFinite(experience.metrics.averagePlaytimeMinutes) &&
-    experience.metrics.averagePlaytimeMinutes >= 0 &&
-    (experience.metrics.weeklyChange === undefined ||
-      Number.isFinite(experience.metrics.weeklyChange));
+    optionalMetricIsValid(experience.metrics.activePlayers) &&
+    optionalMetricIsValid(experience.metrics.rating, 0, 100) &&
+    optionalMetricIsValid(experience.metrics.reviewCount) &&
+    optionalMetricIsValid(experience.metrics.voteCount) &&
+    optionalMetricIsValid(experience.metrics.averagePlaytimeMinutes) &&
+    optionalMetricIsValid(experience.metrics.weeklyChange, Number.NEGATIVE_INFINITY);
 
   if (!Number.isFinite(now.getTime())) {
     return { eligible: false, reasons: ['Ranking clock is invalid.'] };
   }
 
-  if (!Number.isFinite(publishedAt) || publishedAt > now.getTime()) {
-    return { eligible: false, reasons: ['Publication timestamp is invalid or in the future.'] };
-  }
-
   if (!metricsValid) {
     return {
       eligible: false,
-      reasons: ['Required experience metrics are missing or outside valid ranges.'],
+      reasons: ['Available experience metrics are outside valid ranges.'],
     };
   }
 
+  if (Number.isFinite(publishedAt) && publishedAt > now.getTime()) {
+    return { eligible: false, reasons: ['Publication timestamp is in the future.'] };
+  }
+
   switch (context) {
-    case 'featured':
+    case 'featured': {
+      const rating = experience.metrics.rating;
+      const voteCount = experience.metrics.voteCount ?? experience.metrics.reviewCount;
+      const hasRatingEvidence = rating !== undefined && voteCount !== undefined;
+      const eligible = hasRatingEvidence
+        ? rating >= DISCOVERY_POLICY.featured.minimumRating &&
+          voteCount >= DISCOVERY_POLICY.featured.minimumVotes
+        : experience.source?.provider === 'rotunnel';
+
       return {
-        eligible:
-          experience.metrics.rating >= DISCOVERY_POLICY.featured.minimumRating &&
-          experience.metrics.reviewCount >= DISCOVERY_POLICY.featured.minimumReviews,
-        reasons: [
-          `Rating ${experience.metrics.rating}% (threshold: ${DISCOVERY_POLICY.featured.minimumRating}%).`,
-          `${experience.metrics.reviewCount.toLocaleString()} reviews (threshold: ${DISCOVERY_POLICY.featured.minimumReviews}).`,
-        ],
+        eligible,
+        reasons: hasRatingEvidence
+          ? [
+              `Rating ${rating.toFixed(1)}% (threshold: ${DISCOVERY_POLICY.featured.minimumRating}%).`,
+              `${voteCount.toLocaleString()} votes (threshold: ${DISCOVERY_POLICY.featured.minimumVotes}).`,
+            ]
+          : [
+              'Rating evidence unavailable; eligibility inherited from the native Roblox discovery feed.',
+            ],
       };
-    case 'trending':
+    }
+    case 'trending': {
+      const weeklyChange = experience.metrics.weeklyChange;
+      const hasMomentum = weeklyChange !== undefined;
+      const eligible = hasMomentum
+        ? weeklyChange > DISCOVERY_POLICY.trending.minimumWeeklyChange
+        : experience.source?.provider === 'rotunnel';
+
       return {
-        eligible:
-          (experience.metrics.weeklyChange ?? 0) > DISCOVERY_POLICY.trending.minimumWeeklyChange,
-        reasons: [`${experience.metrics.weeklyChange ?? 0}% week-over-week player momentum.`],
+        eligible,
+        reasons: hasMomentum
+          ? [`${weeklyChange.toFixed(1)}% week-over-week player momentum.`]
+          : [
+              `Native Roblox feed: ${experience.source?.sortId ?? 'unknown'}; weekly change is not publicly available.`,
+            ],
       };
+    }
     case 'recommended':
       return {
         eligible: true,
-        reasons: ['Eligible general-catalog candidate; no additional section threshold.'],
+        reasons: ['Eligible live Roblox candidate; no additional section threshold.'],
       };
-    case 'hidden-gems':
+    case 'hidden-gems': {
+      const activePlayers = experience.metrics.activePlayers;
+      const rating = experience.metrics.rating;
+      const hasPlayerCount = activePlayers !== undefined;
+      const hasRating = rating !== undefined;
+      const eligible =
+        hasPlayerCount &&
+        activePlayers <= DISCOVERY_POLICY.hiddenGems.maximumActivePlayers &&
+        (!hasRating || rating >= DISCOVERY_POLICY.hiddenGems.minimumRating);
+
       return {
-        eligible:
-          experience.metrics.activePlayers <= DISCOVERY_POLICY.hiddenGems.maximumActivePlayers &&
-          experience.metrics.rating >= DISCOVERY_POLICY.hiddenGems.minimumRating,
+        eligible,
         reasons: [
-          `${experience.metrics.activePlayers.toLocaleString()} active players (ceiling: ${DISCOVERY_POLICY.hiddenGems.maximumActivePlayers.toLocaleString()}).`,
-          `Rating ${experience.metrics.rating}% (threshold: ${DISCOVERY_POLICY.hiddenGems.minimumRating}%).`,
+          hasPlayerCount
+            ? `${activePlayers.toLocaleString()} active players (ceiling: ${DISCOVERY_POLICY.hiddenGems.maximumActivePlayers.toLocaleString()}).`
+            : 'Active-player count unavailable; cannot verify hidden-gem eligibility.',
+          hasRating
+            ? `Rating ${rating.toFixed(1)}% (threshold: ${DISCOVERY_POLICY.hiddenGems.minimumRating}%).`
+            : 'Rating unavailable; no rating threshold applied.',
         ],
       };
+    }
     case 'recently-launched':
       return {
-        eligible: age >= 0 && age <= DISCOVERY_POLICY.recentlyLaunched.maximumAgeDays,
+        eligible:
+          Number.isFinite(publishedAt) &&
+          age >= 0 &&
+          age <= DISCOVERY_POLICY.recentlyLaunched.maximumAgeDays,
         reasons: [
-          `Published ${Number.isFinite(age) ? age.toFixed(1) : 'an unknown number of'} days ago (window: 0–${DISCOVERY_POLICY.recentlyLaunched.maximumAgeDays} days).`,
+          Number.isFinite(age)
+            ? `Published ${age.toFixed(1)} days ago (window: 0–${DISCOVERY_POLICY.recentlyLaunched.maximumAgeDays} days).`
+            : 'Publication date unavailable; cannot verify recently-launched eligibility.',
         ],
       };
   }
+}
+
+
+/**
+ * One-sided 95% Wilson lower confidence bound for a positive-vote proportion.
+ * A lower bound is intentionally used instead of the raw percentage so a
+ * perfect score from a handful of votes is not treated like a well-supported
+ * rating from thousands of votes. Inputs and output are proportions [0, 1].
+ */
+function wilsonLowerBound(rating: number, voteCount: number): number {
+  if (!Number.isFinite(voteCount) || voteCount <= 0) return clamp(rating);
+
+  const z = 1.96;
+  const zSquared = z * z;
+  const n = voteCount;
+  const p = clamp(rating);
+  const denominator = 1 + zSquared / n;
+  const center = p + zSquared / (2 * n);
+  const margin = z * Math.sqrt((p * (1 - p) + zSquared / (4 * n)) / n);
+
+  return clamp((center - margin) / denominator);
 }
 
 function rawSignals(
@@ -371,8 +430,9 @@ function rawSignals(
   const updateFreshness =
     Number.isFinite(updateAge) && updateAge >= 0 ? Math.exp(-updateAge / 60) : 0;
   const match = experience.matchScore === undefined ? 0 : clamp(experience.matchScore / 100);
-  const rating = clamp(experience.metrics.rating / 100);
-  const playtime = clamp(experience.metrics.averagePlaytimeMinutes / 60);
+  const rating =
+    experience.metrics.rating === undefined ? 0 : clamp(experience.metrics.rating / 100);
+  const playtime = clamp((experience.metrics.averagePlaytimeMinutes ?? 0) / 60);
   const hasSyntheticEngagement =
     experience.metrics.d7Retention !== undefined && experience.metrics.repeatPlayRate !== undefined;
   const retention = clamp(
@@ -382,21 +442,64 @@ function rawSignals(
   );
   const repeatPlay = clamp(experience.metrics.repeatPlayRate ?? 0.4);
   const session = clamp(
-    (experience.metrics.averageSessionMinutes ?? experience.metrics.averagePlaytimeMinutes) / 60,
+    (experience.metrics.averageSessionMinutes ?? experience.metrics.averagePlaytimeMinutes ?? 0) /
+      60,
   );
+  const hasRating = experience.metrics.rating !== undefined;
+  const hasPlaytime = experience.metrics.averagePlaytimeMinutes !== undefined;
+  const voteCount = experience.metrics.voteCount ?? experience.metrics.reviewCount;
+  const ratingConfidence =
+    hasRating && voteCount !== undefined && voteCount > 0
+      ? wilsonLowerBound(rating, voteCount)
+      : rating;
   const quality = hasSyntheticEngagement
     ? clamp(rating * 0.35 + playtime * 0.2 + retention * 0.25 + repeatPlay * 0.15 + session * 0.05)
-    : rating;
-  const popularity = clamp(Math.log10(Math.max(0, experience.metrics.activePlayers) + 1) / 5);
+    : hasRating && hasPlaytime
+      ? clamp(ratingConfidence * 0.65 + playtime * 0.35)
+      : hasRating
+        ? ratingConfidence
+        : playtime;
+  const activePlayers = experience.metrics.activePlayers;
+  const popularity =
+    activePlayers === undefined ? 0 : clamp(Math.log10(Math.max(0, activePlayers) + 1) / 5);
 
   return {
     affinity: hasPersona ? match : 0,
-    quality: hasSyntheticEngagement ? quality : clamp(rating * 0.65 + playtime * 0.35),
+    quality,
     relevance: hasPersona ? clamp(experience.personaRelevanceScore ?? 0) : 0,
     freshness: clamp(Math.max(launchFreshness, updateFreshness * 0.75)),
     popularity,
     diversity: clamp(1 - Math.max(0, genreFrequency - 1) / Math.max(1, catalogSize - 1)),
   };
+}
+
+function hasSignalData(
+  experience: Experience,
+  signal: RankingSignalId,
+  hasPersona: boolean,
+): boolean {
+  switch (signal) {
+    case 'affinity':
+      return hasPersona && experience.matchScore !== undefined;
+    case 'quality':
+      return (
+        experience.metrics.rating !== undefined ||
+        experience.metrics.averagePlaytimeMinutes !== undefined ||
+        (experience.metrics.d7Retention !== undefined &&
+          experience.metrics.repeatPlayRate !== undefined)
+      );
+    case 'relevance':
+      return hasPersona && experience.personaRelevanceScore !== undefined;
+    case 'freshness':
+      return (
+        Number.isFinite(Date.parse(experience.publishedAt ?? '')) ||
+        Number.isFinite(Date.parse(experience.updatedAt ?? ''))
+      );
+    case 'popularity':
+      return experience.metrics.activePlayers !== undefined;
+    case 'diversity':
+      return true;
+  }
 }
 
 function buildScoredCandidates(
@@ -408,23 +511,6 @@ function buildScoredCandidates(
 ): RankedExperience[] {
   const signals = normalizeSignals(configuration.signals);
   const multipliers = CONTEXT_MULTIPLIERS[context];
-  const weighted = signals.map((signal) => {
-    const personaDependent = signal.id === 'affinity' || signal.id === 'relevance';
-    const active = signal.enabled && (hasPersona || !personaDependent);
-
-    return {
-      ...signal,
-      active,
-      effective: active ? signal.weight * multipliers[signal.id] : 0,
-    };
-  });
-  const effectiveTotal = weighted.reduce((sum, signal) => sum + signal.effective, 0);
-  const weights = new Map<RankingSignalId, number>(
-    weighted.map((signal) => [
-      signal.id,
-      effectiveTotal > 0 ? signal.effective / effectiveTotal : 0,
-    ]),
-  );
   const genreFrequency = new Map<string, number>();
 
   for (const experience of items) {
@@ -432,6 +518,22 @@ function buildScoredCandidates(
   }
 
   return items.map((experience) => {
+    const available = signals.map((signal) => {
+      const active = signal.enabled && hasSignalData(experience, signal.id, hasPersona);
+
+      return {
+        ...signal,
+        active,
+        effective: active ? signal.weight * multipliers[signal.id] : 0,
+      };
+    });
+    const effectiveTotal = available.reduce((sum, signal) => sum + signal.effective, 0);
+    const weights = new Map<RankingSignalId, number>(
+      available.map((signal) => [
+        signal.id,
+        effectiveTotal > 0 ? signal.effective / effectiveTotal : 0,
+      ]),
+    );
     const raw = rawSignals(
       experience,
       genreFrequency.get(experience.genre) ?? 1,
@@ -439,7 +541,7 @@ function buildScoredCandidates(
       now,
       hasPersona,
     );
-    const signalsExplanation = weighted.map((signal) => {
+    const signalsExplanation = available.map((signal) => {
       const effectiveWeight = weights.get(signal.id) ?? 0;
       const normalizedScore = raw[signal.id] * 100;
 
@@ -618,7 +720,17 @@ function candidateSimilarity(
   const union = leftTags.size + rightTags.size - intersection;
   const tagSimilarity = union > 0 ? intersection / union : 0;
 
-  return clamp((left.genre === right.genre ? 0.55 : 0) + tagSimilarity * 0.45);
+  const genreSimilarity =
+    left.genreConfidence === 'unknown' ||
+    left.genreConfidence === 'low' ||
+    right.genreConfidence === 'unknown' ||
+    right.genreConfidence === 'low'
+      ? 0
+      : left.genre === right.genre
+        ? 0.55
+        : 0;
+
+  return clamp(genreSimilarity + tagSimilarity * 0.45);
 }
 
 function rerankForDiversity(
@@ -638,7 +750,20 @@ function rerankForDiversity(
   const tagSets = new Map(
     candidates.map((candidate) => [
       candidate.experience.id,
-      new Set(candidate.experience.tags.map((tag) => tag.toLowerCase())),
+      new Set(
+        candidate.experience.tags
+          .map((tag) => tag.trim().toLocaleLowerCase('en'))
+          // Genre is already scored independently below. Keeping the inferred genre
+          // in tags would count the same evidence twice (0.55 + 0.45 = 1.0).
+          .filter(
+            (tag) =>
+              tag &&
+              tag !== candidate.experience.genre.toLocaleLowerCase('en') &&
+              // Roblox's broad top-level category adds little gameplay evidence.
+              // Keep specific metadata (for example, FPS) in the similarity set.
+              !['all', 'unknown', 'none', 'n/a', 'na', 'other', 'town and city'].includes(tag),
+          ),
+      ),
     ]),
   );
 

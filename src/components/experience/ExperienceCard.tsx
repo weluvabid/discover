@@ -77,8 +77,20 @@ export function ExperienceCard({
           </span>
         )}
         {ranking && (
-          <span className="absolute right-3 top-3 rounded-lg border border-border bg-background/85 px-2 py-1 text-xs font-bold text-foreground backdrop-blur">
-            #{ranking.position}
+          <span
+            className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/85 px-2 py-1 text-xs font-bold text-foreground backdrop-blur"
+            title={
+              experience.source
+                ? `Discover #${ranking.position}; Roblox #${experience.source.nativePosition}`
+                : `Discover rank ${ranking.position}`
+            }
+          >
+            <span>#{ranking.position}</span>
+            {experience.source && (
+              <span className="border-l border-border pl-1.5 text-muted-foreground">
+                ROBLOX #{experience.source.nativePosition}
+              </span>
+            )}
           </span>
         )}
       </a>
@@ -145,11 +157,16 @@ export function ExperienceCard({
         <div className="mt-auto flex items-center justify-between gap-3 pt-2 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-muted-foreground" />
-            {formatCount(experience.metrics.activePlayers)} active
+            {experience.metrics.activePlayers === undefined
+              ? '—'
+              : formatCount(experience.metrics.activePlayers)}{' '}
+            active
           </span>
           <span className="inline-flex items-center gap-1">
             <Star size={13} className="fill-amber-400 text-amber-400" />
-            {experience.metrics.rating}%
+            {experience.metrics.rating === undefined
+              ? '—'
+              : `${experience.metrics.rating.toFixed(1)}%`}
           </span>
         </div>
         <div className="flex items-center gap-2">

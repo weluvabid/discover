@@ -5,7 +5,6 @@ import { defineConfig } from 'vite';
 const builtins = new Set([
   ...builtinModules,
   ...builtinModules.map((name) => `node:${name}`),
-  'node:sqlite',
 ]);
 
 export default defineConfig({
@@ -20,12 +19,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        server: 'src/server/index.ts',
-        'ranking-worker': 'src/server/ranking/worker.ts',
-        'ingest-catalog': 'scripts/ingest-catalog.ts',
-        'sync-turso': 'scripts/sync-turso.ts',
-        'benchmark-api': 'scripts/benchmark-api.ts',
-        'evaluate-personas': 'scripts/evaluate-personas.ts',
+        'live-server': 'src/server/live-index.ts',
       },
       external: (id) => builtins.has(id),
       output: {

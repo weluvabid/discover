@@ -160,6 +160,141 @@ describe('discovery ranking', () => {
     expect(ranked.every((item) => item.factors.diversity === 0)).toBe(true);
   });
 
+  it('does not use low-confidence inferred genres for greedy similarity penalties', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const first = {
+      ...fixture,
+      id: 'a-genre-reference',
+      genre: 'Puzzle' as const,
+      genreConfidence: 'high' as const,
+      tags: [],
+      matchScore: undefined,
+      personaRelevanceScore: undefined,
+    };
+    const lowConfidence = {
+      ...first,
+      id: 'b-low-confidence',
+      genreConfidence: 'low' as const,
+    };
+    const highConfidence = {
+      ...first,
+      id: 'b-high-confidence',
+    };
+    const lowRanked = rankExperiences(
+      [first, lowConfidence],
+      DEFAULT_RANKING_CONFIGURATION,
+      FIXED_NOW,
+    );
+    const highRanked = rankExperiences(
+      [first, highConfidence],
+      DEFAULT_RANKING_CONFIGURATION,
+      FIXED_NOW,
+    );
+
+    expect(
+      lowRanked.find((item) => item.experience.id === lowConfidence.id)?.explanation.diversityPenalty,
+    ).toBe(0);
+    expect(
+      highRanked.find((item) => item.experience.id === highConfidence.id)?.explanation.diversityPenalty,
+    ).toBeLessThan(0);
+  });
+
+  it('does not count the inferred genre tag twice in diversity similarity', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const candidates = [
+      {
+        ...fixture,
+        id: 'simulation-a',
+        genre: 'Simulation' as const,
+        genreConfidence: 'high' as const,
+        tags: ['Simulation'],
+        matchScore: undefined,
+        personaRelevanceScore: undefined,
+      },
+      {
+        ...fixture,
+        id: 'simulation-b',
+        genre: 'Simulation' as const,
+        genreConfidence: 'high' as const,
+        tags: ['Simulation'],
+        matchScore: undefined,
+        personaRelevanceScore: undefined,
+      },
+    ];
+    const ranked = rankExperiences(candidates, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
+    const penalized = ranked.find((item) => item.experience.id !== ranked[0]?.experience.id);
+
+    expect(penalized?.explanation.diversityPenalty).toBeCloseTo(-4.4, 6);
+  });
+
+  it('does not treat the broad Town and City category as semantic similarity', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const candidates = [
+      {
+        ...fixture,
+        id: 'town-city-a',
+        genre: 'Simulation' as const,
+        genreConfidence: 'high' as const,
+        tags: ['Town and City', 'Simulation'],
+        matchScore: undefined,
+        personaRelevanceScore: undefined,
+      },
+      {
+        ...fixture,
+        id: 'town-city-b',
+        genre: 'Simulation' as const,
+        genreConfidence: 'high' as const,
+        tags: ['Town and City', 'Simulation'],
+        matchScore: undefined,
+        personaRelevanceScore: undefined,
+      },
+    ];
+    const ranked = rankExperiences(candidates, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
+    const penalized = ranked.find((item) => item.experience.id !== ranked[0]?.experience.id);
+
+    expect(penalized?.explanation.diversityPenalty).toBeCloseTo(-4.4, 6);
+  });
+
+  it('uses meaningful native metadata in addition to genre similarity', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const candidates = [
+      {
+        ...fixture,
+        id: 'fps-a',
+        genre: 'Action RPG' as const,
+        genreConfidence: 'high' as const,
+        tags: ['FPS', 'Action RPG'],
+        matchScore: undefined,
+        personaRelevanceScore: undefined,
+      },
+      {
+        ...fixture,
+        id: 'fps-b',
+        genre: 'Action RPG' as const,
+        genreConfidence: 'high' as const,
+        tags: ['FPS', 'Action RPG'],
+        matchScore: undefined,
+        personaRelevanceScore: undefined,
+      },
+    ];
+    const ranked = rankExperiences(candidates, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
+    const penalized = ranked.find((item) => item.experience.id !== ranked[0]?.experience.id);
+
+    expect(penalized?.explanation.diversityPenalty).toBeCloseTo(-8, 6);
+  });
+
   it('increases greedy reranking pressure when the diversity weight increases', () => {
     const fixture = experiences[0];
 
@@ -234,6 +369,52 @@ describe('discovery ranking', () => {
     });
   });
 
+  it('uses vote-count confidence when scoring live rating-only quality', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const lowEvidence = {
+      ...fixture,
+      id: 'low-evidence-rating',
+      metrics: { rating: 98, voteCount: 20 },
+    };
+    const strongEvidence = {
+      ...fixture,
+      id: 'strong-evidence-rating',
+      metrics: { rating: 98, voteCount: 30_000 },
+    };
+    const ranked = rankForContext(
+      [lowEvidence, strongEvidence],
+      DEFAULT_RANKING_CONFIGURATION,
+      'recommended',
+      { now: FIXED_NOW, limit: 2 },
+    );
+    const lowQuality = ranked.find((item) => item.experience.id === lowEvidence.id)?.factors.quality;
+    const strongQuality = ranked.find((item) => item.experience.id === strongEvidence.id)?.factors.quality;
+
+    expect(strongQuality).toBeGreaterThan(lowQuality ?? 0);
+  });
+
+  it('keeps rating-only quality available when vote count is missing', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const experience = {
+      ...fixture,
+      metrics: { rating: 98 },
+    };
+    const ranked = rankForContext(
+      [experience],
+      DEFAULT_RANKING_CONFIGURATION,
+      'recommended',
+      { now: FIXED_NOW, limit: 1 },
+    )[0];
+
+    expect(ranked?.factors.quality).toBeGreaterThan(0);
+  });
+
   it('uses deterministic synthetic retention and repeat-play inputs in engagement quality', () => {
     const fixture = experiences[0];
 
@@ -284,16 +465,66 @@ describe('discovery ranking', () => {
     expect(
       hidden.every(
         (item) =>
-          item.experience.metrics.activePlayers <= 10_000 && item.experience.metrics.rating >= 88,
+          (item.experience.metrics.activePlayers ?? Number.POSITIVE_INFINITY) <= 10_000 &&
+          (item.experience.metrics.rating ?? -1) >= 88,
       ),
     ).toBe(true);
     expect(
       recent.every((item) => {
-        const age = (FIXED_NOW.getTime() - Date.parse(item.experience.publishedAt)) / 86_400_000;
+        const age =
+          (FIXED_NOW.getTime() - Date.parse(item.experience.publishedAt ?? '')) / 86_400_000;
 
         return age >= 0 && age <= 30;
       }),
     ).toBe(true);
+  });
+
+
+  it('does not treat unavailable live telemetry as zero-valued ranking evidence', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const liveExperience = {
+      ...fixture,
+      publishedAt: undefined,
+      updatedAt: undefined,
+      metrics: { activePlayers: 1200 },
+      source: { provider: 'rotunnel' as const, sortId: 'top-trending', nativePosition: 4 },
+    };
+    const ranked = rankForContext(
+      [liveExperience],
+      DEFAULT_RANKING_CONFIGURATION,
+      'recommended',
+      { now: FIXED_NOW, limit: 1 },
+    )[0];
+
+    expect(ranked).toBeDefined();
+    expect(ranked?.explanation.signals.find((signal) => signal.id === 'quality')).toMatchObject({
+      enabled: false,
+      effectiveWeight: 0,
+    });
+    expect(ranked?.explanation.signals.find((signal) => signal.id === 'freshness')).toMatchObject({
+      enabled: false,
+      effectiveWeight: 0,
+    });
+    expect(
+      ranked?.explanation.signals.find((signal) => signal.id === 'popularity')?.enabled,
+    ).toBe(true);
+  });
+
+  it('uses the native feed when weekly growth is unavailable', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected an experience fixture.');
+
+    const liveExperience = {
+      ...fixture,
+      metrics: { activePlayers: 1200 },
+      source: { provider: 'rotunnel' as const, sortId: 'top-trending', nativePosition: 1 },
+    };
+
+    expect(getEligibility('trending', liveExperience, FIXED_NOW).eligible).toBe(true);
   });
 
   it('uses the catalog observation clock for freshness and Recently Launched', () => {

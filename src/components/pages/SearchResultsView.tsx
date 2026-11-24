@@ -10,15 +10,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { SearchSort } from '@/lib/api/discover-api';
+import { SEARCH_SORT_LABELS } from '@/config/discovery';
 
-const SORT_LABELS: Record<SearchSort, string> = {
-  relevance: 'Relevance',
-  players: 'Most players',
-  rating: 'Highest rated',
-  reviews: 'Most reviewed',
-  launched: 'Recently launched',
-  updated: 'Recently updated',
-};
+const SORT_LABELS: Record<SearchSort, string> = SEARCH_SORT_LABELS;
 
 interface SearchResultsViewProps {
   query: string;
@@ -73,7 +67,7 @@ export function SearchResultsView({
             <SelectItem value="relevance">Relevance</SelectItem>
             <SelectItem value="players">Most players</SelectItem>
             <SelectItem value="rating">Highest rated</SelectItem>
-            <SelectItem value="reviews">Most reviewed</SelectItem>
+            <SelectItem value="reviews">Most votes</SelectItem>
             <SelectItem value="launched">Recently launched</SelectItem>
             <SelectItem value="updated">Recently updated</SelectItem>
           </SelectContent>
