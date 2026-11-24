@@ -10,6 +10,7 @@ import {
   type NativeCandidate,
   type RoTunnelClient,
 } from '../providers/rotunnel/index';
+import type { JsonObject } from '../providers/rotunnel/types';
 
 export function applyPersona(experiences: Experience[], personaId?: string): Experience[] {
   if (!personaId) return experiences;
@@ -33,12 +34,13 @@ export function applyPersona(experiences: Experience[], personaId?: string): Exp
 export async function enrichCandidates(
   client: RoTunnelClient,
   candidates: NativeCandidate[],
+  preloadedDetails?: ReadonlyMap<string, JsonObject>,
 ): Promise<Experience[]> {
   if (candidates.length === 0) return [];
 
   const ids = candidateIds(candidates);
   const [detailsResult, votesResult, iconsResult] = await Promise.allSettled([
-    client.getDetails(ids),
+    preloadedDetails ? Promise.resolve(preloadedDetails) : client.getDetails(ids),
     client.getVotes(ids),
     client.getIcons(ids),
   ]);

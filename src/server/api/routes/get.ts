@@ -1,11 +1,16 @@
-import { DISCOVERY_LIMITS, CACHE_TTL_MS, isExperienceGenre } from '../../../config/discovery';
+import { CACHE_TTL_MS, DISCOVERY_LIMITS, isExperienceGenre } from '../../../config/discovery';
 import { seedPersonas } from '../../../domain/personas/personas';
 import { jsonResponse } from '../http/json-response';
 import type { RoTunnelClient } from '../../providers/rotunnel/index';
 import { normalizeExperience } from '../../providers/rotunnel/index';
 import { cached, candidatesForContext, searchExperiences } from '../../services/discovery-data';
-import type { ExperienceGenre } from '../../../types/experience';
 import type { NativeCandidate } from '../../providers/rotunnel/types';
+import { enrichCandidates } from '../../services/experience-enrichment';
+import {
+  genreCatalogueCounts,
+  genreCatalogueFor,
+  genreCataloguePage,
+} from '../../services/genre-catalogue';
 import { sortSearchResults } from '../../services/search-sorting';
 
 export async function handleGet(client: RoTunnelClient, url: URL): Promise<Response> {
@@ -25,21 +30,9 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
   }
 
   if (url.pathname === '/api/genres') {
-    const experiences = await candidatesForContext(client, 'trending');
-    const counts: Record<ExperienceGenre | 'All', number> = {
-      All: experiences.length,
-      'Action RPG': 0,
-      Exploration: 0,
-      'Co-op': 0,
-      Racing: 0,
-      Horror: 0,
-      Simulation: 0,
-      Puzzle: 0,
-    };
+    const catalogue = await genreCatalogueFor(client);
 
-    for (const experience of experiences) counts[experience.genre] += 1;
-
-    return jsonResponse({ data: counts });
+    return jsonResponse({ data: genreCatalogueCounts(catalogue) });
   }
 
   if (url.pathname === '/api/search') {
@@ -69,6 +62,12 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
     const limit = Number(url.searchParams.get('limit') ?? 100);
     const offset = Number(url.searchParams.get('offset') ?? 0);
     const query = url.searchParams.get('q')?.trim();
+    const requestedGenre = url.searchParams.get('genre');
+    const genre = isExperienceGenre(requestedGenre) ? requestedGenre : undefined;
+
+    if (requestedGenre && !genre) {
+      return jsonResponse({ error: 'Unknown genre.' }, 400);
+    }
 
     if (
       !Number.isSafeInteger(limit) ||
@@ -84,6 +83,23 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
       return jsonResponse({ error: 'Search query must be 200 characters or fewer.' }, 400);
     }
 
+    if (query && genre) {
+      return jsonResponse({ error: 'Use either query search or genre browsing, not both.' }, 400);
+    }
+
+    if (genre) {
+      const page = await genreCataloguePage(client, genre, offset, limit);
+      const experiences = await enrichCandidates(client, page.candidates, page.details);
+
+      return jsonResponse({
+        data: experiences,
+        total: page.total,
+        limit,
+        offset,
+        hasMore: offset + experiences.length < page.total,
+      });
+    }
+
     const experiences = query
       ? await searchExperiences(client, query)
       : await candidatesForContext(client, 'trending');
@@ -93,6 +109,7 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
       total: experiences.length,
       limit,
       offset,
+      hasMore: offset + limit < experiences.length,
     });
   }
 

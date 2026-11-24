@@ -72,6 +72,7 @@ export const DISCOVERY_LIMITS = {
   resultLimit: 100,
   searchQueryCharacters: 200,
   pageSize: 500,
+  genreCatalogueSorts: 8,
 } as const;
 
 export const CACHE_TTL_MS = {
@@ -82,6 +83,7 @@ export const CACHE_TTL_MS = {
   experienceDetails: 5 * 60_000,
   experienceVotes: 5 * 60_000,
   experienceIcons: 60 * 60_000,
+  genreCatalogue: 10 * 60_000,
 } as const;
 
 export const EXPERIENCE_GENRE_OPTIONS = ['All', ...EXPERIENCE_GENRES] as const;

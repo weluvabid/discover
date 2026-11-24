@@ -34,7 +34,7 @@ The RoTunnel provider is split by responsibility under `src/server/providers/rot
 
 The provider keeps `Experience.source.sortId` and `Experience.source.nativePosition`. The ranking engine may reorder a result, but the original Roblox feed identity and ordinal remain available for side-by-side comparison.
 
-The `/api/genres` counts are counts within the currently retrieved Top Trending sample, not totals across the Roblox catalog. `/api/experiences` likewise returns the bounded live candidate sample rather than claiming to enumerate every Roblox experience.
+`/api/genres` builds a separate genre-browsing catalogue from up to eight distinct native Explore feeds (trending, popular, emerging, new, recently updated, highly rated, then other available feeds as needed). It merges candidates by universe ID, loads batched game details for classification, and counts only high- and medium-confidence classifications; low-confidence and unknown guesses do not inflate genre coverage. The catalogue is cached for ten minutes. `/api/experiences?genre=<genre>&limit=<n>&offset=<n>` pages through that catalogue and enriches only the requested page, keeping metadata fan-out bounded. These counts describe the bounded set of selected native feeds, not the entire Roblox catalog. `/api/experiences` without a genre continues to return the bounded trending sample.
 
 ## Real-data boundary
 
@@ -58,7 +58,7 @@ The provider discovers available Explore sorts at runtime, selects the closest n
 - Upstream requests have a five-second timeout and at most one bounded retry for 429/5xx or transport failures.
 - Metadata, vote and icon enrichment run concurrently and are best-effort; valid discovery candidates survive a partial enrichment failure.
 - Explore sort lists, candidate feeds, search results and individual detail/vote/icon lookups use a bounded process-local LRU/TTL cache with request coalescing; cache loss on cold starts is expected and does not affect correctness.
-- Candidate pools are capped at 100 before enrichment; metadata/vote/icon requests are batched in groups of 50.
+- Discovery candidate pools are capped at 100 before enrichment; metadata/vote/icon requests are batched in groups of 50. Genre browsing merges at most eight native feeds, then enriches only the requested page.
 - Search follows at most three Omni Search pages per query.
 - Upstream 429 becomes a 503 to the frontend; other upstream failures become 502 with a stable error code.
 - No SQLite/Turso access, worker threads, event collection or background ingestion occurs in the active request path.
