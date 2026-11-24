@@ -101,10 +101,13 @@ export function useDiscoverPage(initialLocation = '/') {
   const [collectionCatalog, setCollectionCatalog] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryVersion, setRetryVersion] = useState(0);
+  const [discoveryRefreshVersion, setDiscoveryRefreshVersion] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
 
+    setError(null);
     fetchGenreCounts(controller.signal)
       .then((result) => setGenreCounts(result.data))
       .catch(() => undefined);
@@ -117,7 +120,7 @@ export function useDiscoverPage(initialLocation = '/') {
       });
 
     return () => controller.abort();
-  }, []);
+  }, [retryVersion]);
 
   useEffect(() => {
     if (personas.length === 0 || !preferences.personaId) return;
@@ -191,7 +194,15 @@ export function useDiscoverPage(initialLocation = '/') {
       active = false;
       controller.abort();
     };
-  }, [activeView, genre, persona, rankingConfiguration, isGenreRoute]);
+  }, [
+    activeView,
+    genre,
+    persona,
+    rankingConfiguration,
+    isGenreRoute,
+    discoveryRefreshVersion,
+    retryVersion,
+  ]);
 
   useEffect(() => {
     if (!isGenreRoute || genre === 'All') {
@@ -220,7 +231,7 @@ export function useDiscoverPage(initialLocation = '/') {
       active = false;
       controller.abort();
     };
-  }, [genre, isGenreRoute]);
+  }, [genre, isGenreRoute, retryVersion]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -269,7 +280,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
       controller.abort();
     };
-  }, [genre, query, searchSort]);
+  }, [genre, query, searchSort, retryVersion]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -306,7 +317,7 @@ export function useDiscoverPage(initialLocation = '/') {
       active = false;
       controller.abort();
     };
-  }, [bookmarks]);
+  }, [bookmarks, retryVersion]);
 
   useEffect(() => {
     if (activeView !== 'collections') return;
@@ -328,7 +339,7 @@ export function useDiscoverPage(initialLocation = '/') {
       active = false;
       controller.abort();
     };
-  }, [activeView]);
+  }, [activeView, retryVersion]);
 
   const rankedRecommendations = useMemo(
     () => rankedSections.recommended.map((item) => item.experience),
@@ -403,7 +414,13 @@ export function useDiscoverPage(initialLocation = '/') {
 
   const setPersona = useCallback((next: string) => {
     updatePreferences((current) => ({ ...current, personaId: next || null }));
+    setDiscoveryRefreshVersion((current) => current + 1);
   }, [updatePreferences]);
+
+  const retry = useCallback(() => {
+    setError(null);
+    setRetryVersion((current) => current + 1);
+  }, []);
 
   const closeControls = useCallback(() => setControlsOpen(false), []);
 
@@ -436,6 +453,7 @@ export function useDiscoverPage(initialLocation = '/') {
     hasCustomRanking,
     navigate,
     closeControls,
+    retry,
     setQuery: updateQuery,
     loading,
     error,

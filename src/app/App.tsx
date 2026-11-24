@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Navigation';
@@ -98,9 +99,17 @@ export default function App({ initialLocation = '/' }: AppProps) {
           {page.error && (
             <div
               role="alert"
-              className="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
             >
-              {page.error}
+              <span className="min-w-0 flex-1">{page.error}</span>
+              <button
+                type="button"
+                onClick={page.retry}
+                className="inline-flex h-8 shrink-0 items-center gap-2 rounded-lg border border-destructive/30 px-3 font-medium transition-colors hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <RotateCcw size={14} aria-hidden="true" />
+                Retry
+              </button>
             </div>
           )}
           {hasSearch ? (
@@ -115,7 +124,6 @@ export default function App({ initialLocation = '/' }: AppProps) {
               loading={page.searchLoading}
               genre={page.genre}
               onGenreChange={page.setGenre}
-              onClearQuery={() => page.setQuery('')}
             />
           ) : (
             <DiscoverView

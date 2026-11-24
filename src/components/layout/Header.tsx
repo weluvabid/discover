@@ -1,4 +1,4 @@
-import { Menu, Search, Sparkles } from 'lucide-react';
+import { Menu, Search, Sparkles, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,10 +94,26 @@ export function Header({
           aria-label="Search experiences, creators, and tags"
           className="h-full min-h-0 border-0 bg-transparent px-0 text-sm shadow-none placeholder:text-sm focus-visible:ring-0"
         />
+        {query.trim() && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            className="size-7 shrink-0 text-muted-foreground"
+            onClick={() => {
+              onQueryChange('');
+              inputRef.current?.focus();
+            }}
+            aria-label="Clear search"
+            title="Clear search"
+          >
+            <X size={15} aria-hidden="true" />
+          </Button>
+        )}
         <kbd className="hidden shrink-0 rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground md:inline">
           ⌘ K
         </kbd>
-        {query && resultCount >= 0 && (
+        {query.trim() && resultCount >= 0 && (
           <span className="shrink-0 text-xs text-muted-foreground">{resultCount} results</span>
         )}
       </label>
