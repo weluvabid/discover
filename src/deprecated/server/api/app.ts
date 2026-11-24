@@ -1,10 +1,10 @@
 /**
- * @deprecated The SQLite-backed API is intentionally disabled in the active
- * application. Its original implementation is retained in `legacy-app.ts` for
- * reference and future evolution; callers must use `live-app.ts` instead.
+ * The SQLite-backed API is intentionally disabled. Its original implementation
+ * is retained in `legacy-app.ts` for reference; callers must use `live-app.ts`.
  */
 export type ApiResult = { status: number; body: unknown };
 
+/** @deprecated Use the live RoTunnel API instead. */
 export async function handleApiRequest(..._args: unknown[]): Promise<ApiResult> {
   return {
     status: 501,

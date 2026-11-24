@@ -518,7 +518,14 @@ function buildScoredCandidates(
 
   return items.map((experience) => {
     const available = signals.map((signal) => {
-      const active = signal.enabled && hasSignalData(experience, signal.id, hasPersona);
+      // Persona signals represent request-level intent. Keep them enabled
+      // when context filtering removes the individually persona-scored games;
+      // candidates without a score still contribute zero through rawSignals.
+      const active =
+        signal.enabled &&
+        (signal.id === 'affinity' || signal.id === 'relevance'
+          ? hasPersona
+          : hasSignalData(experience, signal.id, hasPersona));
 
       return {
         ...signal,
@@ -782,7 +789,9 @@ function rerankForDiversity(
         0,
       );
       const adjustment =
-        selected.length === 0 ? 0 : -MAX_DIVERSITY_PENALTY * diversityStrength * maxSimilarity;
+        selected.length === 0 || maxSimilarity === 0
+          ? 0
+          : -MAX_DIVERSITY_PENALTY * diversityStrength * maxSimilarity;
       const adjustedScore = candidate.score + adjustment;
       const currentBestId = remaining[bestIndex]?.experience.id ?? '';
 
