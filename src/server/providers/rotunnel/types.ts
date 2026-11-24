@@ -21,6 +21,7 @@ export class RoTunnelError extends Error {
     readonly status: number,
     readonly endpoint: string,
     options?: ErrorOptions,
+    readonly retryable = true,
   ) {
     super(message, options);
     this.name = 'RoTunnelError';

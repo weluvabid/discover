@@ -12,7 +12,7 @@
     "benchmark:ranking": "node --experimental-strip-types scripts/benchmark-ranking.mjs",
     "build": "pnpm build:web",
     "build:web": "astro check && astro build",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build && pnpm api:build",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:boundaries && pnpm test && pnpm build && pnpm api:build",
     "dev": "astro dev --host 0.0.0.0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -27,7 +27,8 @@
     "typecheck": "astro check",
     "api:dev": "node scripts/dev-api.mjs",
     "api:start": "node --env-file-if-exists=.env dist-server/live-server.mjs",
-    "api:build": "vite build --config vite.server.config.ts"
+    "api:build": "vite build --config vite.server.config.ts",
+    "check:boundaries": "node scripts/check-server-boundaries.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

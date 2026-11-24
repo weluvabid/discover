@@ -52,6 +52,47 @@ describe('TtlCache', () => {
     await expect(cache.getOrLoad('bad', 1_000, async () => 'recovered')).resolves.toBe('recovered');
   });
 
+  it('does not repopulate the cache when an in-flight load resolves after clear', async () => {
+    const cache = new TtlCache(2);
+    let resolveLoad!: (value: string) => void;
+    const pending = cache.getOrLoad(
+      'key',
+      1_000,
+      () =>
+        new Promise<string>((resolve) => {
+          resolveLoad = resolve;
+        }),
+    );
+
+    await Promise.resolve();
+    cache.clear();
+    resolveLoad('stale');
+
+    await expect(pending).resolves.toBe('stale');
+    expect(cache.size).toBe(0);
+    await expect(cache.getOrLoad('key', 1_000, async () => 'fresh')).resolves.toBe('fresh');
+  });
+
+  it('does not let an older in-flight request overwrite a newer load after clear', async () => {
+    const cache = new TtlCache(2);
+    let resolveOld!: (value: string) => void;
+    const oldRequest = cache.getOrLoad(
+      'key',
+      1_000,
+      () =>
+        new Promise<string>((resolve) => {
+          resolveOld = resolve;
+        }),
+    );
+
+    await Promise.resolve();
+    cache.clear();
+    await expect(cache.getOrLoad('key', 1_000, async () => 'new')).resolves.toBe('new');
+    resolveOld('old');
+    await expect(oldRequest).resolves.toBe('old');
+    await expect(cache.getOrLoad('key', 1_000, async () => 'unexpected')).resolves.toBe('new');
+  });
+
   it('expires entries', async () => {
     vi.useFakeTimers();
 

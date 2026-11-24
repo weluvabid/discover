@@ -41,12 +41,20 @@ export async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
       try {
         return (await response.json()) as T;
       } catch (cause) {
-        throw new RoTunnelError('RoTunnel returned invalid JSON.', 502, url.pathname, { cause });
+        throw new RoTunnelError(
+          'RoTunnel returned invalid JSON.',
+          502,
+          url.pathname,
+          { cause },
+          false,
+        );
       }
     } catch (error) {
       lastError = error;
 
       if (signal?.aborted) throw error;
+
+      if (error instanceof RoTunnelError && !error.retryable) throw error;
 
       if (error instanceof RoTunnelError && error.status < 500 && error.status !== 429) throw error;
 
