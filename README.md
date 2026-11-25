@@ -61,7 +61,7 @@ The active application uses the live RoTunnel provider. The browser calls the co
 The Astro frontend is built as a static site. The live API uses the same `handleLiveRequest` HTTP boundary in both local development and production:
 
 - Locally, `pnpm api:dev` runs the Node HTTP server from `src/server/live-index.ts`.
-- On Vercel, `api/[...path].ts` exposes the same handler as a Node.js Function at `/api/*`. The frontend uses the same-origin `/api` base by default, so no production `PUBLIC_DISCOVER_API_URL` is required.
+- On Vercel, `api/[path].ts`, `api/discover/[context].ts`, and `api/experiences/[id].ts` expose the same handler through Vercel Node.js Functions. The frontend uses the same-origin `/api` base by default, so no production `PUBLIC_DISCOVER_API_URL` is required.
 
 For local development, run the live API and Astro in separate terminals:
 
@@ -83,7 +83,7 @@ Import this repository as a Vercel project using the repository root as the proj
 - Build command: `pnpm build`
 - Output directory: `dist`
 
-Vercel detects the root `api/` directory and deploys its catch-all Node.js Function separately from the static Astro output. The function forwards the original request to `handleLiveRequest`; API route logic is not duplicated.
+Vercel detects the root `api/` directory and deploys its Node.js Functions separately from the static Astro output. The three entry points cover single-segment API paths, discovery-context paths, and experience-detail paths; each forwards the original request to `handleLiveRequest`, so API route logic is not duplicated.
 
 Leave `PUBLIC_DISCOVER_API_URL` unset (or empty) for same-origin `/api` routing. Set `CORS_ORIGIN` only when allowing additional browser origins; same-origin production requests do not require CORS. Do not put upstream credentials or private values in `PUBLIC_*` variables.
 

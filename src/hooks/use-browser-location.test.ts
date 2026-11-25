@@ -7,12 +7,24 @@ afterEach(() => {
 });
 
 describe('useBrowserLocation', () => {
-  it('tracks in-app history updates', () => {
+  it('tracks same-route query updates without document navigation', () => {
     const { result } = renderHook(() => useBrowserLocation('/'));
 
-    act(() => navigateTo('/trending?genre=Horror'));
+    act(() => navigateTo('/?genre=Horror'));
 
-    expect(result.current).toBe('/trending?genre=Horror');
+    expect(result.current).toBe('/?genre=Horror');
+  });
+
+  it('delegates route changes to Astro navigation', async () => {
+    const { result } = renderHook(() => useBrowserLocation('/'));
+
+    act(() => navigateTo('/trending'));
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current).toBe('/trending');
   });
 
   it('tracks browser back and forward navigation', () => {

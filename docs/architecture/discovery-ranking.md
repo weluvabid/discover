@@ -99,7 +99,7 @@ The context pipeline uses a bounded top-candidate heap before diversity rerankin
 
 ## API execution model
 
-The active API uses the shared `handleLiveRequest` HTTP boundary. Locally it runs in a standalone Node HTTP process; on Vercel the catch-all function in `api/[...path].ts` calls the same handler. It makes bounded server-side RoTunnel requests, uses bounded process-local TTL caching with in-flight request deduplication, and runs the ranking engine in-process. The old worker pool is isolated under `src/deprecated/` and is not imported by the active API.
+The active API uses the shared `handleLiveRequest` HTTP boundary. Locally it runs in a standalone Node HTTP process; on Vercel the Vercel entry points in `api/[path].ts`, `api/discover/[context].ts`, and `api/experiences/[id].ts` call the same handler. It makes bounded server-side RoTunnel requests, uses bounded process-local TTL caching with in-flight request deduplication, and runs the ranking engine in-process. The old worker pool is isolated under `src/deprecated/` and is not imported by the active API.
 
 The historical worker investigation and benchmark trade-offs are documented in [Moving discovery ranking off the HTTP thread](ranking-worker-investigation.md).
 

@@ -5,6 +5,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'astro:transitions/client': fileURLToPath(
+        new URL('./src/test/astro-transitions.ts', import.meta.url),
+      ),
       // Vercel entrypoints import a generated bundle in production; tests use source.
       '../dist-server/live-app.mjs': fileURLToPath(
         new URL('./src/server/api/live-app.ts', import.meta.url),

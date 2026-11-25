@@ -32,7 +32,7 @@ The RoTunnel provider is split by responsibility under `src/server/providers/rot
 
 `src/server/api/live-app.ts` is the shared HTTP boundary: CORS, method dispatch and normalized error handling. Route implementations live in `src/server/api/routes/get.ts` and `post.ts`. Candidate retrieval, enrichment caching and search-feed loading live in `src/server/services/discovery-data.ts`; experience enrichment/persona application live in `experience-enrichment.ts`; search ordering lives in `search-sorting.ts`; response serialization lives in `src/server/api/http/json-response.ts`.
 
-`src/server/live-index.ts` adapts the handler to the local Node HTTP server. The root `api/[...path].ts` Vercel function calls the same `handleLiveRequest` boundary, so route behavior is shared rather than reimplemented in the deployment adapter.
+`src/server/live-index.ts` adapts the handler to the local Node HTTP server. The Vercel functions `api/[path].ts`, `api/discover/[context].ts`, and `api/experiences/[id].ts` call the same `handleLiveRequest` boundary, so route behavior is shared rather than reimplemented in deployment adapters.
 
 The provider keeps `Experience.source.sortId` and `Experience.source.nativePosition`. The ranking engine may reorder a result, but the original Roblox feed identity and ordinal remain available for side-by-side comparison.
 
@@ -73,7 +73,7 @@ The repository contains an Astro static frontend and a server-side API:
 - `pnpm api:dev` builds and watches the local Node API.
 - `pnpm api:start` starts the built Node API.
 - `pnpm api:build` builds the server entry into `dist-server/`.
-- On Vercel, `api/[...path].ts` exposes the shared handler as a Node.js Function under `/api/*`.
+- On Vercel, `api/[path].ts`, `api/discover/[context].ts`, and `api/experiences/[id].ts` expose the shared handler as Node.js Functions.
 
 The frontend defaults to same-origin `/api` requests in production. Local development uses the API origin configured by the frontend environment helper, defaulting to `http://127.0.0.1:8787/api`. `CORS_ORIGIN` is only needed for additional cross-origin browser clients; same-origin production requests do not require CORS.
 
