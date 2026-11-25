@@ -9,6 +9,9 @@ export default defineConfig({
       '../dist-server/live-app.mjs': fileURLToPath(
         new URL('./src/server/api/live-app.ts', import.meta.url),
       ),
+      '../../dist-server/live-app.mjs': fileURLToPath(
+        new URL('./src/server/api/live-app.ts', import.meta.url),
+      ),
     },
   },
   test: {

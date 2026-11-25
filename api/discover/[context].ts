@@ -1,5 +1,5 @@
 // The API handler is bundled by `pnpm api:build` before Vercel packages this function.
-import { handleLiveRequest } from '../dist-server/live-app.mjs';
+import { handleLiveRequest } from '../../dist-server/live-app.mjs';
 
 /**
  * Same-origin Vercel API catch-all.
