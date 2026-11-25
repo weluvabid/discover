@@ -139,6 +139,7 @@ export function PersonaCommandSelector({
           className="rounded-4xl"
         >
           <CommandInput
+            className="text-base md:text-sm"
             placeholder="Search play styles..."
             onKeyDownCapture={(event) => {
               if (event.key !== 'ArrowDown' || activeCommandValue) return;
