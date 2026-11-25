@@ -109,6 +109,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
           onOpenDiscoveryControls={openDiscoveryControls}
           hasCustomRanking={page.hasCustomRanking}
           personas={page.personas}
+          personasLoading={page.personasLoading}
           persona={page.persona}
           onPersonaChange={selectPersona}
         />

@@ -14,6 +14,7 @@ interface HeaderProps {
   onOpenDiscoveryControls: () => void;
   hasCustomRanking: boolean;
   personas: DiscoveryPersona[];
+  personasLoading: boolean;
   persona: string;
   onPersonaChange: (persona: string) => void;
 }
@@ -25,6 +26,7 @@ export function Header({
   onOpenDiscoveryControls,
   hasCustomRanking,
   personas,
+  personasLoading,
   persona,
   onPersonaChange,
 }: HeaderProps) {
@@ -97,6 +99,7 @@ export function Header({
         <div className="ml-auto flex items-center gap-2">
           <PersonaCommandSelector
             personas={personas}
+            personasLoading={personasLoading}
             selectedPersonaId={persona}
             onSelect={onPersonaChange}
           />

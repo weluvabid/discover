@@ -94,6 +94,7 @@ export function useDiscoverPage(initialLocation = '/') {
   const requestedSort = searchParams.get('sort');
   const searchSort: SearchSort = isSearchSort(requestedSort) ? requestedSort : 'relevance';
   const [personas, setPersonas] = useState<DiscoveryPersona[]>([]);
+  const [personasLoading, setPersonasLoading] = useState(true);
   const [genreCounts, setGenreCounts] = useState<Record<string, number>>({});
   const persona =
     preferences.personaId &&
@@ -125,6 +126,8 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     const controller = new AbortController();
 
+    setPersonasLoading(true);
+
     fetchGenreCounts(controller.signal)
       .then((result) => setGenreCounts(result.data))
       .catch(() => undefined);
@@ -134,7 +137,8 @@ export function useDiscoverPage(initialLocation = '/') {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
 
         setError(cause instanceof Error ? cause.message : 'Unable to load play styles.');
-      });
+      })
+      .finally(() => setPersonasLoading(false));
 
     return () => controller.abort();
   }, [retryVersion]);
@@ -172,12 +176,13 @@ export function useDiscoverPage(initialLocation = '/') {
     const controller = new AbortController();
     let active = true;
 
+    // Show the existing skeletons immediately while a new ranking is loading.
+    setLoading(true);
+    setError(null);
+
     Promise.resolve()
       .then(() => {
         if (!active) return undefined;
-
-        setLoading(true);
-        setError(null);
 
         const contexts: readonly RankingContext[] =
           activeView === 'trending'
@@ -461,18 +466,8 @@ export function useDiscoverPage(initialLocation = '/') {
     let active = true;
 
     if (bookmarks.length === 0) {
-      Promise.resolve()
-        .then(() => {
-          if (active) {
-            setSavedExperiences([]);
-            setSavedExperiencesLoading(false);
-          }
-        })
-        .catch((cause: unknown) => {
-          if (!active) return;
-
-          setError(cause instanceof Error ? cause.message : 'Unable to clear saved experiences.');
-        });
+      setSavedExperiences([]);
+      setSavedExperiencesLoading(false);
 
       return () => {
         active = false;
@@ -480,16 +475,13 @@ export function useDiscoverPage(initialLocation = '/') {
       };
     }
 
-    Promise.resolve()
-      .then(() => {
-        if (!active) return undefined;
+    // Flip to loading in the effect itself. Deferring this to a microtask lets
+    // the previous empty/saved state flash for a frame after bookmark changes.
+    setSavedExperiencesLoading(true);
 
-        setSavedExperiencesLoading(true);
-
-        return Promise.all(
-          bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
-        );
-      })
+    Promise.all(
+      bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
+    )
       .then((items) => {
         if (active && items) {
           setSavedExperiences(items.filter((item): item is Experience => item !== null));
@@ -617,6 +609,7 @@ export function useDiscoverPage(initialLocation = '/') {
     setGenre,
     selectGenre,
     personas,
+    personasLoading,
     genreCounts,
     genreExperiences: isGenreRoute && genre !== 'All' ? genreExperiences : EMPTY_EXPERIENCES,
     genreRankingById: isGenreRoute && genre !== 'All' ? genreRankingById : EMPTY_GENRE_RANKING,

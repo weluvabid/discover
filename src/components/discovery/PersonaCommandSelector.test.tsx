@@ -62,6 +62,38 @@ describe('PersonaCommandSelector', () => {
     await waitForElementToBeRemoved(dialog);
   });
 
+  it('visibly highlights the active option during keyboard navigation', () => {
+    render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
+
+    const input = screen.getByPlaceholderText('Search play styles...');
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+    const activeOption = screen.getAllByRole('option').find(
+      (option) => option.getAttribute('aria-selected') === 'true',
+    );
+
+    expect(activeOption).toBeDefined();
+    expect(activeOption).toHaveClass('data-selected:bg-accent!');
+    expect(activeOption).toHaveClass('data-selected:text-accent-foreground!');
+  });
+
+  it('visibly highlights the active persona during keyboard navigation', () => {
+    render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
+    const input = screen.getByPlaceholderText('Search play styles...');
+
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    const activeItem = screen.getByRole('option', { name: /All play styles/ });
+
+    expect(activeItem).toHaveAttribute('aria-selected', 'true');
+    expect(activeItem.className).toContain('data-selected:bg-muted!');
+    expect(activeItem.className).not.toContain('data-selected:bg-transparent!');
+  });
+
   it('shows the all-play-styles option and device-persistence explanation', () => {
     render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
 

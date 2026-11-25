@@ -15,9 +15,11 @@ import {
   CommandSeparator,
 } from '@/components/ui/command';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface PersonaCommandSelectorProps {
   personas: DiscoveryPersona[];
+  personasLoading?: boolean;
   selectedPersonaId: string;
   onSelect: (personaId: string) => void;
 }
@@ -25,6 +27,7 @@ interface PersonaCommandSelectorProps {
 /** ReUI command-palette pattern for choosing a discovery persona. */
 export function PersonaCommandSelector({
   personas,
+  personasLoading = false,
   selectedPersonaId,
   onSelect,
 }: PersonaCommandSelectorProps) {
@@ -37,6 +40,11 @@ export function PersonaCommandSelector({
 
     return () => window.removeEventListener('discover:open-persona-selector', handleOpen);
   }, []);
+
+  if (personasLoading) {
+    return <Skeleton className="size-11 rounded-full" aria-hidden="true" />;
+  }
+
   const selectedPersona = personas.find((persona) => persona.id === selectedPersonaId);
   const orderedPersonas = selectedPersona
     ? [selectedPersona, ...personas.filter((persona) => persona.id !== selectedPersonaId)]
@@ -52,8 +60,7 @@ export function PersonaCommandSelector({
       value="all play styles"
       onSelect={() => selectPersona('')}
       showCheck={false}
-      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 bg-transparent! px-4 py-3 last:border-b-0 data-selected:bg-transparent! data-selected:shadow-[inset_2px_0_0_var(--primary)] in-data-[slot=dialog-content]:rounded-none!"
-    >
+      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 bg-transparent! px-4 py-3 last:border-b-0 data-selected:bg-muted! data-selected:text-foreground in-data-[slot=dialog-content]:rounded-none!"    >
       <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary">
         <Sparkles size={17} aria-hidden="true" />
       </span>
@@ -127,8 +134,7 @@ export function PersonaCommandSelector({
                       value={`${persona.label} ${persona.description} ${persona.id}`}
                       onSelect={() => selectPersona(persona.id)}
                       showCheck={false}
-                      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 bg-transparent! px-4 py-3 last:border-b-0 data-selected:bg-transparent! data-selected:shadow-[inset_2px_0_0_var(--primary)] in-data-[slot=dialog-content]:rounded-none!"
-                    >
+                      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 bg-transparent! px-4 py-3 last:border-b-0 data-selected:bg-muted! data-selected:text-foreground in-data-[slot=dialog-content]:rounded-none!"                    >
                       <Avatar className="size-9 shrink-0 border-0 after:hidden">
                         <AvatarImage src={getPersonaAvatarUrl(persona.id)} alt="" />
                         <AvatarFallback>{persona.label.slice(0, 1)}</AvatarFallback>
