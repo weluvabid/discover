@@ -1,11 +1,12 @@
-import { handleLiveRequest } from '../src/server/api/live-app';
+// The API handler is bundled by `pnpm api:build` before Vercel packages this function.
+import { handleLiveRequest } from '../dist-server/live-app.mjs';
 
 /**
  * Same-origin Vercel API catch-all.
  *
- * Keep the HTTP contract in handleLiveRequest so local Node development and
- * Vercel production execute exactly the same route, validation, CORS and
- * error-handling code.
+ * The handler and its local dependencies are bundled into a Node-compatible
+ * ESM artifact. This avoids relying on Vite's extensionless TypeScript import
+ * resolution inside the deployed Node.js runtime.
  */
 export default {
   fetch(request: Request): Promise<Response> {

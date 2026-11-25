@@ -17,6 +17,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         'live-server': 'src/server/live-index.ts',
+        'live-app': 'src/server/api/live-app.ts',
       },
       external: (id) => builtins.has(id),
       output: {

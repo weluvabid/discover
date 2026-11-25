@@ -10,9 +10,9 @@
   },
   "scripts": {
     "benchmark:ranking": "node --experimental-strip-types scripts/benchmark-ranking.mjs",
-    "build": "pnpm build:web",
+    "build": "pnpm build:web && pnpm api:build",
     "build:web": "node scripts/sync-brand-assets.mjs && astro check && astro build",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:boundaries && pnpm test && pnpm build && pnpm api:build",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:boundaries && pnpm test && pnpm build",
     "dev": "node scripts/sync-brand-assets.mjs && astro dev --host 0.0.0.0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
