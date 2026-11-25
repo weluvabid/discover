@@ -257,22 +257,27 @@ export function useDiscoverPage(initialLocation = '/') {
     const controller = new AbortController();
     let active = true;
 
-    setLoading(true);
-    setError(null);
-    setAllExperiences([]);
-    setAllRankingById(new Map());
-    setAllHasMore(false);
+    Promise.resolve()
+      .then(() => {
+        if (!active) return undefined;
 
-    fetchCatalog(
-      CATALOGUE_PAGE_SIZE,
-      controller.signal,
-      'All',
-      0,
-      rankingConfiguration,
-      persona || undefined,
-    )
+        setLoading(true);
+        setError(null);
+        setAllExperiences([]);
+        setAllRankingById(new Map());
+        setAllHasMore(false);
+
+        return fetchCatalog(
+          CATALOGUE_PAGE_SIZE,
+          controller.signal,
+          'All',
+          0,
+          rankingConfiguration,
+          persona || undefined,
+        );
+      })
       .then((result) => {
-        if (!active) return;
+        if (!active || !result) return;
 
         setAllExperiences(result.data);
         setAllRankingById(

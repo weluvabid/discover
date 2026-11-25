@@ -85,8 +85,8 @@ export function DiscoverView({
           description="Browse the complete classified catalogue across every supported genre."
         />
         <div className="mb-2 text-sm text-muted-foreground" aria-live="polite">
-          Showing {allExperiences.length.toLocaleString('en')} of{' '}
-          {allTotal.toLocaleString('en')} experiences
+          Showing {allExperiences.length.toLocaleString('en')} of {allTotal.toLocaleString('en')}{' '}
+          experiences
         </div>
         <ExperienceSection
           title="All experiences"

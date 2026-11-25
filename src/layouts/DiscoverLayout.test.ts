@@ -15,9 +15,10 @@ describe('shared layout rendering contract', () => {
   it('serves branding assets from stable public URLs', () => {
     const brand = readFileSync(new URL('../components/layout/Brand.tsx', import.meta.url), 'utf8');
 
-    expect(brand).toContain('src="/brand/mark.svg"');
+    expect(brand).toContain("import { GhostMark } from './GhostMark';");
+    expect(brand).toContain('<GhostMark className="size-8 shrink-0" />');
     expect(brand).not.toMatch(/import\s+\w+\s+from\s+['"].*\.svg/);
-    expect(layout).toContain('href="/favicon/favicon.svg"');
+    expect(layout).toContain('href="/brand/favicon/favicon.svg"');
     expect(layout).not.toMatch(/import\s+faviconUrl\s+from/);
   });
 
