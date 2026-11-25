@@ -1,4 +1,4 @@
-import { Bookmark, Compass, Gem, Layers3, Search, TrendingUp } from 'lucide-react';
+import { Bookmark, Compass, Gem, Github, TrendingUp } from 'lucide-react';
 import {
   GENRE_FILTER_OPTIONS,
   type DiscoveryView,
@@ -22,10 +22,8 @@ import {
 
 const navigationItems = [
   { id: 'explore', label: 'Explore', icon: Compass },
-  { id: 'search', label: 'Search', icon: Search },
   { id: 'trending', label: 'Trending', icon: TrendingUp },
   { id: 'hidden-gems', label: 'Hidden Gems', icon: Gem },
-  { id: 'collections', label: 'Collections', icon: Layers3 },
   { id: 'library', label: 'Library', icon: Bookmark },
 ] as const;
 
@@ -158,6 +156,32 @@ export function Sidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <div className="mt-auto">
+          <SidebarSeparator className="mx-3 w-auto" />
+          <SidebarGroup>
+            <SidebarGroupLabel>PROJECT</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    render={
+                      <a
+                        href="https://github.com/weluvabid/discover"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View Discover on GitHub (opens in a new tab)"
+                      />
+                    }
+                    tooltip="View on GitHub"
+                  >
+                    <Github aria-hidden="true" />
+                    <span>View on GitHub</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
       </SidebarContent>
     </ReUISidebar>
   );
