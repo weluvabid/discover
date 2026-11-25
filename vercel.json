@@ -8,6 +8,9 @@
     },
     "api/discover/[context].ts": {
       "maxDuration": 60
+    },
+    "api/experiences/[id].ts": {
+      "maxDuration": 60
     }
   }
 }
