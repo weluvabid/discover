@@ -175,10 +175,7 @@ export function DiscoverView({
             : 'Find worlds worth your time, ranked by engagement, relevance and discovery signals.'
         }
       />
-      <ExploreFilterBar
-        genre={genre}
-        onGenreChange={onGenreChange}
-      />
+      <ExploreFilterBar genre={genre} onGenreChange={onGenreChange} />
       {loading ? (
         <FeaturedExperienceSkeleton />
       ) : featured ? (

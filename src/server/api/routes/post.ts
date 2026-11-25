@@ -62,9 +62,11 @@ export async function handlePost(
     if (!isRecord(parsed)) {
       return jsonResponse({ error: 'Request body must be a JSON object.' }, 400);
     }
+
     input = parsed;
   } catch (error) {
     if (signal.aborted) throw signal.reason;
+
     return jsonResponse({ error: 'Invalid JSON request body.' }, 400);
   }
 
@@ -82,28 +84,34 @@ export async function handlePost(
   if (input.genre != null && !isExperienceGenre(input.genre)) {
     return jsonResponse({ error: 'Unknown genre.' }, 400);
   }
+
   const genre = isExperienceGenre(input.genre) ? input.genre : undefined;
+
   if (
     input.persona != null &&
-    (typeof input.persona !== 'string' ||
-      !seedPersonas().some((item) => item.id === input.persona))
+    (typeof input.persona !== 'string' || !seedPersonas().some((item) => item.id === input.persona))
   ) {
     return jsonResponse({ error: 'Unknown persona.' }, 400);
   }
+
   const persona =
     typeof input.persona === 'string'
       ? seedPersonas().find((item) => item.id === input.persona)
       : undefined;
+
   if (input.strategy != null && !isRankingStrategy(input.strategy)) {
     return jsonResponse({ error: 'Unknown ranking strategy.' }, 400);
   }
+
   const strategy = isRankingStrategy(input.strategy)
     ? input.strategy
     : DEFAULT_RANKING_CONFIGURATION.strategy;
   const requestedSignals = input.signals;
+
   if (requestedSignals != null && !isRankingConfiguration(requestedSignals)) {
     return jsonResponse({ error: 'Invalid ranking signals.' }, 400);
   }
+
   const configuration: RankingConfiguration = {
     strategy,
     // Labels and descriptions are canonical server-owned metadata. Only stable
@@ -120,6 +128,7 @@ export async function handlePost(
   };
 
   const candidates = await awaitWithSignal(candidatesForContext(client, context), signal);
+
   throwIfAborted(signal);
   const personalized = applyPersona(candidates, persona?.id);
   const options: RankingOptions = {

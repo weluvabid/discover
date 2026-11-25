@@ -10,6 +10,7 @@ describe('awaitWithSignal', () => {
     });
 
     const waiting = awaitWithSignal(shared, controller.signal);
+
     controller.abort(new DOMException('Aborted', 'AbortError'));
 
     await expect(waiting).rejects.toMatchObject({ name: 'AbortError' });
@@ -19,9 +20,12 @@ describe('awaitWithSignal', () => {
 
   it('does not attach work when the signal is already aborted', async () => {
     const controller = new AbortController();
+
     controller.abort(new DOMException('Aborted', 'AbortError'));
 
-    await expect(awaitWithSignal(Promise.resolve('value'), controller.signal)).rejects.toMatchObject({
+    await expect(
+      awaitWithSignal(Promise.resolve('value'), controller.signal),
+    ).rejects.toMatchObject({
       name: 'AbortError',
     });
   });

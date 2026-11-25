@@ -1,9 +1,6 @@
 import { useCallback, useSyncExternalStore } from 'react';
 import { isRankingConfiguration, isRankingStrategy } from '@/config/discovery';
-import {
-  DEFAULT_RANKING_CONFIGURATION,
-  type RankingConfiguration,
-} from './engine/ranking';
+import { DEFAULT_RANKING_CONFIGURATION, type RankingConfiguration } from './engine/ranking';
 
 const STORAGE_KEY = 'discover:preferences:v1';
 const CHANGE_EVENT = 'discover:preferences-change';
@@ -27,10 +24,12 @@ function parsePreferences(raw: string | null): DiscoveryPreferences {
 
   try {
     const value: unknown = JSON.parse(raw);
+
     if (!value || typeof value !== 'object' || Array.isArray(value)) return DEFAULT_PREFERENCES;
 
     const candidate = value as Record<string, unknown>;
     const ranking = candidate.ranking;
+
     if (
       candidate.version !== 1 ||
       !(candidate.personaId === null || typeof candidate.personaId === 'string') ||
@@ -42,6 +41,7 @@ function parsePreferences(raw: string | null): DiscoveryPreferences {
     }
 
     const configuration = ranking as Record<string, unknown>;
+
     if (
       !isRankingStrategy(configuration.strategy) ||
       !isRankingConfiguration(configuration.signals)
@@ -62,6 +62,7 @@ function parsePreferences(raw: string | null): DiscoveryPreferences {
         strategy: configuration.strategy,
         signals: DEFAULT_RANKING_CONFIGURATION.signals.map((defaultSignal) => {
           const stored = storedSignals.find((signal) => signal.id === defaultSignal.id);
+
           return {
             ...defaultSignal,
             enabled: stored?.enabled ?? defaultSignal.enabled,
@@ -80,6 +81,7 @@ function getSnapshot(): DiscoveryPreferences {
 
   try {
     const next = parsePreferences(window.localStorage.getItem(STORAGE_KEY));
+
     if (JSON.stringify(next) !== JSON.stringify(cachedPreferences)) cachedPreferences = next;
   } catch {
     // Retain the last valid in-memory preferences if storage is unavailable.
@@ -95,6 +97,7 @@ function getServerSnapshot(): DiscoveryPreferences {
 function subscribe(onChange: () => void): () => void {
   const handleStorage = (event: StorageEvent) => {
     if (event.key !== STORAGE_KEY && event.key !== null) return;
+
     getSnapshot();
     onChange();
   };
@@ -115,14 +118,17 @@ export function useDiscoveryPreferences() {
   const updatePreferences = useCallback(
     (updater: (current: DiscoveryPreferences) => DiscoveryPreferences) => {
       const next = updater(getSnapshot());
+
       if (JSON.stringify(next) === JSON.stringify(cachedPreferences)) return;
 
       cachedPreferences = next;
+
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       } catch {
         // The in-memory preference state remains usable without storage access.
       }
+
       window.dispatchEvent(new Event(CHANGE_EVENT));
     },
     [],

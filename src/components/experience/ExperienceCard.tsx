@@ -1,11 +1,4 @@
-import {
-  Heart,
-  Minus,
-  Sparkles,
-  Star,
-  TrendingDown,
-  TrendingUp,
-} from 'lucide-react';
+import { Heart, Minus, Sparkles, Star, TrendingDown, TrendingUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount, formatSignedPercent, getRankScoreClass } from '@/lib/utils';
 import { ExperienceArtwork } from './ExperienceArtwork';
@@ -91,7 +84,9 @@ export function ExperienceCard({
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex min-w-0 items-center gap-2">
-          <h3 className="min-w-0 truncate text-base font-bold text-foreground">{experience.title}</h3>
+          <h3 className="min-w-0 truncate text-base font-bold text-foreground">
+            {experience.title}
+          </h3>
           <div className="ml-auto flex shrink-0 items-center gap-1">
             <Tooltip>
               <TooltipTrigger

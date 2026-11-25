@@ -16,6 +16,7 @@ export function detailsForIds(
   if (ids.length === 0) {
     return Promise.resolve(new Map());
   }
+
   return cache.getOrLoad(batchKey('details', ids), CACHE_TTL_MS.experienceDetails, () =>
     client.getDetails([...ids]),
   );
@@ -28,6 +29,7 @@ export function votesForIds(
   if (ids.length === 0) {
     return Promise.resolve(new Map());
   }
+
   return cache.getOrLoad(batchKey('votes', ids), CACHE_TTL_MS.experienceVotes, () =>
     client.getVotes([...ids]),
   );
@@ -40,6 +42,7 @@ export function iconsForIds(
   if (ids.length === 0) {
     return Promise.resolve(new Map());
   }
+
   return cache.getOrLoad(batchKey('icons', ids), CACHE_TTL_MS.experienceIcons, () =>
     client.getIcons([...ids]),
   );

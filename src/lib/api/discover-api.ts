@@ -79,9 +79,11 @@ export function fetchDiscovery(
     ),
     limit: String(limit),
   });
+
   if (genre !== 'All') {
     params.set('genre', genre);
   }
+
   if (persona) {
     params.set('persona', persona);
   }
@@ -102,9 +104,11 @@ export async function searchCatalog(
   if (genre !== 'All') {
     params.set('genre', genre);
   }
+
   if (persona) {
     params.set('persona', persona);
   }
+
   if (configuration) {
     params.set('strategy', configuration.strategy);
     params.set(
@@ -142,16 +146,25 @@ export function fetchCatalog(
   persona?: string,
 ): Promise<CatalogPageResult> {
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+
   if (genre !== 'All') {
     params.set('genre', genre);
   }
+
   if (configuration) {
     params.set('strategy', configuration.strategy);
-    params.set('signals', JSON.stringify(configuration.signals.map(({ id, weight, enabled }) => ({ id, weight, enabled }))));
+    params.set(
+      'signals',
+      JSON.stringify(
+        configuration.signals.map(({ id, weight, enabled }) => ({ id, weight, enabled })),
+      ),
+    );
   }
+
   if (persona) {
     params.set('persona', persona);
   }
+
   return request<CatalogPageResult>(`/experiences?${params}`, { signal });
 }
 

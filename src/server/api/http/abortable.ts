@@ -1,10 +1,12 @@
 /** Stop an HTTP handler waiting for shared work without cancelling that shared work. */
 export function awaitWithSignal<T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> {
   if (!signal) return promise;
+
   if (signal.aborted) return Promise.reject(signal.reason);
 
   return new Promise<T>((resolve, reject) => {
     const onAbort = () => reject(signal.reason ?? new DOMException('Aborted', 'AbortError'));
+
     signal.addEventListener('abort', onAbort, { once: true });
 
     promise.then(

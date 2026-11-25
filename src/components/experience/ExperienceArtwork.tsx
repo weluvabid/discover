@@ -31,7 +31,9 @@ function ArtworkImage({ src, alt, loading, fetchPriority }: ArtworkImageProps) {
 
   return (
     <>
-      {!loaded && <Skeleton aria-hidden="true" className="absolute inset-0 size-full rounded-none" />}
+      {!loaded && (
+        <Skeleton aria-hidden="true" className="absolute inset-0 size-full rounded-none" />
+      )}
       <img
         src={src}
         alt={alt}

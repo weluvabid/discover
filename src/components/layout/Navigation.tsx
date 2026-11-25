@@ -1,9 +1,5 @@
 import { Bookmark, Compass, Gem, Github, TrendingUp } from 'lucide-react';
-import {
-  GENRE_FILTER_OPTIONS,
-  type DiscoveryView,
-  type ExperienceGenre,
-} from '@/types/experience';
+import { GENRE_FILTER_OPTIONS, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
 import { navigateTo } from '@/hooks/use-browser-location';
 import { Brand } from './Brand';
 import {
@@ -43,12 +39,7 @@ function getNavigationPath(view: DiscoveryView) {
   return view === 'explore' ? '/' : `/${view}`;
 }
 
-export function Sidebar({
-  activeView,
-  selectedGenre,
-  onSelectGenre,
-  genreCounts,
-}: SidebarProps) {
+export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts }: SidebarProps) {
   const { isMobile, setOpenMobile, state } = useSidebar();
 
   return (

@@ -6,10 +6,7 @@ interface ExploreFilterBarProps {
   onGenreChange: (genre: ExperienceGenre | 'All') => void;
 }
 
-export function ExploreFilterBar({
-  genre,
-  onGenreChange,
-}: ExploreFilterBarProps) {
+export function ExploreFilterBar({ genre, onGenreChange }: ExploreFilterBarProps) {
   return (
     <div
       className="flex min-w-0 flex-col gap-3 border-b border-border pb-4"

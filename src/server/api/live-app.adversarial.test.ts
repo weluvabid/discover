@@ -81,20 +81,30 @@ describe('live Discover API', () => {
   it('ranks search results by query relevance and returns explanations', async () => {
     const client = makeClient([
       { ...makeCandidate('1001', 1), raw: { name: 'Evade', description: 'Escape the enemy.' } },
-      { ...makeCandidate('1002', 2), raw: { name: 'Other Experience', description: 'A different game.' } },
+      {
+        ...makeCandidate('1002', 2),
+        raw: { name: 'Other Experience', description: 'A different game.' },
+      },
     ]);
     const response = await handleLiveRequest(
       new Request('https://discover.example/api/search?q=evade'),
       client,
     );
     const body = (await response.json()) as {
-      rankedData: Array<{ experience: { id: string }; score: number; explanation: { signals: Array<{ id: string; normalizedScore: number }> } }>;
+      rankedData: Array<{
+        experience: { id: string };
+        score: number;
+        explanation: { signals: Array<{ id: string; normalizedScore: number }> };
+      }>;
     };
 
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toContain('s-maxage=43200');
     expect(body.rankedData[0]?.experience.id).toBe('1001');
-    expect(body.rankedData[0]?.explanation.signals.find((signal) => signal.id === 'relevance')?.normalizedScore).toBe(100);
+    expect(
+      body.rankedData[0]?.explanation.signals.find((signal) => signal.id === 'relevance')
+        ?.normalizedScore,
+    ).toBe(100);
   });
 
   it('rejects unknown persona and ranking controls instead of silently defaulting', async () => {

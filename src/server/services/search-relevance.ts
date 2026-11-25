@@ -5,6 +5,7 @@ const normalize = (value: string) => value.normalize('NFKC').toLowerCase().trim(
 /** Deterministic lexical relevance; no network calls or model inference. */
 export function scoreSearchRelevance(experience: Experience, query: string): number {
   const normalizedQuery = normalize(query);
+
   if (!normalizedQuery) {
     return 0;
   }
@@ -30,6 +31,7 @@ export function scoreSearchRelevance(experience: Experience, query: string): num
     const metadataMatch = [title, creator, subgenre, ...tags].some((field) =>
       tokens.every((token) => field.includes(token)),
     );
+
     score = Math.max(tokenCoverage * 0.72, metadataMatch ? 0.78 : 0);
 
     if (score === 0 && tokens.some((token) => description.includes(token))) score = 0.2;

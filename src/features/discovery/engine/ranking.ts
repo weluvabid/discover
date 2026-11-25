@@ -465,11 +465,14 @@ function rawSignals(
   return {
     affinity: hasPersona ? match : 0,
     quality,
-    relevance: experience.queryRelevanceScore !== undefined && hasPersona
-      ? clamp(experience.queryRelevanceScore * 0.75 + (experience.personaRelevanceScore ?? 0) * 0.25)
-      : hasPersona
-        ? clamp(experience.personaRelevanceScore ?? 0)
-        : clamp(experience.queryRelevanceScore ?? 0),
+    relevance:
+      experience.queryRelevanceScore !== undefined && hasPersona
+        ? clamp(
+            experience.queryRelevanceScore * 0.75 + (experience.personaRelevanceScore ?? 0) * 0.25,
+          )
+        : hasPersona
+          ? clamp(experience.personaRelevanceScore ?? 0)
+          : clamp(experience.queryRelevanceScore ?? 0),
     freshness: clamp(Math.max(launchFreshness, updateFreshness * 0.75)),
     popularity,
     diversity: clamp(1 - Math.max(0, genreFrequency - 1) / Math.max(1, catalogSize - 1)),
@@ -492,8 +495,10 @@ function hasSignalData(
           experience.metrics.repeatPlayRate !== undefined)
       );
     case 'relevance':
-      return (hasPersona && experience.personaRelevanceScore !== undefined) ||
-        experience.queryRelevanceScore !== undefined;
+      return (
+        (hasPersona && experience.personaRelevanceScore !== undefined) ||
+        experience.queryRelevanceScore !== undefined
+      );
     case 'freshness':
       return (
         Number.isFinite(Date.parse(experience.publishedAt ?? '')) ||

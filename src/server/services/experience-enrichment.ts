@@ -40,9 +40,7 @@ export async function enrichCandidates(
   if (candidates.length === 0) return [];
 
   const ids = candidateIds(candidates);
-  const missingDetailIds = preloadedDetails
-    ? ids.filter((id) => !preloadedDetails.has(id))
-    : ids;
+  const missingDetailIds = preloadedDetails ? ids.filter((id) => !preloadedDetails.has(id)) : ids;
   const [detailsResult, votesResult, iconsResult] = await Promise.allSettled([
     missingDetailIds.length
       ? detailsForIds(client, missingDetailIds)

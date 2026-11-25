@@ -32,7 +32,9 @@ export function PersonaCommandSelector({
 
   useEffect(() => {
     const handleOpen = () => setOpen(true);
+
     window.addEventListener('discover:open-persona-selector', handleOpen);
+
     return () => window.removeEventListener('discover:open-persona-selector', handleOpen);
   }, []);
   const selectedPersona = personas.find((persona) => persona.id === selectedPersonaId);
@@ -153,9 +155,7 @@ export function PersonaCommandSelector({
           <CommandSeparator />
           <div className="flex items-start gap-2 border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">
             <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-500" aria-hidden="true" />
-            <p>
-              Your selected play style is saved on this device and used across discovery.
-            </p>
+            <p>Your selected play style is saved on this device and used across discovery.</p>
           </div>
         </Command>
       </CommandDialog>

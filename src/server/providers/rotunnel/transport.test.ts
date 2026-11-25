@@ -54,6 +54,7 @@ describe('RoTunnel transport', () => {
 
     vi.stubGlobal('fetch', fetchMock);
     const pending = fetchJson<{ recovered: boolean }>(new URL('https://example.test/timeout'));
+
     await vi.advanceTimersByTimeAsync(250);
 
     await expect(pending).resolves.toEqual({ recovered: true });
@@ -62,18 +63,19 @@ describe('RoTunnel transport', () => {
 
   it('does not retry when the caller aborts during the request', async () => {
     const controller = new AbortController();
-    const fetchMock = vi.fn((_url: URL, init?: RequestInit) =>
-      new Promise((_resolve, reject) => {
-        init?.signal?.addEventListener(
-          'abort',
-          () => reject(init.signal?.reason),
-          { once: true },
-        );
-      }),
+    const fetchMock = vi.fn(
+      (_url: URL, init?: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), {
+            once: true,
+          });
+        }),
     );
+
     vi.stubGlobal('fetch', fetchMock);
 
     const pending = fetchJson(new URL('https://example.test/cancel'), controller.signal);
+
     await Promise.resolve();
     controller.abort();
 
@@ -96,18 +98,23 @@ describe('RoTunnel transport', () => {
           });
         }),
     );
+
     vi.stubGlobal('fetch', fetchMock);
 
     const requests = Array.from({ length: 12 }, (_, index) =>
       fetchJson<{ index: number }>(new URL(`https://example.test/${index}`)),
     );
+
     await Promise.resolve();
     await Promise.resolve();
 
     expect(maximumActive).toBe(8);
+
     while (resolvers.length > 0 || active > 0) {
       const batch = resolvers.splice(0);
+
       for (const resolve of batch) resolve(Response.json({ index: 1 }));
+
       await Promise.resolve();
       await Promise.resolve();
     }

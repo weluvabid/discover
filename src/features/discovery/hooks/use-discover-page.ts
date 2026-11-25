@@ -71,8 +71,7 @@ export function useDiscoverPage(initialLocation = '/') {
   const pathGenre = pathname.startsWith('/genre/')
     ? EXPERIENCE_GENRES.find(
         (item) =>
-          item.toLowerCase().replace(/[^a-z0-9]+/g, '-') ===
-          pathname.slice('/genre/'.length),
+          item.toLowerCase().replace(/[^a-z0-9]+/g, '-') === pathname.slice('/genre/'.length),
       )
     : undefined;
   const genre: ExperienceGenre | 'All' =
@@ -94,8 +93,12 @@ export function useDiscoverPage(initialLocation = '/') {
   const [rankedSections, setRankedSections] = useState(EMPTY_RANKED_SECTIONS);
   const [visibleResults, setVisibleResults] = useState<Experience[]>([]);
   const [genreExperiences, setGenreExperiences] = useState<Experience[]>([]);
-  const [genreRankingById, setGenreRankingById] = useState<Map<string, RankedExperience>>(new Map());
-  const [searchRankingById, setSearchRankingById] = useState<Map<string, RankedExperience>>(new Map());
+  const [genreRankingById, setGenreRankingById] = useState<Map<string, RankedExperience>>(
+    new Map(),
+  );
+  const [searchRankingById, setSearchRankingById] = useState<Map<string, RankedExperience>>(
+    new Map(),
+  );
   const [searchLoading, setSearchLoading] = useState(false);
   const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
   const [savedExperiencesLoading, setSavedExperiencesLoading] = useState(true);
@@ -124,6 +127,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
   useEffect(() => {
     if (personas.length === 0 || !preferences.personaId) return;
+
     if (!personas.some((item) => item.id === preferences.personaId)) {
       updatePreferences((current) => ({ ...current, personaId: null }));
     }
@@ -149,6 +153,7 @@ export function useDiscoverPage(initialLocation = '/') {
     ) {
       return;
     }
+
     const controller = new AbortController();
     let active = true;
 
@@ -191,6 +196,7 @@ export function useDiscoverPage(initialLocation = '/') {
           const recommended = (next.recommended ?? []).filter(
             (item) => item.experience.id !== featuredId,
           );
+
           next.recommended = recommended
             .slice(0, 6)
             .map((item, index) => ({ ...item, position: index + 1 }));
@@ -198,9 +204,11 @@ export function useDiscoverPage(initialLocation = '/') {
 
         setRankedSections((current) => {
           const updated = { ...current };
+
           for (const response of responses) {
             updated[response.context] = next[response.context] ?? response.results;
           }
+
           return updated;
         });
       })
@@ -231,11 +239,13 @@ export function useDiscoverPage(initialLocation = '/') {
     if (!isGenreRoute || genre === 'All') {
       setGenreExperiences([]);
       setGenreRankingById(new Map());
+
       return;
     }
 
     const controller = new AbortController();
     let active = true;
+
     setLoading(true);
     setError(null);
 
@@ -243,11 +253,14 @@ export function useDiscoverPage(initialLocation = '/') {
       .then((result) => {
         if (active) {
           setGenreExperiences(result.data);
-          setGenreRankingById(new Map((result.rankedData ?? []).map((item) => [item.experience.id, item])));
+          setGenreRankingById(
+            new Map((result.rankedData ?? []).map((item) => [item.experience.id, item])),
+          );
         }
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+
         setError(cause instanceof Error ? cause.message : `Unable to load ${genre} experiences.`);
       })
       .finally(() => {
@@ -385,8 +398,11 @@ export function useDiscoverPage(initialLocation = '/') {
       if (next.trim()) navigateTo(`/search?${params.toString()}`, { replace: true });
       else if (pathname === '/search') {
         const params = new URLSearchParams();
+
         if (genre !== 'All') params.set('genre', genre);
+
         if (searchSort !== 'relevance') params.set('sort', searchSort);
+
         navigateTo(`/search${params.size ? `?${params}` : ''}`);
       }
     },
@@ -408,14 +424,18 @@ export function useDiscoverPage(initialLocation = '/') {
   const setGenre = useCallback(
     (next: ExperienceGenre | 'All') => {
       const params = new URLSearchParams(searchParams);
+
       if (pathname === '/search') {
         if (next === 'All') params.delete('genre');
         else params.set('genre', next);
+
         navigateTo(`${pathname}${params.size ? `?${params}` : ''}`, { replace: true });
+
         return;
       }
 
       const slug = next === 'All' ? '' : `/genre/${next.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
       navigateTo(slug || '/');
     },
     [pathname, searchParams],
@@ -424,23 +444,29 @@ export function useDiscoverPage(initialLocation = '/') {
   const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
     const destination =
       next === 'All' ? '/' : `/genre/${next.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
     navigateTo(destination);
   }, []);
 
   const navigate = useCallback(
     (view: DiscoveryView) => {
-      const destination = genre !== 'All' && view === 'explore'
-        ? `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
-        : VIEW_TO_PATH[view];
+      const destination =
+        genre !== 'All' && view === 'explore'
+          ? `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+          : VIEW_TO_PATH[view];
+
       navigateTo(destination);
     },
     [genre],
   );
 
-  const setPersona = useCallback((next: string) => {
-    updatePreferences((current) => ({ ...current, personaId: next || null }));
-    setDiscoveryRefreshVersion((current) => current + 1);
-  }, [updatePreferences]);
+  const setPersona = useCallback(
+    (next: string) => {
+      updatePreferences((current) => ({ ...current, personaId: next || null }));
+      setDiscoveryRefreshVersion((current) => current + 1);
+    },
+    [updatePreferences],
+  );
 
   const retry = useCallback(() => {
     setError(null);

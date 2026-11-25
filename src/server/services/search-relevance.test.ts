@@ -3,8 +3,15 @@ import { scoreSearchRelevance } from './search-relevance';
 import type { Experience } from '../../types/experience';
 
 const experience = (title: string, creator = 'Studio'): Experience => ({
-  id: '123', title, creator, description: 'An adventure experience.', genre: 'Puzzle',
-  subgenre: 'Puzzle', tags: ['Puzzle', 'Escape'], artwork: { thumbnail: '', alt: title }, metrics: {},
+  id: '123',
+  title,
+  creator,
+  description: 'An adventure experience.',
+  genre: 'Puzzle',
+  subgenre: 'Puzzle',
+  tags: ['Puzzle', 'Escape'],
+  artwork: { thumbnail: '', alt: title },
+  metrics: {},
 });
 
 describe('search relevance', () => {

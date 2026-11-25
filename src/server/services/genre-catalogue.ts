@@ -108,6 +108,7 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
 
     for (const candidate of result.value.candidates) {
       if (unique.has(candidate.universeId)) continue;
+
       if (unique.size >= MAX_CATALOGUE_CANDIDATES) break;
 
       unique.set(candidate.universeId, candidate);
@@ -152,7 +153,12 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
 
     if (detail) details.set(candidate.universeId, detail);
 
-    const normalized = normalizeExperience(candidate, detail ?? candidate.raw, undefined, undefined);
+    const normalized = normalizeExperience(
+      candidate,
+      detail ?? candidate.raw,
+      undefined,
+      undefined,
+    );
 
     if (normalized.genreConfidence === 'high' || normalized.genreConfidence === 'medium') {
       byGenre[normalized.genre].push(candidate);
@@ -208,6 +214,7 @@ export async function genreCataloguePage(
   const pageDetails = new Map(
     page.flatMap((candidate) => {
       const detail = catalogue.details.get(candidate.universeId);
+
       return detail ? [[candidate.universeId, detail] as const] : [];
     }),
   );

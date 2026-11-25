@@ -141,6 +141,7 @@ describe('genre catalogue', () => {
     expect(page.candidates).toHaveLength(1);
     expect(page.candidates[0]?.universeId).toBe('10');
     const catalogue = await genreCatalogueFor(client);
+
     expect(catalogue.diagnostics.failedFeeds).toEqual(['popular']);
   });
 });

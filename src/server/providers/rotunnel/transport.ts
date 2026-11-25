@@ -21,8 +21,10 @@ function acquireRequestSlot(signal?: AbortSignal): Promise<() => void> {
     const grant = () => {
       activeRequests += 1;
       let released = false;
+
       resolve(() => {
         if (released) return;
+
         released = true;
         activeRequests -= 1;
         drainWaiters();
@@ -31,6 +33,7 @@ function acquireRequestSlot(signal?: AbortSignal): Promise<() => void> {
 
     if (activeRequests < MAX_CONCURRENT_REQUESTS && waiters.length === 0) {
       grant();
+
       return;
     }
 
@@ -42,6 +45,7 @@ function acquireRequestSlot(signal?: AbortSignal): Promise<() => void> {
           '/request-capacity',
         ),
       );
+
       return;
     }
 
@@ -54,7 +58,9 @@ function acquireRequestSlot(signal?: AbortSignal): Promise<() => void> {
 
     waiter.onAbort = () => {
       const index = waiters.indexOf(waiter);
+
       if (index >= 0) waiters.splice(index, 1);
+
       reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'));
     };
     signal?.addEventListener('abort', waiter.onAbort, { once: true });
@@ -65,16 +71,22 @@ function acquireRequestSlot(signal?: AbortSignal): Promise<() => void> {
 function drainWaiters(): void {
   while (activeRequests < MAX_CONCURRENT_REQUESTS && waiters.length > 0) {
     const waiter = waiters.shift();
+
     if (!waiter) return;
+
     waiter.signal?.removeEventListener('abort', waiter.onAbort!);
+
     if (waiter.signal?.aborted) {
       waiter.reject(waiter.signal.reason);
       continue;
     }
+
     activeRequests += 1;
     let released = false;
+
     waiter.resolve(() => {
       if (released) return;
+
       released = true;
       activeRequests -= 1;
       drainWaiters();
@@ -94,6 +106,7 @@ function delay(ms: number, signal?: AbortSignal): Promise<void> {
       clearTimeout(timer);
       reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'));
     };
+
     signal?.addEventListener('abort', onAbort, { once: true });
   });
 }
@@ -105,6 +118,7 @@ export async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
     if (signal?.aborted) throw signal.reason;
 
     const release = await acquireRequestSlot(signal);
+
     try {
       const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
       const requestSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
@@ -117,12 +131,14 @@ export async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
       if (!response.ok) {
         const retryable = response.status === 429 || response.status >= 500;
         const retryAfter = Number(response.headers.get('retry-after'));
+
         await response.body?.cancel();
 
         if (retryable && attempt < MAX_RETRIES) {
           const retryDelay = Number.isFinite(retryAfter)
             ? Math.min(750, Math.max(0, retryAfter * 1000))
             : RETRY_DELAY_MS;
+
           lastError = new RoTunnelError(
             `RoTunnel returned HTTP ${response.status}.`,
             response.status,
@@ -155,7 +171,9 @@ export async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
       lastError = error;
 
       if (signal?.aborted) throw signal.reason;
+
       if (error instanceof RoTunnelError && !error.retryable) throw error;
+
       if (error instanceof RoTunnelError && error.status < 500 && error.status !== 429) throw error;
 
       const timedOut = error instanceof DOMException && error.name === 'TimeoutError';
@@ -175,6 +193,7 @@ export async function fetchJson<T>(url: URL, signal?: AbortSignal): Promise<T> {
   }
 
   if (signal?.aborted) throw signal.reason;
+
   if (lastError instanceof RoTunnelError) throw lastError;
 
   throw new RoTunnelError(

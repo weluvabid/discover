@@ -37,9 +37,7 @@ export function Header({
 
       return Boolean(
         target.isContentEditable ||
-          target.closest(
-            'input, textarea, select, [contenteditable="true"], [role="textbox"]',
-          ),
+        target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]'),
       );
     };
 
@@ -47,6 +45,7 @@ export function Header({
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         inputRef.current?.focus();
+
         return;
       }
 
@@ -68,6 +67,7 @@ export function Header({
       if (event.key.toLowerCase() === 'p') {
         event.preventDefault();
         window.dispatchEvent(new Event('discover:open-persona-selector'));
+
         return;
       }
 
@@ -85,7 +85,12 @@ export function Header({
   return (
     <div className="sticky top-0 z-40 border-b border-border/80 bg-background/90 px-4 py-3 backdrop-blur-xl md:flex md:items-center md:gap-4 md:px-6">
       <header className="flex min-h-10 items-center justify-between gap-3 md:contents">
-        <SidebarTrigger className="hidden md:inline-flex" aria-label="Toggle navigation sidebar (Ctrl/Command + B)" aria-keyshortcuts="Control+B Meta+B" title="Toggle sidebar · Ctrl/Command + B" />
+        <SidebarTrigger
+          className="hidden md:inline-flex"
+          aria-label="Toggle navigation sidebar (Ctrl/Command + B)"
+          aria-keyshortcuts="Control+B Meta+B"
+          title="Toggle sidebar · Ctrl/Command + B"
+        />
         <div className="md:hidden">
           <Brand compact />
         </div>

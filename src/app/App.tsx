@@ -44,9 +44,8 @@ export default function App({ initialLocation = '/' }: AppProps) {
     (personaId: string) => {
       page.setPersona(personaId);
       const selected = page.personas.find((item) => item.id === personaId);
-      toast.success(
-        selected ? `${selected.label} play style selected` : 'Showing all play styles',
-      );
+
+      toast.success(selected ? `${selected.label} play style selected` : 'Showing all play styles');
     },
     [page.personas, page.setPersona],
   );

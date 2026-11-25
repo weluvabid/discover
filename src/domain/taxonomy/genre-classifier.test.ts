@@ -3,7 +3,10 @@ import { classifyGenre } from './genre-classifier';
 
 describe('genre classifier coverage', () => {
   it.each([
-    ['Survival Island', 'Gather resources, craft tools and build a shelter to survive the wilderness.'],
+    [
+      'Survival Island',
+      'Gather resources, craft tools and build a shelter to survive the wilderness.',
+    ],
     ['Zombie Survival', 'Scavenge for supplies, defend your base and survive waves of zombies.'],
     ['Co-op Survival', 'Work together with friends, gather resources and craft shelter.'],
   ])('classifies explicit survival mechanics: %s', (title, description) => {
