@@ -3,7 +3,10 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
   "functions": {
-    "api/[...path].ts": {
+    "api/[path].ts": {
+      "maxDuration": 60
+    },
+    "api/discover/[context].ts": {
       "maxDuration": 60
     }
   }

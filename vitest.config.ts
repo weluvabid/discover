@@ -5,8 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      // The Vercel entrypoint imports a generated bundle in production.
-      // Tests resolve that boundary to source so they do not depend on build output.
+      // Vercel entrypoints import a generated bundle in production; tests use source.
       '../dist-server/live-app.mjs': fileURLToPath(
         new URL('./src/server/api/live-app.ts', import.meta.url),
       ),

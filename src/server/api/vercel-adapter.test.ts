@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import vercelHandler from '../../../api/[...path]';
+import vercelHandler from '../../../api/[path]';
 
 describe('Vercel API adapter', () => {
   it('forwards the original /api path to the shared live API handler', async () => {
