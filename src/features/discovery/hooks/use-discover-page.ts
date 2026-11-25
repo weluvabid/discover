@@ -298,6 +298,7 @@ export function useDiscoverPage(initialLocation = '/') {
     if (!isAllCatalogueRoute || loadingMore || !allHasMore) return;
 
     const controller = new AbortController();
+
     setLoadingMore(true);
 
     try {
@@ -312,11 +313,14 @@ export function useDiscoverPage(initialLocation = '/') {
 
       setAllExperiences((current) => {
         const existing = new Set(current.map((item) => item.id));
+
         return [...current, ...result.data.filter((item) => !existing.has(item.id))];
       });
       setAllRankingById((current) => {
         const next = new Map(current);
+
         for (const item of result.rankedData ?? []) next.set(item.experience.id, item);
+
         return next;
       });
       setAllHasMore(result.hasMore ?? result.offset + result.data.length < result.total);
