@@ -83,7 +83,7 @@ export function PersonaCommandSelector({
                   : 'Choose a play style'
               }
               aria-haspopup="dialog"
-              aria-keyshortcuts="Alt+P"
+              aria-keyshortcuts="P"
               aria-expanded={open}
               onClick={() => setOpen(true)}
             />
@@ -99,14 +99,14 @@ export function PersonaCommandSelector({
           )}
         </TooltipTrigger>
         <TooltipContent>
-          {selectedPersona ? selectedPersona.label : 'All play styles'} · Alt/Option + P
+          {selectedPersona ? selectedPersona.label : 'All play styles'} · P
         </TooltipContent>
       </Tooltip>
 
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        title="Choose a play style"
+        title="Choose a play style · P"
         description="Search and select a persona to personalize discovery."
         className="max-w-md"
       >

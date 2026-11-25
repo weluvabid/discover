@@ -63,6 +63,7 @@ export class TtlCache {
     }
   }
 
+
   clear(): void {
     this.entries.clear();
     // Existing callers still receive their in-flight result, but the generation

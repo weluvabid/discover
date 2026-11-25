@@ -96,6 +96,8 @@ export function useDiscoverPage(initialLocation = '/') {
   const [rankedSections, setRankedSections] = useState(EMPTY_RANKED_SECTIONS);
   const [visibleResults, setVisibleResults] = useState<Experience[]>([]);
   const [genreExperiences, setGenreExperiences] = useState<Experience[]>([]);
+  const [genreRankingById, setGenreRankingById] = useState<Map<string, RankedExperience>>(new Map());
+  const [searchRankingById, setSearchRankingById] = useState<Map<string, RankedExperience>>(new Map());
   const [searchLoading, setSearchLoading] = useState(false);
   const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
   const [savedExperiencesLoading, setSavedExperiencesLoading] = useState(true);
@@ -208,6 +210,7 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     if (!isGenreRoute || genre === 'All') {
       setGenreExperiences([]);
+      setGenreRankingById(new Map());
       return;
     }
 
@@ -216,9 +219,12 @@ export function useDiscoverPage(initialLocation = '/') {
     setLoading(true);
     setError(null);
 
-    fetchCatalog(100, controller.signal, genre)
+    fetchCatalog(100, controller.signal, genre, 0, rankingConfiguration, persona || undefined)
       .then((result) => {
-        if (active) setGenreExperiences(result.data);
+        if (active) {
+          setGenreExperiences(result.data);
+          setGenreRankingById(new Map((result.rankedData ?? []).map((item) => [item.experience.id, item])));
+        }
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
@@ -232,7 +238,7 @@ export function useDiscoverPage(initialLocation = '/') {
       active = false;
       controller.abort();
     };
-  }, [genre, isGenreRoute, retryVersion]);
+  }, [genre, isGenreRoute, retryVersion, rankingConfiguration, persona]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -245,18 +251,30 @@ export function useDiscoverPage(initialLocation = '/') {
 
         if (!query.trim()) {
           setVisibleResults([]);
+          setSearchRankingById(new Map());
           setSearchLoading(false);
 
           return;
         }
 
         setVisibleResults([]);
+        setSearchRankingById(new Map());
         setSearchLoading(true);
         setError(null);
         debounce = window.setTimeout(() => {
-          searchCatalog(query, genre, searchSort, controller.signal)
+          searchCatalog(
+            query,
+            genre,
+            searchSort,
+            controller.signal,
+            persona || undefined,
+            rankingConfiguration,
+          )
             .then((results) => {
-              if (active) setVisibleResults(results);
+              if (active) {
+                setVisibleResults(results.map((item) => item.experience));
+                setSearchRankingById(new Map(results.map((item) => [item.experience.id, item])));
+              }
             })
             .catch((cause: unknown) => {
               if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
@@ -281,7 +299,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
       controller.abort();
     };
-  }, [genre, query, searchSort, retryVersion]);
+  }, [genre, query, searchSort, retryVersion, persona, rankingConfiguration]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -445,6 +463,8 @@ export function useDiscoverPage(initialLocation = '/') {
     personas,
     genreCounts,
     genreExperiences,
+    genreRankingById,
+    searchRankingById,
     isGenreRoute,
     persona,
     setPersona,

@@ -62,12 +62,17 @@ describe('genre catalogue routes', () => {
       data: Array<{ id: string }>;
       total: number;
       hasMore: boolean;
+      rankedData: Array<{ score: number; position: number; explanation: { finalScore: number } }>;
     };
 
     expect(response.status).toBe(200);
+    expect(response.headers.get('cache-control')).toContain('s-maxage=86400');
     expect(body.total).toBe(2);
     expect(body.data).toHaveLength(1);
     expect(body.data[0]?.id).toBe('202');
+    expect(body.rankedData).toHaveLength(1);
+    expect(body.rankedData[0]?.score).toBeGreaterThanOrEqual(0);
+    expect(body.rankedData[0]?.explanation.finalScore).toBe(body.rankedData[0]?.score);
     expect(body.hasMore).toBe(false);
     expect(client.getDetails).toHaveBeenCalledWith(['202']);
     expect(client.getVotes).toHaveBeenCalledWith(['202']);

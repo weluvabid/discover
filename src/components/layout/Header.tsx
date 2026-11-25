@@ -32,6 +32,17 @@ export function Header({
   const { isMobile, openMobile, toggleSidebar } = useSidebar();
 
   useEffect(() => {
+    const isTextEntryTarget = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return false;
+
+      return Boolean(
+        target.isContentEditable ||
+          target.closest(
+            'input, textarea, select, [contenteditable="true"], [role="textbox"]',
+          ),
+      );
+    };
+
     const handleShortcut = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
@@ -39,13 +50,28 @@ export function Header({
         return;
       }
 
-      if (event.altKey && event.code === 'KeyP') {
+      // Single-letter shortcuts avoid browser-reserved Alt combinations. Never
+      // intercept keystrokes while a user is entering text or using modifiers.
+      if (
+        event.defaultPrevented ||
+        event.repeat ||
+        event.isComposing ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.shiftKey ||
+        isTextEntryTarget(event.target)
+      ) {
+        return;
+      }
+
+      if (event.key.toLowerCase() === 'p') {
         event.preventDefault();
         window.dispatchEvent(new Event('discover:open-persona-selector'));
         return;
       }
 
-      if (event.altKey && event.code === 'KeyT') {
+      if (event.key.toLowerCase() === 't') {
         event.preventDefault();
         onOpenDiscoveryControls();
       }
@@ -75,8 +101,8 @@ export function Header({
             size="default"
             onClick={onOpenDiscoveryControls}
             aria-label="Tune discovery preferences"
-            title="Tune discovery · Alt/Option + T"
-            aria-keyshortcuts="Alt+T"
+            title="Tune discovery · T"
+            aria-keyshortcuts="T"
             className="tune-discovery-glow relative gap-2"
           >
             <Sparkles aria-hidden="true" />

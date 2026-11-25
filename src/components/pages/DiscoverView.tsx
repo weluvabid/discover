@@ -27,6 +27,7 @@ interface DiscoverViewProps {
   personas: DiscoveryPersona[];
   persona: string;
   genreExperiences: Experience[];
+  genreRankingById: Map<string, RankedExperience>;
   isGenreRoute: boolean;
   onGenreChange: (genre: ExperienceGenre | 'All') => void;
   onToggleBookmark: (id: string) => void;
@@ -47,6 +48,7 @@ export function DiscoverView({
   personas,
   persona,
   genreExperiences,
+  genreRankingById,
   isGenreRoute,
   onGenreChange,
   onToggleBookmark,
@@ -74,6 +76,8 @@ export function DiscoverView({
         <ExperienceSection
           title={`${genre} experiences`}
           experiences={genreExperiences}
+          rankingById={genreRankingById}
+          rankingLabel="GENRE DISCOVERY SCORE"
           variant="recommended"
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}

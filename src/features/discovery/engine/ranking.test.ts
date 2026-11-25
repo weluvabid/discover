@@ -49,6 +49,28 @@ describe('discovery ranking', () => {
     expect(normalized.find((signal) => signal.id === 'diversity')?.weight).toBe(0);
   });
 
+  it('uses query relevance as an independent ranking signal without a persona', () => {
+    const [base] = experiences;
+    if (!base) throw new Error('Expected a ranking fixture.');
+    const candidates = [
+      { ...base, id: 'exact', queryRelevanceScore: 1 },
+      { ...base, id: 'weak', queryRelevanceScore: 0.2 },
+    ];
+    const configuration = {
+      strategy: 'balanced' as const,
+      signals: DEFAULT_RANKING_CONFIGURATION.signals.map((signal) => ({
+        ...signal,
+        enabled: signal.id === 'relevance',
+        weight: signal.id === 'relevance' ? 100 : 0,
+      })),
+    };
+    const ranked = rankForContext(candidates, configuration, 'recommended', { limit: 2, now: FIXED_NOW });
+
+    expect(ranked[0]?.experience.id).toBe('exact');
+    expect(ranked[0]?.explanation.signals.find((signal) => signal.id === 'relevance'))
+      .toMatchObject({ enabled: true, normalizedScore: 100 });
+  });
+
   it('returns deterministic rankings for identical input', () => {
     const first = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
     const second = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);

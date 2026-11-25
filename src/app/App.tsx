@@ -132,6 +132,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
             <SearchResultsView
               query={page.query || page.genre}
               results={page.visibleResults}
+              rankingById={page.searchRankingById}
               sort={page.searchSort}
               onSortChange={page.setSearchSort}
               bookmarks={page.bookmarks}
@@ -154,6 +155,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
               personas={page.personas}
               persona={page.persona}
               genreExperiences={page.genreExperiences}
+              genreRankingById={page.genreRankingById}
               isGenreRoute={page.isGenreRoute}
               onGenreChange={page.setGenre}
               onToggleBookmark={toggleBookmark}

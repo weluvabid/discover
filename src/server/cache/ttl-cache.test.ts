@@ -93,6 +93,7 @@ describe('TtlCache', () => {
     await expect(cache.getOrLoad('key', 1_000, async () => 'unexpected')).resolves.toBe('new');
   });
 
+
   it('expires entries', async () => {
     vi.useFakeTimers();
 

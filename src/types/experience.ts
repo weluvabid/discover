@@ -77,6 +77,8 @@ export interface Experience {
   matchScore?: number;
   /** Persona-specific topical relevance, independent of genre affinity. */
   personaRelevanceScore?: number;
+  /** Query-match relevance, populated only for search ranking requests. */
+  queryRelevanceScore?: number;
   isFeatured?: boolean;
   /** Original position and feed identity before Discover re-ranking. */
   source?: {

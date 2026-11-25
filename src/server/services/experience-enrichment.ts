@@ -11,6 +11,7 @@ import {
   type RoTunnelClient,
 } from '../providers/rotunnel/index';
 import type { JsonObject } from '../providers/rotunnel/types';
+import { detailsForIds, iconsForIds, votesForIds } from './provider-response-cache';
 
 export function applyPersona(experiences: Experience[], personaId?: string): Experience[] {
   if (!personaId) return experiences;
@@ -43,9 +44,11 @@ export async function enrichCandidates(
     ? ids.filter((id) => !preloadedDetails.has(id))
     : ids;
   const [detailsResult, votesResult, iconsResult] = await Promise.allSettled([
-    missingDetailIds.length ? client.getDetails(missingDetailIds) : Promise.resolve(new Map<string, JsonObject>()),
-    client.getVotes(ids),
-    client.getIcons(ids),
+    missingDetailIds.length
+      ? detailsForIds(client, missingDetailIds)
+      : Promise.resolve(new Map<string, JsonObject>()),
+    votesForIds(client, ids),
+    iconsForIds(client, ids),
   ]);
   const details = new Map(preloadedDetails ?? []);
 

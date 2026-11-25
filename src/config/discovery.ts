@@ -76,14 +76,15 @@ export const DISCOVERY_LIMITS = {
 } as const;
 
 export const CACHE_TTL_MS = {
-  providerSorts: 5 * 60_000,
-  sortContent: 45_000,
-  enrichedCandidates: 45_000,
-  searchResults: 60_000,
-  experienceDetails: 5 * 60_000,
-  experienceVotes: 5 * 60_000,
-  experienceIcons: 60 * 60_000,
-  genreCatalogue: 10 * 60_000,
+  // Prototype data changes slowly; cache acquisition results aggressively.
+  providerSorts: 24 * 60 * 60_000,
+  sortContent: 24 * 60 * 60_000,
+  enrichedCandidates: 24 * 60 * 60_000,
+  searchResults: 12 * 60 * 60_000,
+  experienceDetails: 24 * 60 * 60_000,
+  experienceVotes: 24 * 60 * 60_000,
+  experienceIcons: 24 * 60 * 60_000,
+  genreCatalogue: 24 * 60 * 60_000,
 } as const;
 
 export const EXPERIENCE_GENRE_OPTIONS = ['All', ...EXPERIENCE_GENRES] as const;

@@ -40,8 +40,8 @@ function getGenrePath(genre: ExperienceGenre | 'All') {
   return genre === 'All' ? '/' : `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 }
 
-function getNavigationPath(view: DiscoveryView, genre: ExperienceGenre | 'All') {
-  if (view === 'explore' && genre !== 'All') return getGenrePath(genre);
+function getNavigationPath(view: DiscoveryView) {
+  // Explore is the unfiltered discovery home; genre routes are independent destinations.
   return view === 'explore' ? '/' : `/${view}`;
 }
 
@@ -73,7 +73,7 @@ export function Sidebar({
                   <SidebarMenuButton
                     render={
                       <a
-                        href={getNavigationPath(id, selectedGenre)}
+                        href={getNavigationPath(id)}
                         aria-label={label}
                         aria-current={
                           activeView === id && (id !== 'explore' || selectedGenre === 'All')
@@ -92,7 +92,7 @@ export function Sidebar({
                           }
 
                           event.preventDefault();
-                          navigateTo(getNavigationPath(id, selectedGenre));
+                          navigateTo(getNavigationPath(id));
 
                           if (isMobile) setOpenMobile(false);
                         }}

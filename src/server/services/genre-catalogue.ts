@@ -110,10 +110,7 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
       if (unique.has(candidate.universeId)) continue;
       if (unique.size >= MAX_CATALOGUE_CANDIDATES) break;
 
-      unique.set(candidate.universeId, {
-        ...candidate,
-        nativePosition: unique.size + 1,
-      });
+      unique.set(candidate.universeId, candidate);
     }
   }
 

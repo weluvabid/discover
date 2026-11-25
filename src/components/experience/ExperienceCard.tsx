@@ -167,7 +167,11 @@ export function ExperienceCard({
                       : 'RECOMMENDED SCORE')}
               </span>
             </div>
-            <RankingWhyPopover ranking={ranking} showScore={false} />
+            <RankingWhyPopover
+              ranking={ranking}
+              showScore={false}
+              contextLabel={rankingLabel?.replace(/ SCORE$/, '')}
+            />
           </div>
         )}
       </div>

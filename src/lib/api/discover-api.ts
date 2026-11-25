@@ -72,18 +72,21 @@ export function fetchDiscovery(
   limit = context === 'featured' ? 1 : context === 'recommended' ? 7 : 8,
   persona?: string,
 ): Promise<DiscoverPageResult> {
-  return request<DiscoverPageResult>(`/discover/${context}`, {
-    method: 'POST',
-    signal,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      strategy: configuration.strategy,
-      signals: configuration.signals,
-      genre,
-      limit,
-      persona,
-    }),
+  const params = new URLSearchParams({
+    strategy: configuration.strategy,
+    signals: JSON.stringify(
+      configuration.signals.map(({ id, weight, enabled }) => ({ id, weight, enabled })),
+    ),
+    limit: String(limit),
   });
+  if (genre !== 'All') {
+    params.set('genre', genre);
+  }
+  if (persona) {
+    params.set('persona', persona);
+  }
+
+  return request<DiscoverPageResult>(`/discover/${context}?${params}`, { signal });
 }
 
 export async function searchCatalog(
@@ -91,18 +94,43 @@ export async function searchCatalog(
   genre: string,
   sort: SearchSortType = 'relevance',
   signal?: AbortSignal,
-): Promise<Experience[]> {
+  persona?: string,
+  configuration?: RankingConfiguration,
+): Promise<RankedExperience[]> {
   const params = new URLSearchParams({ q: query, sort });
 
-  if (genre !== 'All') params.set('genre', genre);
+  if (genre !== 'All') {
+    params.set('genre', genre);
+  }
+  if (persona) {
+    params.set('persona', persona);
+  }
+  if (configuration) {
+    params.set('strategy', configuration.strategy);
+    params.set(
+      'signals',
+      JSON.stringify(
+        configuration.signals.map(({ id, weight, enabled }) => ({ id, weight, enabled })),
+      ),
+    );
+  }
 
-  const result = await request<{ data: Experience[] }>(`/search?${params}`, { signal });
+  const result = await request<{ rankedData: RankedExperience[] }>(`/search?${params}`, { signal });
 
-  return result.data;
+  return result.rankedData;
 }
 
 export function fetchExperience(id: string, signal?: AbortSignal): Promise<Experience> {
   return request<Experience>(`/experiences/${encodeURIComponent(id)}`, { signal });
+}
+
+export interface CatalogPageResult {
+  data: Experience[];
+  rankedData?: RankedExperience[];
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore?: boolean;
 }
 
 export function fetchCatalog(
@@ -110,13 +138,21 @@ export function fetchCatalog(
   signal?: AbortSignal,
   genre: string = 'All',
   offset = 0,
-): Promise<{ data: Experience[]; total: number; limit: number; offset: number; hasMore?: boolean }> {
+  configuration?: RankingConfiguration,
+  persona?: string,
+): Promise<CatalogPageResult> {
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
-  if (genre !== 'All') params.set('genre', genre);
-  return request<{ data: Experience[]; total: number; limit: number; offset: number; hasMore?: boolean }>(
-    `/experiences?${params}`,
-    { signal },
-  );
+  if (genre !== 'All') {
+    params.set('genre', genre);
+  }
+  if (configuration) {
+    params.set('strategy', configuration.strategy);
+    params.set('signals', JSON.stringify(configuration.signals.map(({ id, weight, enabled }) => ({ id, weight, enabled }))));
+  }
+  if (persona) {
+    params.set('persona', persona);
+  }
+  return request<CatalogPageResult>(`/experiences?${params}`, { signal });
 }
 
 export function fetchPersonas(signal?: AbortSignal): Promise<{ data: DiscoveryPersona[] }> {

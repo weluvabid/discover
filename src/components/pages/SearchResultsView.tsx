@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { SearchSort } from '@/lib/api/discover-api';
+import type { RankedExperience } from '@/features/discovery/engine/ranking';
 import { SEARCH_SORT_LABELS } from '@/config/discovery';
 import { GENRE_FILTER_OPTIONS } from '@/types/experience';
 
@@ -18,6 +19,7 @@ const SORT_LABELS: Record<SearchSort, string> = SEARCH_SORT_LABELS;
 interface SearchResultsViewProps {
   query: string;
   results: Experience[];
+  rankingById: Map<string, RankedExperience>;
   sort: SearchSort;
   onSortChange: (sort: SearchSort) => void;
   bookmarks: string[];
@@ -31,6 +33,7 @@ interface SearchResultsViewProps {
 export function SearchResultsView({
   query,
   results,
+  rankingById,
   sort,
   onSortChange,
   bookmarks,
@@ -87,6 +90,8 @@ export function SearchResultsView({
       <ExperienceSection
         title="Search results"
         experiences={results}
+        rankingById={rankingById}
+        rankingLabel="SEARCH RANK SCORE"
         variant="recommended"
         bookmarks={bookmarks}
         onToggleBookmark={onToggleBookmark}

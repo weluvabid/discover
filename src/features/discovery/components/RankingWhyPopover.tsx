@@ -12,6 +12,7 @@ const STRATEGY_LABELS = DISCOVERY_STRATEGY_LABELS;
 interface RankingWhyPopoverProps {
   ranking: RankedExperience;
   showScore?: boolean;
+  contextLabel?: string;
 }
 
 function getSignalColor(id: string): string {
@@ -33,7 +34,11 @@ function getSignalColor(id: string): string {
   }
 }
 
-export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopoverProps) {
+export function RankingWhyPopover({
+  ranking,
+  showScore = true,
+  contextLabel,
+}: RankingWhyPopoverProps) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverId = useId();
@@ -119,14 +124,16 @@ export function RankingWhyPopover({ ranking, showScore = true }: RankingWhyPopov
               RANKING EXPLANATION
             </span>
             <strong className="text-base leading-snug">
-              {CONTEXT_LABELS[ranking.explanation.context]} ·{' '}
+              {contextLabel ?? CONTEXT_LABELS[ranking.explanation.context]} ·{' '}
               {STRATEGY_LABELS[ranking.explanation.strategy]}
             </strong>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            {ranking.explanation.context === 'recommended'
-              ? 'This experience qualified for recommendations and was scored using your active discovery preferences.'
-              : `This experience qualified for ${CONTEXT_LABELS[ranking.explanation.context]} and was ranked using your active discovery preferences.`}
+            {contextLabel
+              ? `This experience was ranked for ${contextLabel.toLowerCase()} using your active discovery preferences.`
+              : ranking.explanation.context === 'recommended'
+                ? 'This experience qualified for recommendations and was scored using your active discovery preferences.'
+                : `This experience qualified for ${CONTEXT_LABELS[ranking.explanation.context]} and was ranked using your active discovery preferences.`}
           </p>
           <dl
             className="flex flex-col gap-3 rounded-xl border border-border bg-secondary/50 p-4 text-sm"

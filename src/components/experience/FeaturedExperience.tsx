@@ -1,4 +1,4 @@
-import { BadgeCheck, Bookmark, Heart, Sparkles, Star, ThumbsUp } from 'lucide-react';
+import { BadgeCheck, Heart, Sparkles, Star, ThumbsUp } from 'lucide-react';
 import type { Experience } from '@/types/experience';
 import { formatCount, getRankScoreClass } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -107,7 +107,11 @@ export function FeaturedExperience({
               aria-label={isBookmarked ? 'Remove from library' : 'Save to library'}
               aria-pressed={isBookmarked}
             >
-              {isBookmarked ? <Heart className="text-rose-500" fill="currentColor" /> : <Bookmark />}
+              <Heart
+                className={isBookmarked ? 'text-rose-500' : undefined}
+                fill={isBookmarked ? 'currentColor' : 'none'}
+                aria-hidden="true"
+              />
             </Button>
           </div>
           {ranking && (
