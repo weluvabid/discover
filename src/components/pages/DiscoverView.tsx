@@ -27,6 +27,13 @@ interface DiscoverViewProps {
   genreExperiences: Experience[];
   genreRankingById: Map<string, RankedExperience>;
   isGenreRoute: boolean;
+  isAllCatalogueRoute: boolean;
+  allExperiences: Experience[];
+  allRankingById: Map<string, RankedExperience>;
+  allHasMore: boolean;
+  allTotal: number;
+  loadingMore: boolean;
+  onLoadMore: () => void;
   onGenreChange: (genre: ExperienceGenre | 'All') => void;
   onToggleBookmark: (id: string) => void;
   onPlay: (experience: Experience) => void;
@@ -47,6 +54,13 @@ export function DiscoverView({
   genreExperiences,
   genreRankingById,
   isGenreRoute,
+  isAllCatalogueRoute,
+  allExperiences,
+  allRankingById,
+  allHasMore,
+  allTotal,
+  loadingMore,
+  onLoadMore,
   onGenreChange,
   onToggleBookmark,
   onPlay,
@@ -61,6 +75,42 @@ export function DiscoverView({
   ) as Record<RankingContext, Map<string, RankedExperience>>;
   const featured = rankedSections.featured[0];
   const selectedPersona = personas.find((item) => item.id === persona);
+
+  if (isAllCatalogueRoute) {
+    return (
+      <div className="min-w-0">
+        <PageIntro
+          eyebrow="FULL CATALOGUE"
+          title="All experiences"
+          description="Browse the complete classified catalogue across every supported genre."
+        />
+        <div className="mb-2 text-sm text-muted-foreground" aria-live="polite">
+          Showing {allExperiences.length.toLocaleString('en')} of{' '}
+          {allTotal.toLocaleString('en')} experiences
+        </div>
+        <ExperienceSection
+          title="All experiences"
+          experiences={allExperiences}
+          rankingById={allRankingById}
+          rankingLabel="DISCOVERY SCORE"
+          variant="recommended"
+          bookmarks={bookmarks}
+          onToggleBookmark={onToggleBookmark}
+          onPlay={onPlay}
+          loading={loading}
+          emptyTitle="No experiences found"
+          emptyMessage="The catalogue is currently empty. Try again shortly."
+        />
+        {allHasMore && (
+          <div className="mt-8 flex justify-center">
+            <Button variant="outline" onClick={onLoadMore} disabled={loadingMore}>
+              {loadingMore ? 'Loading…' : 'Load more experiences'}
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (isGenreRoute) {
     return (

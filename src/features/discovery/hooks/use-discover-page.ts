@@ -28,6 +28,7 @@ import {
 
 const EMPTY_EXPERIENCES: Experience[] = [];
 const EMPTY_GENRE_RANKING = new Map<string, RankedExperience>();
+const CATALOGUE_PAGE_SIZE = 24;
 
 const EMPTY_RANKED_SECTIONS: Record<RankingContext, RankedExperience[]> = {
   featured: [],
@@ -62,6 +63,7 @@ export function useDiscoverPage(initialLocation = '/') {
   );
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
   const isGenreRoute = pathname.startsWith('/genre/');
+  const isAllCatalogueRoute = pathname === '/all';
   const [controlsOpen, setControlsOpen] = useState(
     () => new URLSearchParams(initialLocation.split('?')[1] ?? '').get('tune') === '1',
   );
@@ -99,6 +101,10 @@ export function useDiscoverPage(initialLocation = '/') {
   const [rankedSections, setRankedSections] = useState(EMPTY_RANKED_SECTIONS);
   const [visibleResults, setVisibleResults] = useState<Experience[]>([]);
   const [genreExperiences, setGenreExperiences] = useState<Experience[]>([]);
+  const [allExperiences, setAllExperiences] = useState<Experience[]>([]);
+  const [allRankingById, setAllRankingById] = useState<Map<string, RankedExperience>>(new Map());
+  const [allHasMore, setAllHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [genreRankingById, setGenreRankingById] = useState<Map<string, RankedExperience>>(
     new Map(),
   );
@@ -154,6 +160,7 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     if (
       isGenreRoute ||
+      isAllCatalogueRoute ||
       (activeView !== 'explore' && activeView !== 'trending' && activeView !== 'hidden-gems')
     ) {
       return;
@@ -236,8 +243,97 @@ export function useDiscoverPage(initialLocation = '/') {
     persona,
     rankingConfiguration,
     isGenreRoute,
+    isAllCatalogueRoute,
     discoveryRefreshVersion,
     retryVersion,
+  ]);
+
+  useEffect(() => {
+    if (!isAllCatalogueRoute) return;
+
+    const controller = new AbortController();
+    let active = true;
+
+    setLoading(true);
+    setError(null);
+    setAllExperiences([]);
+    setAllRankingById(new Map());
+    setAllHasMore(false);
+
+    fetchCatalog(
+      CATALOGUE_PAGE_SIZE,
+      controller.signal,
+      'All',
+      0,
+      rankingConfiguration,
+      persona || undefined,
+    )
+      .then((result) => {
+        if (!active) return;
+
+        setAllExperiences(result.data);
+        setAllRankingById(
+          new Map((result.rankedData ?? []).map((item) => [item.experience.id, item])),
+        );
+        setAllHasMore(result.hasMore ?? result.offset + result.data.length < result.total);
+      })
+      .catch((cause: unknown) => {
+        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
+
+        setError(
+          cause instanceof Error ? cause.message : 'Unable to load the experience catalogue.',
+        );
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [isAllCatalogueRoute, rankingConfiguration, persona, retryVersion]);
+
+  const loadMoreCatalogue = useCallback(async () => {
+    if (!isAllCatalogueRoute || loadingMore || !allHasMore) return;
+
+    const controller = new AbortController();
+    setLoadingMore(true);
+
+    try {
+      const result = await fetchCatalog(
+        CATALOGUE_PAGE_SIZE,
+        controller.signal,
+        'All',
+        allExperiences.length,
+        rankingConfiguration,
+        persona || undefined,
+      );
+
+      setAllExperiences((current) => {
+        const existing = new Set(current.map((item) => item.id));
+        return [...current, ...result.data.filter((item) => !existing.has(item.id))];
+      });
+      setAllRankingById((current) => {
+        const next = new Map(current);
+        for (const item of result.rankedData ?? []) next.set(item.experience.id, item);
+        return next;
+      });
+      setAllHasMore(result.hasMore ?? result.offset + result.data.length < result.total);
+    } catch (cause) {
+      if (!(cause instanceof DOMException && cause.name === 'AbortError')) {
+        setError(cause instanceof Error ? cause.message : 'Unable to load more experiences.');
+      }
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [
+    isAllCatalogueRoute,
+    loadingMore,
+    allHasMore,
+    allExperiences.length,
+    rankingConfiguration,
+    persona,
   ]);
 
   useEffect(() => {
@@ -466,7 +562,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
   const selectGenre = useCallback((next: ExperienceGenre | 'All') => {
     const destination =
-      next === 'All' ? '/' : `/genre/${next.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+      next === 'All' ? '/all' : `/genre/${next.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
     navigateTo(destination);
   }, []);
@@ -513,6 +609,13 @@ export function useDiscoverPage(initialLocation = '/') {
     genreRankingById: isGenreRoute && genre !== 'All' ? genreRankingById : EMPTY_GENRE_RANKING,
     searchRankingById,
     isGenreRoute,
+    isAllCatalogueRoute,
+    allExperiences: isAllCatalogueRoute ? allExperiences : EMPTY_EXPERIENCES,
+    allRankingById: isAllCatalogueRoute ? allRankingById : EMPTY_GENRE_RANKING,
+    allHasMore,
+    allTotal: genreCounts.All ?? 0,
+    loadingMore,
+    loadMoreCatalogue,
     persona,
     setPersona,
     bookmarks,

@@ -28,10 +28,11 @@ interface SidebarProps {
   selectedGenre: ExperienceGenre | 'All';
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
   genreCounts: Record<string, number>;
+  isAllCatalogueRoute: boolean;
 }
 
 function getGenrePath(genre: ExperienceGenre | 'All') {
-  return genre === 'All' ? '/' : `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  return genre === 'All' ? '/all' : `/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 }
 
 function getNavigationPath(view: DiscoveryView) {
@@ -39,7 +40,13 @@ function getNavigationPath(view: DiscoveryView) {
   return view === 'explore' ? '/' : `/${view}`;
 }
 
-export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts }: SidebarProps) {
+export function Sidebar({
+  activeView,
+  selectedGenre,
+  onSelectGenre,
+  genreCounts,
+  isAllCatalogueRoute,
+}: SidebarProps) {
   const { isMobile, setOpenMobile, state } = useSidebar();
 
   return (
@@ -65,7 +72,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
                         href={getNavigationPath(id)}
                         aria-label={label}
                         aria-current={
-                          activeView === id && (id !== 'explore' || selectedGenre === 'All')
+                          activeView === id && (id !== 'explore' || (selectedGenre === 'All' && !isAllCatalogueRoute))
                             ? 'page'
                             : undefined
                         }
@@ -90,7 +97,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
                         <span>{label}</span>
                       </a>
                     }
-                    isActive={activeView === id && (id !== 'explore' || selectedGenre === 'All')}
+                    isActive={activeView === id && (id !== 'explore' || (selectedGenre === 'All' && !isAllCatalogueRoute))}
                     tooltip={label}
                   />
                 </SidebarMenuItem>
@@ -113,9 +120,7 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
                     render={
                       <a
                         href={getGenrePath(value)}
-                        aria-current={
-                          selectedGenre === value && value !== 'All' ? 'page' : undefined
-                        }
+                        aria-current={selectedGenre === value && (value !== 'All' || isAllCatalogueRoute) ? 'page' : undefined}
                         onClick={(event) => {
                           if (
                             event.button !== 0 ||

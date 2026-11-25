@@ -78,4 +78,45 @@ describe('genre catalogue routes', () => {
     expect(client.getVotes).toHaveBeenCalledWith(['202']);
     expect(client.getIcons).toHaveBeenCalledWith(['202']);
   });
+  it('serves the complete all-genres catalogue through the All filter', async () => {
+    const client = {
+      getSorts: vi.fn().mockResolvedValue(sorts),
+      getDetails: vi.fn().mockResolvedValue(new Map()),
+      getVotes: vi.fn().mockResolvedValue(new Map()),
+      getIcons: vi.fn().mockResolvedValue(new Map()),
+      getSortContent: vi.fn(async (sortId: string) => [
+        {
+          universeId: sortId === 'trending' ? '301' : '302',
+          nativePosition: 1,
+          sourceSortId: sortId,
+          raw: {
+            name: sortId === 'trending' ? 'Psychological Horror Escape' : 'Racing Simulator',
+            description:
+              sortId === 'trending'
+                ? 'Survive a psychological horror experience.'
+                : 'Race on a track against other drivers.',
+          },
+        },
+      ]),
+    } as unknown as RoTunnelClient;
+
+    const response = await handleGet(
+      client,
+      new URL('http://localhost/api/experiences?genre=All&limit=24&offset=0'),
+    );
+    const body = (await response.json()) as {
+      data: Array<{ id: string }>;
+      total: number;
+      hasMore: boolean;
+      rankedData: Array<{ score: number; position: number; explanation: { finalScore: number } }>;
+    };
+
+    expect(response.status).toBe(200);
+    expect(body.total).toBe(2);
+    expect(body.data.map(({ id }) => id)).toEqual(['301', '302']);
+    expect(body.rankedData).toHaveLength(2);
+    expect(body.rankedData.every((item) => item.score === item.explanation.finalScore)).toBe(true);
+    expect(body.rankedData.map((item) => item.position)).toEqual([1, 2]);
+    expect(body.hasMore).toBe(false);
+  });
 });

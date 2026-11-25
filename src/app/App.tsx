@@ -95,6 +95,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
         activeView={page.activeView}
         selectedGenre={page.genre}
         genreCounts={page.genreCounts}
+        isAllCatalogueRoute={page.isAllCatalogueRoute}
         onSelectGenre={(selected) => {
           page.selectGenre(selected);
         }}
@@ -158,6 +159,13 @@ export default function App({ initialLocation = '/' }: AppProps) {
               genreExperiences={page.genreExperiences}
               genreRankingById={page.genreRankingById}
               isGenreRoute={page.isGenreRoute}
+              isAllCatalogueRoute={page.isAllCatalogueRoute}
+              allExperiences={page.allExperiences}
+              allRankingById={page.allRankingById}
+              allHasMore={page.allHasMore}
+              allTotal={page.genreCounts.All ?? 0}
+              loadingMore={page.loadingMore}
+              onLoadMore={page.loadMoreCatalogue}
               onGenreChange={page.setGenre}
               onToggleBookmark={toggleBookmark}
               onPlay={launchExperience}

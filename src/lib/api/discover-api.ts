@@ -147,9 +147,9 @@ export function fetchCatalog(
 ): Promise<CatalogPageResult> {
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
 
-  if (genre !== 'All') {
-    params.set('genre', genre);
-  }
+  // `genre=All` selects the ranked, paginated catalogue endpoint. Omitting it
+  // falls back to the unranked trending feed.
+  params.set('genre', genre);
 
   if (configuration) {
     params.set('strategy', configuration.strategy);
