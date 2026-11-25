@@ -42,6 +42,7 @@ export function firstMeaningfulLabel(...values: unknown[]): string | undefined {
 
 const NATIVE_GENRES: ReadonlyArray<{ pattern: RegExp; genre: ExperienceGenre }> = [
   { pattern: /^(?:horror|scary)$/i, genre: 'Horror' },
+  { pattern: /^(?:co.?op|cooperative|survival(?:\s+games?)?)$/i, genre: 'Co-op' },
   { pattern: /^(?:racing|driving|motorsports?)$/i, genre: 'Racing' },
   { pattern: /^(?:fps|shooter|fighting|combat)$/i, genre: 'Action RPG' },
   { pattern: /^(?:role.?play|town and city|building|simulation)$/i, genre: 'Simulation' },
@@ -91,6 +92,13 @@ const RULES: readonly Rule[] = [
     genre: 'Racing',
     pattern: /\b(?:car crash physics|crash physics|vehicle crash simulator)\b/i,
     title: 3,
+    description: 4,
+  },
+  {
+    genre: 'Racing',
+    pattern:
+      /\b(?:kart racing|kart racer|drag rac(?:e|ing)s?|street racing|car racing|vehicle racing|race cars?|race track|lap time|time trial|speedway|finish line|racing game|driving game)\b/i,
+    title: 6,
     description: 4,
   },
   { genre: 'Racing', pattern: /\bdriving simulator\b/i, title: 5, description: 3 },
@@ -173,9 +181,17 @@ const RULES: readonly Rule[] = [
   },
   {
     genre: 'Co-op',
-    pattern: /\b(?:co.?op|party game|hangout|social deduction|team up)\b/i,
-    title: 5,
-    description: 3,
+    pattern:
+      /\b(?:co.?op|cooperative|party game|hangout|social deduction|team up|play together|work together)\b/i,
+    title: 6,
+    description: 4,
+  },
+  {
+    genre: 'Co-op',
+    pattern:
+      /\b(?:survival (?:island|world|game)|island survival|survive the wilderness|wilderness survival|zombie survival|wave survival|gather resources|craft (?:tools|weapons|shelter)|hunger and thirst|base building|build a shelter|day and night cycle|scavenge for supplies|defend your base)\b/i,
+    title: 6,
+    description: 4,
   },
   {
     genre: 'Exploration',

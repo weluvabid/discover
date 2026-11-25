@@ -69,7 +69,7 @@ describe('genre catalogue routes', () => {
     expect(body.data).toHaveLength(1);
     expect(body.data[0]?.id).toBe('202');
     expect(body.hasMore).toBe(false);
-    expect(client.getDetails).toHaveBeenCalledWith(['201', '202']);
+    expect(client.getDetails).toHaveBeenCalledWith(['202']);
     expect(client.getVotes).toHaveBeenCalledWith(['202']);
     expect(client.getIcons).toHaveBeenCalledWith(['202']);
   });

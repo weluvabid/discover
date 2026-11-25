@@ -75,7 +75,11 @@ export function Sidebar({
                       <a
                         href={getNavigationPath(id, selectedGenre)}
                         aria-label={label}
-                        aria-current={activeView === id ? 'page' : undefined}
+                        aria-current={
+                          activeView === id && (id !== 'explore' || selectedGenre === 'All')
+                            ? 'page'
+                            : undefined
+                        }
                         onClick={(event) => {
                           if (
                             event.button !== 0 ||
@@ -94,7 +98,7 @@ export function Sidebar({
                         }}
                       />
                     }
-                    isActive={activeView === id}
+                    isActive={activeView === id && (id !== 'explore' || selectedGenre === 'All')}
                     tooltip={label}
                   >
                     <Icon aria-hidden="true" />
@@ -110,7 +114,9 @@ export function Sidebar({
           <SidebarGroupLabel>BROWSE GENRES</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {GENRE_FILTER_OPTIONS.map(({ value, label }) => (
+              {GENRE_FILTER_OPTIONS.filter(
+                ({ value }) => value === 'All' || genreCounts[value] !== 0,
+              ).map(({ value, label }) => (
                 <SidebarMenuItem key={value}>
                   <SidebarMenuButton
                     isActive={selectedGenre === value}

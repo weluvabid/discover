@@ -7,6 +7,7 @@ import { TtlCache } from '../cache/ttl-cache';
 
 const cache = new TtlCache(8);
 const feedCache = new TtlCache(DISCOVERY_LIMITS.cacheEntries);
+const MAX_CATALOGUE_CANDIDATES = 600;
 
 const SORT_GROUPS: readonly RegExp[] = [
   /top[\s._-]*trending|trending/i,
@@ -14,6 +15,10 @@ const SORT_GROUPS: readonly RegExp[] = [
   /up[\s._-]*and[\s._-]*coming|emerging|undiscovered/i,
   /new[\s._-]*experiences|newly[\s._-]*launched|recently[\s._-]*launched/i,
   /recently[\s._-]*updated|updated/i,
+  /survival|co.?op|team[\s._-]*play/i,
+  /racing|driving|motorsport|vehicles?/i,
+  /adventure|exploration|open[\s._-]*world/i,
+  /simulator|simulation|sandbox/i,
   /top[\s._-]*rated|highest[\s._-]*rated/i,
   /most[\s._-]*favorited|top[\s._-]*favorites?/i,
   /most[\s._-]*visited|top[\s._-]*visits/i,
@@ -58,6 +63,14 @@ export interface GenreCatalogue {
   total: number;
   byGenre: Record<ExperienceGenre, NativeCandidate[]>;
   details: Map<string, JsonObject>;
+  diagnostics: {
+    feedCandidateCounts: Record<string, number>;
+    failedFeeds: string[];
+    uniqueCandidates: number;
+    lowConfidence: number;
+    unknown: number;
+    detailLookupCandidates: number;
+  };
 }
 
 async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogue> {
@@ -82,12 +95,20 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
     })),
   );
   const unique = new Map<string, NativeCandidate>();
+  const feedCandidateCounts: Record<string, number> = {};
+  const failedFeeds: string[] = [];
 
-  for (const result of feedResults) {
-    if (result.status !== 'fulfilled') continue;
+  for (const [index, result] of feedResults.entries()) {
+    if (result.status !== 'fulfilled') {
+      failedFeeds.push(sorts[index]?.id ?? 'unknown');
+      continue;
+    }
+
+    feedCandidateCounts[result.value.sort.id] = result.value.candidates.length;
 
     for (const candidate of result.value.candidates) {
       if (unique.has(candidate.universeId)) continue;
+      if (unique.size >= MAX_CATALOGUE_CANDIDATES) break;
 
       unique.set(candidate.universeId, {
         ...candidate,
@@ -104,30 +125,60 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
     if (firstFailure) throw firstFailure.reason;
   }
 
-  const ids = [...unique.keys()];
-  const details = await client.getDetails(ids).catch(() => new Map<string, JsonObject>());
   const byGenre = Object.fromEntries(
     EXPERIENCE_GENRES.map((genre) => [genre, [] as NativeCandidate[]]),
   ) as Record<ExperienceGenre, NativeCandidate[]>;
+  const details = new Map<string, JsonObject>();
+  const pendingDetails: NativeCandidate[] = [];
+  let lowConfidence = 0;
+  let unknown = 0;
 
+  // Classify feed metadata first. Only candidates that lack a confident result
+  // need the more expensive game-details lookup.
   for (const candidate of unique.values()) {
-    const normalized = normalizeExperience(
-      candidate,
-      details.get(candidate.universeId) ?? candidate.raw,
-      undefined,
-      undefined,
-    );
+    const normalized = normalizeExperience(candidate, candidate.raw, undefined, undefined);
 
-    // Genre navigation must be trustworthy. Low-confidence and unknown guesses
-    // remain available in the general feed, but do not inflate genre coverage.
-    if (normalized.genreConfidence !== 'high' && normalized.genreConfidence !== 'medium') {
-      continue;
+    if (normalized.genreConfidence === 'high' || normalized.genreConfidence === 'medium') {
+      byGenre[normalized.genre].push(candidate);
+    } else {
+      pendingDetails.push(candidate);
     }
-
-    byGenre[normalized.genre].push(candidate);
   }
 
-  return { total: unique.size, byGenre, details };
+  const pendingIds = pendingDetails.map(({ universeId }) => universeId);
+  const fetchedDetails = pendingIds.length
+    ? await client.getDetails(pendingIds).catch(() => new Map<string, JsonObject>())
+    : new Map<string, JsonObject>();
+
+  for (const candidate of pendingDetails) {
+    const detail = fetchedDetails.get(candidate.universeId);
+
+    if (detail) details.set(candidate.universeId, detail);
+
+    const normalized = normalizeExperience(candidate, detail ?? candidate.raw, undefined, undefined);
+
+    if (normalized.genreConfidence === 'high' || normalized.genreConfidence === 'medium') {
+      byGenre[normalized.genre].push(candidate);
+    } else if (normalized.genreConfidence === 'low') {
+      lowConfidence += 1;
+    } else {
+      unknown += 1;
+    }
+  }
+
+  return {
+    total: unique.size,
+    byGenre,
+    details,
+    diagnostics: {
+      feedCandidateCounts,
+      failedFeeds,
+      uniqueCandidates: unique.size,
+      lowConfidence,
+      unknown,
+      detailLookupCandidates: pendingIds.length,
+    },
+  };
 }
 
 export function clearGenreCatalogueCache(): void {
@@ -136,7 +187,7 @@ export function clearGenreCatalogueCache(): void {
 }
 
 export function genreCatalogueFor(client: RoTunnelClient): Promise<GenreCatalogue> {
-  return cache.getOrLoad('rotunnel:genre-catalogue:v1', CACHE_TTL_MS.genreCatalogue, () =>
+  return cache.getOrLoad('rotunnel:genre-catalogue:v2', CACHE_TTL_MS.genreCatalogue, () =>
     loadGenreCatalogue(client),
   );
 }
@@ -157,7 +208,14 @@ export async function genreCataloguePage(
   // entire multi-feed catalogue. This bounds upstream metadata fan-out.
   const page = candidates.slice(offset, offset + Math.min(limit, DISCOVERY_LIMITS.pageSize));
 
-  return { candidates: page, total: candidates.length, details: catalogue.details };
+  const pageDetails = new Map(
+    page.flatMap((candidate) => {
+      const detail = catalogue.details.get(candidate.universeId);
+      return detail ? [[candidate.universeId, detail] as const] : [];
+    }),
+  );
+
+  return { candidates: page, total: candidates.length, details: pageDetails };
 }
 
 export function genreCatalogueCounts(

@@ -36,18 +36,30 @@ export function Header({
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         inputRef.current?.focus();
+        return;
+      }
+
+      if (event.altKey && event.code === 'KeyP') {
+        event.preventDefault();
+        window.dispatchEvent(new Event('discover:open-persona-selector'));
+        return;
+      }
+
+      if (event.altKey && event.code === 'KeyT') {
+        event.preventDefault();
+        onOpenDiscoveryControls();
       }
     };
 
     window.addEventListener('keydown', handleShortcut);
 
     return () => window.removeEventListener('keydown', handleShortcut);
-  }, []);
+  }, [onOpenDiscoveryControls]);
 
   return (
     <div className="sticky top-0 z-40 border-b border-border/80 bg-background/90 px-4 py-3 backdrop-blur-xl md:flex md:items-center md:gap-4 md:px-6">
       <header className="flex min-h-10 items-center justify-between gap-3 md:contents">
-        <SidebarTrigger className="hidden md:inline-flex" />
+        <SidebarTrigger className="hidden md:inline-flex" aria-label="Toggle navigation sidebar (Ctrl/Command + B)" aria-keyshortcuts="Control+B Meta+B" title="Toggle sidebar · Ctrl/Command + B" />
         <div className="md:hidden">
           <Brand compact />
         </div>
@@ -63,7 +75,8 @@ export function Header({
             size="default"
             onClick={onOpenDiscoveryControls}
             aria-label="Tune discovery preferences"
-            title="Tune discovery"
+            title="Tune discovery · Alt/Option + T"
+            aria-keyshortcuts="Alt+T"
             className="tune-discovery-glow relative gap-2"
           >
             <Sparkles aria-hidden="true" />
@@ -77,7 +90,9 @@ export function Header({
             size="icon"
             className="md:hidden"
             onClick={toggleSidebar}
-            aria-label="Open navigation menu"
+            aria-label="Open navigation menu (Ctrl/Command + B)"
+            aria-keyshortcuts="Control+B Meta+B"
+            title="Toggle sidebar · Ctrl/Command + B"
             aria-expanded={isMobile ? openMobile : undefined}
           >
             <Menu />
@@ -92,6 +107,7 @@ export function Header({
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Search experiences, creators, and tags..."
           aria-label="Search experiences, creators, and tags"
+          aria-keyshortcuts="Control+K Meta+K"
           className="h-full min-h-0 border-0 bg-transparent px-0 text-sm shadow-none placeholder:text-sm focus-visible:ring-0"
         />
         {query.trim() && (

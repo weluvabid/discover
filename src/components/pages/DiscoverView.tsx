@@ -19,6 +19,7 @@ interface DiscoverViewProps {
   activeView: DiscoveryView;
   bookmarks: string[];
   savedExperiences: Experience[];
+  savedExperiencesLoading: boolean;
   collectionExperiences: Experience[];
   recommendations: Experience[];
   rankedSections: Record<RankingContext, RankedExperience[]>;
@@ -38,6 +39,7 @@ export function DiscoverView({
   activeView,
   bookmarks,
   savedExperiences,
+  savedExperiencesLoading,
   collectionExperiences,
   recommendations,
   rankedSections,
@@ -96,6 +98,7 @@ export function DiscoverView({
         <ExperienceSection
           title="Saved experiences"
           experiences={savedExperiences}
+          loading={savedExperiencesLoading}
           variant="recommended"
           bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark}

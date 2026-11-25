@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Check, CheckCircle2, Sparkles } from 'lucide-react';
 import type { DiscoveryPersona } from '@/types/experience';
 import { getPersonaAvatarUrl } from '@/lib/persona-avatar';
@@ -29,6 +29,12 @@ export function PersonaCommandSelector({
   onSelect,
 }: PersonaCommandSelectorProps) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    window.addEventListener('discover:open-persona-selector', handleOpen);
+    return () => window.removeEventListener('discover:open-persona-selector', handleOpen);
+  }, []);
   const selectedPersona = personas.find((persona) => persona.id === selectedPersonaId);
   const orderedPersonas = selectedPersona
     ? [selectedPersona, ...personas.filter((persona) => persona.id !== selectedPersonaId)]
@@ -77,6 +83,7 @@ export function PersonaCommandSelector({
                   : 'Choose a play style'
               }
               aria-haspopup="dialog"
+              aria-keyshortcuts="Alt+P"
               aria-expanded={open}
               onClick={() => setOpen(true)}
             />
@@ -92,7 +99,7 @@ export function PersonaCommandSelector({
           )}
         </TooltipTrigger>
         <TooltipContent>
-          {selectedPersona ? selectedPersona.label : 'All play styles'}
+          {selectedPersona ? selectedPersona.label : 'All play styles'} · Alt/Option + P
         </TooltipContent>
       </Tooltip>
 

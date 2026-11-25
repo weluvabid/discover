@@ -39,12 +39,20 @@ export async function enrichCandidates(
   if (candidates.length === 0) return [];
 
   const ids = candidateIds(candidates);
+  const missingDetailIds = preloadedDetails
+    ? ids.filter((id) => !preloadedDetails.has(id))
+    : ids;
   const [detailsResult, votesResult, iconsResult] = await Promise.allSettled([
-    preloadedDetails ? Promise.resolve(preloadedDetails) : client.getDetails(ids),
+    missingDetailIds.length ? client.getDetails(missingDetailIds) : Promise.resolve(new Map<string, JsonObject>()),
     client.getVotes(ids),
     client.getIcons(ids),
   ]);
-  const details = detailsResult.status === 'fulfilled' ? detailsResult.value : new Map();
+  const details = new Map(preloadedDetails ?? []);
+
+  if (detailsResult.status === 'fulfilled') {
+    for (const [id, detail] of detailsResult.value) details.set(id, detail);
+  }
+
   const votes = votesResult.status === 'fulfilled' ? votesResult.value : new Map();
   const icons = iconsResult.status === 'fulfilled' ? iconsResult.value : new Map();
 

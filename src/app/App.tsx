@@ -35,6 +35,22 @@ export default function App({ initialLocation = '/' }: AppProps) {
     [bookmarks, toggleBookmarkAction],
   );
 
+  const openDiscoveryControls = useCallback(
+    () => page.setControlsOpen(true),
+    [page.setControlsOpen],
+  );
+
+  const selectPersona = useCallback(
+    (personaId: string) => {
+      page.setPersona(personaId);
+      const selected = page.personas.find((item) => item.id === personaId);
+      toast.success(
+        selected ? `${selected.label} play style selected` : 'Showing all play styles',
+      );
+    },
+    [page.personas, page.setPersona],
+  );
+
   const launchExperience = useCallback((experience: Experience) => {
     if (!experience.robloxUrl) {
       toast.error(`${experience.title} doesn't have a Roblox launch URL yet.`);
@@ -86,11 +102,11 @@ export default function App({ initialLocation = '/' }: AppProps) {
           query={page.query}
           onQueryChange={page.setQuery}
           resultCount={page.visibleResults.length}
-          onOpenDiscoveryControls={() => page.setControlsOpen(true)}
+          onOpenDiscoveryControls={openDiscoveryControls}
           hasCustomRanking={page.hasCustomRanking}
           personas={page.personas}
           persona={page.persona}
-          onPersonaChange={page.setPersona}
+          onPersonaChange={selectPersona}
         />
         <main
           className="mx-auto w-full max-w-screen-2xl space-y-8 px-4 py-6 md:px-6 lg:px-8"
@@ -130,6 +146,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
               activeView={page.activeView}
               bookmarks={page.bookmarks}
               savedExperiences={page.savedExperiences}
+              savedExperiencesLoading={page.savedExperiencesLoading}
               collectionExperiences={page.collectionCatalog}
               recommendations={page.rankedRecommendations}
               rankedSections={page.rankedSections}

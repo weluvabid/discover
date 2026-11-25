@@ -98,6 +98,7 @@ export function useDiscoverPage(initialLocation = '/') {
   const [genreExperiences, setGenreExperiences] = useState<Experience[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
+  const [savedExperiencesLoading, setSavedExperiencesLoading] = useState(true);
   const [collectionCatalog, setCollectionCatalog] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -287,9 +288,13 @@ export function useDiscoverPage(initialLocation = '/') {
     let active = true;
 
     if (bookmarks.length === 0) {
+      setSavedExperiencesLoading(true);
       Promise.resolve()
         .then(() => {
-          if (active) setSavedExperiences([]);
+          if (active) {
+            setSavedExperiences([]);
+            setSavedExperiencesLoading(false);
+          }
         })
         .catch((cause: unknown) => {
           if (!active) return;
@@ -303,9 +308,13 @@ export function useDiscoverPage(initialLocation = '/') {
       };
     }
 
+    setSavedExperiencesLoading(true);
     Promise.all(bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)))
       .then((items) => {
         if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
+      })
+      .finally(() => {
+        if (active) setSavedExperiencesLoading(false);
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
@@ -449,6 +458,7 @@ export function useDiscoverPage(initialLocation = '/') {
     rankedRecommendations,
     rankedSections,
     savedExperiences,
+    savedExperiencesLoading,
     collectionCatalog,
     hasCustomRanking,
     navigate,

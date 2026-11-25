@@ -1,5 +1,5 @@
 import {
-  Bookmark,
+  Heart,
   Minus,
   Sparkles,
   Star,
@@ -109,7 +109,7 @@ export function ExperienceCard({
                   />
                 }
               >
-                <Bookmark
+                <Heart
                   size={16}
                   className={isBookmarked ? 'text-rose-500' : undefined}
                   fill={isBookmarked ? 'currentColor' : 'none'}

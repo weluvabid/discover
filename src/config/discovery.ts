@@ -72,7 +72,7 @@ export const DISCOVERY_LIMITS = {
   resultLimit: 100,
   searchQueryCharacters: 200,
   pageSize: 500,
-  genreCatalogueSorts: 8,
+  genreCatalogueSorts: 12,
 } as const;
 
 export const CACHE_TTL_MS = {

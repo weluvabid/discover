@@ -46,6 +46,38 @@ describe('genre catalogue', () => {
     ]);
   });
 
+  it('prioritizes genre-relevant feeds and respects the configured feed limit', () => {
+    const sorts: NativeSort[] = [
+      { id: 'trending', name: 'Top Trending', description: '' },
+      { id: 'survival', name: 'Top Survival Games', description: '' },
+      { id: 'racing', name: 'Racing Games', description: '' },
+      { id: 'adventure', name: 'Adventure Experiences', description: '' },
+      { id: 'simulation', name: 'Simulation Sandbox', description: '' },
+      ...Array.from({ length: 12 }, (_, index) => ({
+        id: `other-${index}`,
+        name: `Other Feed ${index}`,
+        description: '',
+      })),
+    ];
+
+    const selected = selectGenreCatalogueSorts(sorts);
+
+    expect(selected.map(({ id }) => id)).toEqual([
+      'trending',
+      'survival',
+      'racing',
+      'adventure',
+      'simulation',
+      'other-0',
+      'other-1',
+      'other-2',
+      'other-3',
+      'other-4',
+      'other-5',
+      'other-6',
+    ]);
+  });
+
   it('merges feeds, deduplicates IDs and counts confident classifications', async () => {
     const sorts: NativeSort[] = [
       { id: 'trending', name: 'Top Trending', description: '' },
@@ -82,6 +114,11 @@ describe('genre catalogue', () => {
     expect(counts.Racing).toBe(1);
     expect(counts['Co-op']).toBe(1);
     expect(counts.All).toBe(3);
+    expect(catalogue.diagnostics.uniqueCandidates).toBe(4);
+    expect(catalogue.diagnostics.unknown).toBe(1);
+    expect(catalogue.diagnostics.detailLookupCandidates).toBe(1);
+    expect(client.getDetails).toHaveBeenCalledWith(['3']);
+    expect(catalogue.diagnostics.failedFeeds).toEqual([]);
   });
 
   it('continues when one native feed fails and enriches only the requested page', async () => {
@@ -103,5 +140,7 @@ describe('genre catalogue', () => {
     expect(page.total).toBe(1);
     expect(page.candidates).toHaveLength(1);
     expect(page.candidates[0]?.universeId).toBe('10');
+    const catalogue = await genreCatalogueFor(client);
+    expect(catalogue.diagnostics.failedFeeds).toEqual(['popular']);
   });
 });
