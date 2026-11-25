@@ -12,6 +12,8 @@ import {
   fetchExperience,
   fetchPersonas,
   fetchGenreCounts,
+  getCachedPersonas,
+  getCachedGenreCounts,
   searchCatalog,
   type SearchSort,
 } from '@/lib/api/discover-api';
@@ -93,9 +95,11 @@ export function useDiscoverPage(initialLocation = '/') {
   const query = searchParams.get('q') ?? '';
   const requestedSort = searchParams.get('sort');
   const searchSort: SearchSort = isSearchSort(requestedSort) ? requestedSort : 'relevance';
-  const [personas, setPersonas] = useState<DiscoveryPersona[]>([]);
-  const [personasLoading, setPersonasLoading] = useState(true);
-  const [genreCounts, setGenreCounts] = useState<Record<string, number>>({});
+  const [personas, setPersonas] = useState<DiscoveryPersona[]>(() => getCachedPersonas() ?? []);
+  const [personasLoading, setPersonasLoading] = useState(() => !getCachedPersonas());
+  const [genreCounts, setGenreCounts] = useState<Record<string, number>>(
+    () => getCachedGenreCounts() ?? {},
+  );
   const persona =
     preferences.personaId &&
     (personas.length === 0 || personas.some((item) => item.id === preferences.personaId))
@@ -132,20 +136,26 @@ export function useDiscoverPage(initialLocation = '/') {
       .then(() => {
         if (controller.signal.aborted) return;
 
-        setPersonasLoading(true);
+        if (!getCachedPersonas()) setPersonasLoading(true);
 
-        fetchGenreCounts(controller.signal)
-          .then((result) => setGenreCounts(result.data))
+        fetchGenreCounts()
+          .then((result) => {
+            if (!controller.signal.aborted) setGenreCounts(result.data);
+          })
           .catch(() => undefined);
 
-        return fetchPersonas(controller.signal)
-          .then((result) => setPersonas(result.data))
+        return fetchPersonas()
+          .then((result) => {
+            if (!controller.signal.aborted) setPersonas(result.data);
+          })
           .catch((cause: unknown) => {
-            if (cause instanceof DOMException && cause.name === 'AbortError') return;
+            if (controller.signal.aborted) return;
 
             setError(cause instanceof Error ? cause.message : 'Unable to load play styles.');
           })
-          .finally(() => setPersonasLoading(false));
+          .finally(() => {
+            if (!controller.signal.aborted) setPersonasLoading(false);
+          });
       })
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;

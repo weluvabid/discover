@@ -168,10 +168,57 @@ export function fetchCatalog(
   return request<CatalogPageResult>(`/experiences?${params}`, { signal });
 }
 
-export function fetchPersonas(signal?: AbortSignal): Promise<{ data: DiscoveryPersona[] }> {
-  return request<{ data: DiscoveryPersona[] }>('/personas', { signal });
+type CachedResponse<T> = { data: T };
+
+let personasCache: CachedResponse<DiscoveryPersona[]> | undefined;
+let personasRequest: Promise<CachedResponse<DiscoveryPersona[]>> | undefined;
+let genreCountsCache: CachedResponse<GenreCounts> | undefined;
+let genreCountsRequest: Promise<CachedResponse<GenreCounts>> | undefined;
+
+/** Read the module-level catalog cache synchronously during route remounts. */
+export function getCachedPersonas(): DiscoveryPersona[] | undefined {
+  return personasCache?.data;
 }
 
-export function fetchGenreCounts(signal?: AbortSignal): Promise<{ data: GenreCounts }> {
-  return request<{ data: GenreCounts }>('/genres', { signal });
+/** Read the module-level genre-count cache synchronously during route remounts. */
+export function getCachedGenreCounts(): GenreCounts | undefined {
+  return genreCountsCache?.data;
+}
+
+/** Static metadata is shared across Astro route transitions; one request populates it. */
+export function fetchPersonas(): Promise<CachedResponse<DiscoveryPersona[]>> {
+  if (personasCache) return Promise.resolve(personasCache);
+
+  if (!personasRequest) {
+    personasRequest = request<CachedResponse<DiscoveryPersona[]>>('/personas')
+      .then((result) => {
+        personasCache = result;
+
+        return result;
+      })
+      .finally(() => {
+        personasRequest = undefined;
+      });
+  }
+
+  return personasRequest;
+}
+
+/** Genre counts are static catalog metadata too, so share them across route remounts. */
+export function fetchGenreCounts(): Promise<CachedResponse<GenreCounts>> {
+  if (genreCountsCache) return Promise.resolve(genreCountsCache);
+
+  if (!genreCountsRequest) {
+    genreCountsRequest = request<CachedResponse<GenreCounts>>('/genres')
+      .then((result) => {
+        genreCountsCache = result;
+
+        return result;
+      })
+      .finally(() => {
+        genreCountsRequest = undefined;
+      });
+  }
+
+  return genreCountsRequest;
 }
