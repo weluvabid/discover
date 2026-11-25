@@ -69,9 +69,9 @@ SQLite catalog retrieval remains on the main thread. Its measured p50 stayed clo
 
 The worker pool has a bounded queue, reports capacity exhaustion as HTTP 503, rejects work assigned to a failed worker, replaces failed workers, and shuts down with the API process. `RANKING_WORKERS` can override the default, and setting it to `0` restores synchronous ranking for comparison. `RANKING_QUEUE_CAPACITY` controls the number of waiting ranking jobs.
 
-## Reproducing the benchmark
+## Historical benchmark reproduction
 
-The benchmark builds the API and reads the local SQLite catalog in read-only mode. Run all configurations with the same sample count, warm-up count, concurrency levels, machine, and catalog:
+This investigation measured the former SQLite-backed API and worker-pool implementation. The benchmark scripts and worker pool are now retained under `scripts/deprecated/` and `src/deprecated/`; the commands below document the original run configuration and are not current package scripts. They are included to preserve how the reported measurements were produced.
 
 ```bash
 # Synchronous baseline
@@ -86,7 +86,7 @@ BENCHMARK_SAMPLES=200 BENCHMARK_WARMUPS=30 BENCHMARK_CONCURRENCY=1,5,10,25,50,10
 BENCHMARK_SAMPLES=200 BENCHMARK_WARMUPS=30 BENCHMARK_CONCURRENCY=1,5,10,25,50,100 RANKING_WORKERS=8 pnpm benchmark:api:workers
 ```
 
-The measurements above came from a local run using Node.js v22.22.0 on the development machine, against the 1,027-record eligible catalog. They describe that benchmark environment and workload.
+The measurements above came from a local run using Node.js v22.22.0 on the development machine, against the 1,027-record eligible catalog. They describe that historical benchmark environment and workload; they do not describe the active RoTunnel API, which now runs ranking in-process.
 
 ## What I took from the experiment
 

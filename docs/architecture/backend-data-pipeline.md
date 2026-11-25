@@ -43,13 +43,15 @@ These commands describe the historical pipeline. Its scripts are retained under 
 
 `--no-enrich` is intended only for parser/import smoke tests; those rows remain pending and are not exposed by the API until enriched.
 
-## API
+## Historical API contract
+
+The following routes describe the retired SQLite-backed API, not the active live API:
 
 - `GET /api/health`
 - `GET /api/experiences?limit=100&offset=0&q=...&genre=...`
 - `GET /api/experiences/:universeId`
 - `GET /api/search?q=...`
 - `GET /api/personas`
-- `POST /api/discover/:context` with optional `{ "persona": "competitive", "strategy": "discovery", "limit": 40 }`
+- `POST /api/discover/:context`
 
-Discovery accepts the existing ranking contexts and ranking configuration; it does not duplicate or fork the ranking algorithm. API list limits are capped at 500; discovery ranks across the full valid local catalog (up to 10,000 in the current source).
+The old `handleApiRequest` entry point now returns HTTP 501 (`LEGACY_CATALOG_UNSUPPORTED`). The active routes are implemented by `src/server/api/routes/get.ts` and `post.ts` behind `handleLiveRequest`; see [Live Roblox discovery provider](live-roblox-provider.md) for the current contract and data path.

@@ -1,5 +1,7 @@
 # Play-style recommendation evaluation
 
+> Historical evaluation of the deprecated SQLite/Turso catalog and synthetic ranking inputs. This report is not an evaluation of the active live RoTunnel provider or current Roblox data. The evaluator and its data dependencies are retained under `scripts/deprecated/` for reference.
+
 Generated: 2026-11-21T16:26:52.879Z
 Evaluation clock: 2024-11-13T09:56:00.000Z
 Catalog: 1,027 valid records (/Users/abid/dev/oss/discover/data/roblox-games.db)

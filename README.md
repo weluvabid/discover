@@ -27,12 +27,13 @@ pnpm dev
 
 The application is organized around feature ownership rather than a single global component or stylesheet:
 
-- `app/` owns the application composition.
-- `components/layout/`, `components/discovery/`, `components/experience/`, and `components/pages/` contain focused presentation components.
-- `features/search/` owns pure search and filtering functions.
-- `features/discovery/engine/` contains the framework-independent ranking model and algorithms.
-- `features/discovery/hooks/` owns discovery-page state and orchestration.
-- `data/mocks/experiences.ts` contains catalog records; `data/mocks/catalog.ts` contains catalog lookup helpers.
+- `src/app/` owns the application composition.
+- `src/components/layout/`, `src/components/discovery/`, `src/components/experience/`, and `src/components/pages/` contain focused presentation components.
+- `src/features/search/` owns pure search and filtering functions.
+- `src/features/discovery/engine/` contains the framework-independent ranking model and algorithms.
+- `src/features/discovery/hooks/` owns discovery-page state and orchestration.
+- `src/server/` owns the live API boundary, RoTunnel provider, enrichment and process-local caches.
+- `src/deprecated/` contains the retired SQLite/Turso ingestion and worker-pool implementation.
 - Component-owned styles live beside their component areas. `styles/index.css` preserves the cascade order and imports the small global foundation plus those feature styles.
 
 ## Quality checks
@@ -82,7 +83,7 @@ Import this repository as a Vercel project using the repository root as the proj
 - Build command: `pnpm build`
 - Output directory: `dist`
 
-Vercel detects the root `api/` directory and deploys its catch-all Node.js Function separately from the static Astro output. The function forwards the original request to `handleLiveRequest`; API route logic is not duplicated. The function has a 60-second maximum duration to accommodate bounded upstream Roblox requests and retries.
+Vercel detects the root `api/` directory and deploys its catch-all Node.js Function separately from the static Astro output. The function forwards the original request to `handleLiveRequest`; API route logic is not duplicated.
 
 Leave `PUBLIC_DISCOVER_API_URL` unset (or empty) for same-origin `/api` routing. Set `CORS_ORIGIN` only when allowing additional browser origins; same-origin production requests do not require CORS. Do not put upstream credentials or private values in `PUBLIC_*` variables.
 

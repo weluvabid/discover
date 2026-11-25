@@ -30,7 +30,9 @@ The RoTunnel provider is split by responsibility under `src/server/providers/rot
 
 `src/server/api/rotunnel.ts` remains a small compatibility facade for existing imports; new server code should import from `src/server/providers/rotunnel/` directly. The provider does not import the ranking engine.
 
-`src/server/api/live-app.ts` is the HTTP boundary: CORS, method dispatch and normalized error handling. Route implementations live in `src/server/api/routes/get.ts` and `post.ts`. Candidate retrieval, enrichment caching and search-feed loading live in `src/server/services/discovery-data.ts`; experience enrichment/persona application live in `experience-enrichment.ts`; search ordering lives in `search-sorting.ts`; response serialization lives in `src/server/api/http/json-response.ts`. `src/server/live-index.ts` adapts the handler to the local Node HTTP server. The repository currently runs the API as a separate local Node process; it does not contain an active Vercel function adapter.
+`src/server/api/live-app.ts` is the shared HTTP boundary: CORS, method dispatch and normalized error handling. Route implementations live in `src/server/api/routes/get.ts` and `post.ts`. Candidate retrieval, enrichment caching and search-feed loading live in `src/server/services/discovery-data.ts`; experience enrichment/persona application live in `experience-enrichment.ts`; search ordering lives in `search-sorting.ts`; response serialization lives in `src/server/api/http/json-response.ts`.
+
+`src/server/live-index.ts` adapts the handler to the local Node HTTP server. The root `api/[...path].ts` Vercel function calls the same `handleLiveRequest` boundary, so route behavior is shared rather than reimplemented in the deployment adapter.
 
 The provider keeps `Experience.source.sortId` and `Experience.source.nativePosition`. The ranking engine may reorder a result, but the original Roblox feed identity and ordinal remain available for side-by-side comparison.
 
@@ -55,7 +57,7 @@ The provider discovers available Explore sorts at runtime, selects the closest n
 
 ## Failure handling and load control
 
-- Upstream requests have a five-second timeout and at most one bounded retry for 429/5xx or transport failures.
+- Upstream requests have a five-second timeout, at most one bounded retry for 429/5xx or transport failures, and a process-wide transport limit of eight active requests with at most 64 queued requests. Excess queued work fails with 503 rather than growing without bound.
 - Metadata, vote and icon enrichment run concurrently and are best-effort; valid discovery candidates survive a partial enrichment failure.
 - Explore sort lists, candidate feeds, search results and individual detail/vote/icon lookups use bounded process-local LRU/TTL caches with request coalescing. Candidate, detail, vote and icon data use 24-hour TTLs; search acquisition uses 12 hours. Cache loss on cold starts is expected and does not affect correctness. Successful GET discovery, genre and search responses advertise browser and shared-cache lifetimes (one-hour browser max-age, 12/24-hour shared max-age, and 48-hour stale-while-revalidate). These shared-cache directives only take effect when the API origin is behind a compatible CDN; the Vercel static frontend does not cache a separate cross-origin API on its behalf.
 - Discovery candidate pools are capped at 100 before enrichment; metadata/vote/icon requests are batched in groups of 50. Genre browsing merges at most twelve native feeds, then enriches only the requested page.
@@ -65,7 +67,17 @@ The provider discovers available Explore sorts at runtime, selects the closest n
 
 ## Runtime and deployment boundary
 
-The repository currently contains an Astro static frontend and a separately started Node HTTP API. `pnpm api:dev` builds and watches the API; `pnpm dev` starts Astro. There is no checked-in Vercel function adapter or deployment configuration in this offline repository. A future hosting adapter should call `handleLiveRequest` rather than duplicate route logic. The server-only dependency graph must remain isolated from the browser build.
+The repository contains an Astro static frontend and a server-side API:
+
+- `pnpm dev` starts the Astro development server.
+- `pnpm api:dev` builds and watches the local Node API.
+- `pnpm api:start` starts the built Node API.
+- `pnpm api:build` builds the server entry into `dist-server/`.
+- On Vercel, `api/[...path].ts` exposes the shared handler as a Node.js Function under `/api/*`.
+
+The frontend defaults to same-origin `/api` requests in production. Local development uses the API origin configured by the frontend environment helper, defaulting to `http://127.0.0.1:8787/api`. `CORS_ORIGIN` is only needed for additional cross-origin browser clients; same-origin production requests do not require CORS.
+
+The Vercel adapter is deliberately thin and delegates to `handleLiveRequest`. Keep provider code, Node built-ins and server-only dependencies out of the browser dependency graph; `pnpm check:boundaries` enforces the current import boundary.
 
 ## Legacy catalog
 
