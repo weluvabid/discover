@@ -108,10 +108,10 @@ export function Header({
             aria-label="Tune discovery preferences"
             title="Tune discovery · T"
             aria-keyshortcuts="T"
-            className="tune-discovery-glow relative gap-2"
+            className="tune-discovery-glow relative gap-2 max-md:size-10 max-md:px-0"
           >
             <Sparkles aria-hidden="true" />
-            <span>Tune discovery</span>
+            <span className="max-md:sr-only">Tune discovery</span>
             {hasCustomRanking && (
               <span className="absolute right-1 top-1 size-1.5 rounded-full bg-foreground" />
             )}

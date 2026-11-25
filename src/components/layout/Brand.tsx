@@ -1,5 +1,3 @@
-import { Gamepad2 } from 'lucide-react';
-
 interface BrandProps {
   compact?: boolean;
 }
@@ -11,9 +9,15 @@ export function Brand({ compact = false }: BrandProps) {
       href="/"
       aria-label="Discover home"
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-secondary text-foreground">
-        <Gamepad2 size={compact ? 24 : 19} strokeWidth={2.3} />
-      </span>
+      <img
+        src="/brand/brand/mark.svg"
+        alt=""
+        aria-hidden="true"
+        width={compact ? 34 : 32}
+        height={compact ? 32 : 30}
+        className="size-8 shrink-0 object-contain"
+        draggable={false}
+      />
       {!compact && (
         <span className="flex min-w-0 flex-col">
           <strong className="text-sm leading-tight tracking-tight">Discover.</strong>
