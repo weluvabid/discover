@@ -4,11 +4,20 @@ import { toast } from 'sonner';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Navigation';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { DiscoverView } from '@/components/pages/DiscoverView';
-import { SearchResultsView } from '@/components/pages/SearchResultsView';
 import { useDiscoverPage } from '@/features/discovery/hooks/use-discover-page';
 import type { Experience } from '@/types/experience';
 import { resolveRobloxLaunchUrl } from '@/lib/roblox-launch';
+
+const DiscoverView = lazy(() =>
+  import('@/components/pages/DiscoverView').then((module) => ({
+    default: module.DiscoverView,
+  })),
+);
+const SearchResultsView = lazy(() =>
+  import('@/components/pages/SearchResultsView').then((module) => ({
+    default: module.SearchResultsView,
+  })),
+);
 
 const DiscoveryControlsDialog = lazy(() =>
   import('@/features/discovery/DiscoveryControlsDialog').then((module) => ({
@@ -133,48 +142,50 @@ export default function App({ initialLocation = '/' }: AppProps) {
               </button>
             </div>
           )}
-          {hasSearch ? (
-            <SearchResultsView
-              query={page.query || page.genre}
-              results={page.visibleResults}
-              rankingById={page.searchRankingById}
-              sort={page.searchSort}
-              onSortChange={page.setSearchSort}
-              bookmarks={page.bookmarks}
-              onToggleBookmark={toggleBookmark}
-              onPlay={launchExperience}
-              loading={page.searchLoading}
-              genre={page.genre}
-              onGenreChange={page.setGenre}
-            />
-          ) : (
-            <DiscoverView
-              activeView={page.activeView}
-              bookmarks={page.bookmarks}
-              savedExperiences={page.savedExperiences}
-              savedExperiencesLoading={page.savedExperiencesLoading}
-              recommendations={page.rankedRecommendations}
-              rankedSections={page.rankedSections}
-              genre={page.genre}
-              personas={page.personas}
-              persona={page.persona}
-              genreExperiences={page.genreExperiences}
-              genreRankingById={page.genreRankingById}
-              isGenreRoute={page.isGenreRoute}
-              isAllCatalogueRoute={page.isAllCatalogueRoute}
-              allExperiences={page.allExperiences}
-              allRankingById={page.allRankingById}
-              allHasMore={page.allHasMore}
-              allTotal={page.genreCounts.All ?? 0}
-              loadingMore={page.loadingMore}
-              onLoadMore={page.loadMoreCatalogue}
-              onGenreChange={page.setGenre}
-              onToggleBookmark={toggleBookmark}
-              onPlay={launchExperience}
-              onNavigate={page.navigate}
-              loading={page.loading}
-            />
-          )}
+          <Suspense fallback={<div className="min-h-64" aria-busy="true" />}>
+            {hasSearch ? (
+              <SearchResultsView
+                query={page.query || page.genre}
+                results={page.visibleResults}
+                rankingById={page.searchRankingById}
+                sort={page.searchSort}
+                onSortChange={page.setSearchSort}
+                bookmarks={page.bookmarks}
+                onToggleBookmark={toggleBookmark}
+                onPlay={launchExperience}
+                loading={page.searchLoading}
+                genre={page.genre}
+                onGenreChange={page.setGenre}
+              />
+            ) : (
+              <DiscoverView
+                activeView={page.activeView}
+                bookmarks={page.bookmarks}
+                savedExperiences={page.savedExperiences}
+                savedExperiencesLoading={page.savedExperiencesLoading}
+                recommendations={page.rankedRecommendations}
+                rankedSections={page.rankedSections}
+                genre={page.genre}
+                personas={page.personas}
+                persona={page.persona}
+                genreExperiences={page.genreExperiences}
+                genreRankingById={page.genreRankingById}
+                isGenreRoute={page.isGenreRoute}
+                isAllCatalogueRoute={page.isAllCatalogueRoute}
+                allExperiences={page.allExperiences}
+                allRankingById={page.allRankingById}
+                allHasMore={page.allHasMore}
+                allTotal={page.genreCounts.All ?? 0}
+                loadingMore={page.loadingMore}
+                onLoadMore={page.loadMoreCatalogue}
+                onGenreChange={page.setGenre}
+                onToggleBookmark={toggleBookmark}
+                onPlay={launchExperience}
+                onNavigate={page.navigate}
+                loading={page.loading}
+              />
+            )}
+          </Suspense>
         </main>
       </div>
       <Suspense fallback={null}>

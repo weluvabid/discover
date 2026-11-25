@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface ExperienceArtworkProps {
@@ -14,8 +14,36 @@ interface ArtworkImageProps extends Omit<ExperienceArtworkProps, 'src'> {
 }
 
 function ArtworkImage({ src, alt, loading, fetchPriority }: ArtworkImageProps) {
+  const imageRef = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+
+  const revealDecodedImage = useCallback((image: HTMLImageElement) => {
+    const reveal = () => setLoaded(true);
+
+    if (typeof image.decode !== 'function') {
+      reveal();
+
+      return;
+    }
+
+    void image
+      .decode()
+      .then(reveal)
+      .catch(() => {
+        // Some browsers reject decode() even though the loaded image is usable.
+        if (image.complete && image.naturalWidth > 0) reveal();
+      });
+  }, []);
+
+  useLayoutEffect(() => {
+    const image = imageRef.current;
+
+    if (!image?.complete) return;
+
+    if (image.naturalWidth > 0) revealDecodedImage(image);
+    else setFailed(true);
+  }, [revealDecodedImage, src]);
 
   if (failed) {
     return (
@@ -32,9 +60,10 @@ function ArtworkImage({ src, alt, loading, fetchPriority }: ArtworkImageProps) {
   return (
     <>
       {!loaded && (
-        <Skeleton aria-hidden="true" className="absolute inset-0 size-full rounded-none" />
+        <Skeleton aria-hidden="true" className="absolute inset-0 z-10 size-full rounded-none" />
       )}
       <img
+        ref={imageRef}
         src={src}
         alt={alt}
         loading={loading}
@@ -42,9 +71,11 @@ function ArtworkImage({ src, alt, loading, fetchPriority }: ArtworkImageProps) {
         decoding="async"
         width={1280}
         height={720}
-        onLoad={() => setLoaded(true)}
+        onLoad={(event: SyntheticEvent<HTMLImageElement>) =>
+          revealDecodedImage(event.currentTarget)
+        }
         onError={() => setFailed(true)}
-        className={`block size-full object-cover transition-[opacity,transform] duration-300 group-hover:scale-[1.03] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className="relative z-0 block size-full object-cover opacity-100 transition-transform duration-300 group-hover:scale-[1.03]"
       />
     </>
   );

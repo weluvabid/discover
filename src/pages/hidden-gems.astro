@@ -7,5 +7,9 @@ import { DiscoverIsland } from '@/components/react/DiscoverIsland';
   title="Hidden Gems — Discover"
   description="Find lesser-known Roblox experiences ranked around your interests."
 >
-  <DiscoverIsland initialLocation={`${Astro.url.pathname}${Astro.url.search}`} client:load />
+  <DiscoverIsland
+    initialLocation={`${Astro.url.pathname}${Astro.url.search}`}
+    client:load
+    transition:persist="discover-app"
+  />
 </DiscoverLayout>

@@ -7,5 +7,9 @@ import { DiscoverIsland } from '@/components/react/DiscoverIsland';
   title="Search — Discover"
   description="Search Roblox experiences by title, creator and genre."
 >
-  <DiscoverIsland initialLocation={`${Astro.url.pathname}${Astro.url.search}`} client:load />
+  <DiscoverIsland
+    initialLocation={`${Astro.url.pathname}${Astro.url.search}`}
+    client:load
+    transition:persist="discover-app"
+  />
 </DiscoverLayout>

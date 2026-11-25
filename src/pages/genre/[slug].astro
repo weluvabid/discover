@@ -13,5 +13,5 @@ const initialLocation = `${Astro.url.pathname}${Astro.url.search}`;
 ---
 
 <DiscoverLayout title="Browse Genre — Discover" description="Explore Roblox experiences by genre.">
-  <DiscoverIsland initialLocation={initialLocation} client:load />
+  <DiscoverIsland initialLocation={initialLocation} client:load transition:persist="discover-app" />
 </DiscoverLayout>
