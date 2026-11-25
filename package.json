@@ -40,7 +40,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sonner": "^2.0.7",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "@icons-pack/react-simple-icons": "^13.16.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",

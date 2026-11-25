@@ -1,4 +1,5 @@
-import { Bookmark, Compass, Gem, GithubIcon, TrendingUp } from 'lucide-react';
+import { SiGithub } from '@icons-pack/react-simple-icons';
+import { Bookmark, Compass, Gem, TrendingUp } from 'lucide-react';
 import { GENRE_FILTER_OPTIONS, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
 import { navigateTo } from '@/hooks/use-browser-location';
 import { Brand } from './Brand';
@@ -171,7 +172,7 @@ export function Sidebar({
                         rel="noopener noreferrer"
                         aria-label="View Discover on GitHub (opens in a new tab)"
                       >
-                        <GithubIcon aria-hidden="true" />
+                        <SiGithub aria-hidden="true" size={16} />
                         <span>View on GitHub</span>
                       </a>
                     }
