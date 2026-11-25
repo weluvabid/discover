@@ -57,7 +57,10 @@ Discover uses Astro for filesystem routing and document composition, with the in
 
 The active application uses the live RoTunnel provider. The browser calls the configured Discover API base (`PUBLIC_DISCOVER_API_URL`; local development defaults to `http://127.0.0.1:8787/api`). The server fetches Roblox Explore, Omni Search, game metadata, votes and artwork, normalizes the response into the existing `Experience` model, and passes discovery, genre and search candidates through the same ranking engine. Search adds deterministic lexical query relevance; genre browsing applies the active persona and ranking preferences. No database or analytics are in the active request path. See [Live Roblox provider](docs/architecture/live-roblox-provider.md) for endpoint boundaries, caching, failure handling and deployment details.
 
-The Astro frontend remains static and the live API runs as a separate Node HTTP process through `src/server/live-index.ts`. This repository is an offline development project; it does not currently include a Vercel function adapter or deployment configuration. Any future hosting adapter should reuse `handleLiveRequest` rather than fork the API implementation.
+The Astro frontend is built as a static site. The live API uses the same `handleLiveRequest` HTTP boundary in both local development and production:
+
+- Locally, `pnpm api:dev` runs the Node HTTP server from `src/server/live-index.ts`.
+- On Vercel, `api/[...path].ts` exposes the same handler as a Node.js Function at `/api/*`. The frontend uses the same-origin `/api` base by default, so no production `PUBLIC_DISCOVER_API_URL` is required.
 
 For local development, run the live API and Astro in separate terminals:
 
@@ -71,9 +74,19 @@ pnpm dev
 
 The live API listens on `http://127.0.0.1:8787` by default. Astro development uses that origin automatically. `CORS_ORIGIN` is only needed if the frontend and API are served from different local origins.
 
-## Hosting boundary
+## Vercel deployment
 
-No hosting provider is configured in this repository. The frontend is built as a static Astro site and the API is a separate Node process. Keep that boundary explicit until a hosting target is selected; do not add provider-specific adapters or caching configuration prematurely.
+Import this repository as a Vercel project using the repository root as the project root. Keep the default Astro build settings:
+
+- Install command: `pnpm install --frozen-lockfile`
+- Build command: `pnpm build`
+- Output directory: `dist`
+
+Vercel detects the root `api/` directory and deploys its catch-all Node.js Function separately from the static Astro output. The function forwards the original request to `handleLiveRequest`; API route logic is not duplicated. The function has a 60-second maximum duration to accommodate bounded upstream Roblox requests and retries.
+
+Leave `PUBLIC_DISCOVER_API_URL` unset (or empty) for same-origin `/api` routing. Set `CORS_ORIGIN` only when allowing additional browser origins; same-origin production requests do not require CORS. Do not put upstream credentials or private values in `PUBLIC_*` variables.
+
+Ensure the `brand` Git submodule is checked out during the Vercel clone/build. The `pnpm build` command synchronizes its SVG assets into Astro's `public/` directory before the static build.
 
 ## Retained legacy catalog pipeline
 
