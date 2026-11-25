@@ -11,9 +11,9 @@
   "scripts": {
     "benchmark:ranking": "node --experimental-strip-types scripts/benchmark-ranking.mjs",
     "build": "pnpm build:web",
-    "build:web": "astro check && astro build",
+    "build:web": "node scripts/sync-brand-assets.mjs && astro check && astro build",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm check:boundaries && pnpm test && pnpm build && pnpm api:build",
-    "dev": "astro dev --host 0.0.0.0",
+    "dev": "node scripts/sync-brand-assets.mjs && astro dev --host 0.0.0.0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "install:reui": "sh ./scripts/install-reui.sh",
