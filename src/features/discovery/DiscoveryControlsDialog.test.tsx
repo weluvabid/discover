@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { DEFAULT_RANKING_CONFIGURATION, type RankingConfiguration } from './engine/ranking';
 import { DiscoveryControlsDialog } from './DiscoveryControlsDialog';
 
@@ -46,7 +47,7 @@ describe('DiscoveryControlsDialog', () => {
     ).toBe(false);
   });
 
-  it('applies the selected ranking strategy and closes the dialog', () => {
+  it('applies the selected ranking strategy and closes the dialog', async () => {
     const onApply = vi.fn<(configuration: RankingConfiguration) => void>();
     const onClose = vi.fn();
 
@@ -59,8 +60,13 @@ describe('DiscoveryControlsDialog', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('combobox', { name: 'Ranking strategy' }));
-    fireEvent.click(screen.getByRole('option', { name: /Popularity-first/ }));
+    const user = userEvent.setup();
+    const strategySelect = screen.getByRole('combobox', { name: 'Ranking strategy' });
+
+    // Base UI Select responds to the complete pointer interaction sequence;
+    // fireEvent.click / synthetic keydown do not model that interaction.
+    await user.click(strategySelect);
+    await user.click(await screen.findByRole('option', { name: /Popularity-first/ }));
     fireEvent.click(screen.getByRole('button', { name: /Apply configuration/ }));
 
     expect(onApply).toHaveBeenCalledTimes(1);

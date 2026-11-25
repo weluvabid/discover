@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { PersonaCommandSelector } from './PersonaCommandSelector';
 import type { DiscoveryPersona } from '@/types/experience';
 
@@ -42,16 +48,18 @@ describe('PersonaCommandSelector', () => {
     expect(screen.getByText('Social explorer')).toBeInTheDocument();
   });
 
-  it('selects a persona and closes the command palette', () => {
+  it('selects a persona and closes the command palette', async () => {
     const onSelect = vi.fn();
 
     render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={onSelect} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
+    const dialog = screen.getByRole('dialog', { name: 'Choose a play style' });
+
     fireEvent.click(screen.getByText('Social explorer'));
 
     expect(onSelect).toHaveBeenCalledWith('social-explorer');
-    expect(screen.queryByRole('dialog', { name: 'Choose a play style' })).not.toBeInTheDocument();
+    await waitForElementToBeRemoved(dialog);
   });
 
   it('shows the all-play-styles option and device-persistence explanation', () => {
@@ -61,7 +69,9 @@ describe('PersonaCommandSelector', () => {
 
     expect(screen.getByText('All play styles')).toBeInTheDocument();
     expect(
-      screen.getByText('Your selected play style is saved on this device and used across discovery.'),
+      screen.getByText(
+        'Your selected play style is saved on this device and used across discovery.',
+      ),
     ).toBeInTheDocument();
   });
 });

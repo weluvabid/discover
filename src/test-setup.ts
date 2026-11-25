@@ -58,6 +58,15 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = ResizeObserverMock;
 }
 
+// Base UI uses the Web Animations API to coordinate presence transitions.
+// jsdom does not implement Element.getAnimations(), and tests do not need to
+// inspect or wait for visual animations. Return an empty animation list.
+if (typeof Element !== 'undefined' && !Element.prototype.getAnimations) {
+  Element.prototype.getAnimations = function getAnimations(): Animation[] {
+    return [];
+  };
+}
+
 // cmdk scrolls the active command into view. jsdom does not implement this
 // layout-dependent browser method, and scrolling is irrelevant to these tests.
 if (typeof Element !== 'undefined' && !Element.prototype.scrollIntoView) {

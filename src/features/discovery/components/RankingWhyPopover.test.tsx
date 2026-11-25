@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { experiences } from '@/data/mocks/experiences';
 import { DEFAULT_RANKING_CONFIGURATION, rankForContext } from '../engine/ranking';
 import { RankingWhyPopover } from './RankingWhyPopover';
@@ -27,7 +27,7 @@ describe('RankingWhyPopover', () => {
     expect(screen.getByText('Final Score')).toBeTruthy();
   });
 
-  it('keeps only one explanation open and restores focus on Escape', () => {
+  it('keeps only one explanation open and restores focus on Escape', async () => {
     const first = ranked[0];
     const second = ranked[1];
 
@@ -48,9 +48,21 @@ describe('RankingWhyPopover', () => {
 
     fireEvent.click(firstTrigger);
     fireEvent.click(secondTrigger);
-    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+
+    // Base UI keeps the exiting popup mounted while its close animation runs.
+    // Count only popups in the open state, not transition-retained DOM nodes.
+    await waitFor(() => {
+      expect(
+        screen.queryAllByRole('dialog').filter((dialog) => dialog.hasAttribute('data-open')),
+      ).toHaveLength(1);
+    });
+
     fireEvent.keyDown(document, { key: 'Escape' });
-    expect(screen.queryByRole('dialog')).toBeNull();
+    await waitFor(() => {
+      expect(
+        screen.queryAllByRole('dialog').filter((dialog) => dialog.hasAttribute('data-open')),
+      ).toHaveLength(0);
+    });
     expect(document.activeElement).toBe(secondTrigger);
   });
 });

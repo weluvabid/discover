@@ -41,10 +41,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
     [bookmarks, toggleBookmarkAction],
   );
 
-  const openDiscoveryControls = useCallback(
-    () => setControlsOpen(true),
-    [setControlsOpen],
-  );
+  const openDiscoveryControls = useCallback(() => setControlsOpen(true), [setControlsOpen]);
 
   const selectPersona = useCallback(
     (personaId: string) => {

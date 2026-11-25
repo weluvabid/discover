@@ -116,10 +116,6 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     const controller = new AbortController();
 
-    Promise.resolve().then(() => {
-      if (controller.signal.aborted) return;
-      setError(null);
-    });
     fetchGenreCounts(controller.signal)
       .then((result) => setGenreCounts(result.data))
       .catch(() => undefined);
@@ -253,8 +249,10 @@ export function useDiscoverPage(initialLocation = '/') {
     Promise.resolve()
       .then(() => {
         if (!active) return undefined;
+
         setLoading(true);
         setError(null);
+
         return fetchCatalog(
           100,
           controller.signal,
@@ -266,6 +264,7 @@ export function useDiscoverPage(initialLocation = '/') {
       })
       .then((result) => {
         if (!result) return;
+
         if (active) {
           setGenreExperiences(result.data);
           setGenreRankingById(
@@ -376,7 +375,9 @@ export function useDiscoverPage(initialLocation = '/') {
     Promise.resolve()
       .then(() => {
         if (!active) return undefined;
+
         setSavedExperiencesLoading(true);
+
         return Promise.all(
           bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
         );
