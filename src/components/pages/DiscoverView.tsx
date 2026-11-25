@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { ExploreFilterBar } from '@/components/discovery/ExploreFilterBar';
 import { FeaturedExperience } from '@/components/experience/FeaturedExperience';
 import { FeaturedExperienceSkeleton } from '@/components/experience/FeaturedExperienceSkeleton';
-import { CollectionsView } from './CollectionsView';
 import { PageIntro } from './PageIntro';
 import type {
   DiscoveryPersona,
@@ -20,7 +19,6 @@ interface DiscoverViewProps {
   bookmarks: string[];
   savedExperiences: Experience[];
   savedExperiencesLoading: boolean;
-  collectionExperiences: Experience[];
   recommendations: Experience[];
   rankedSections: Record<RankingContext, RankedExperience[]>;
   genre: ExperienceGenre | 'All';
@@ -41,7 +39,6 @@ export function DiscoverView({
   bookmarks,
   savedExperiences,
   savedExperiencesLoading,
-  collectionExperiences,
   recommendations,
   rankedSections,
   genre,
@@ -117,17 +114,6 @@ export function DiscoverView({
           }
         />
       </div>
-    );
-  }
-
-  if (activeView === 'collections') {
-    return (
-      <CollectionsView
-        experiences={collectionExperiences}
-        bookmarks={bookmarks}
-        onToggleBookmark={onToggleBookmark}
-        onPlay={onPlay}
-      />
     );
   }
 

@@ -28,7 +28,7 @@ function withHeaders(response: Response, headers: Headers): Response {
 
 function errorResponse(error: unknown, headers: Headers): Response {
   if (error instanceof RoTunnelError) {
-    const status = error.status === 429 ? 503 : 502;
+    const status = error.status === 429 || error.status === 503 ? 503 : 502;
 
     return jsonResponse(
       {
@@ -42,7 +42,7 @@ function errorResponse(error: unknown, headers: Headers): Response {
     );
   }
 
-  if (error instanceof Error && error.name === 'AbortError') {
+  if (error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError')) {
     return jsonResponse({ error: 'Request was cancelled.' }, 408, headers);
   }
 
@@ -62,9 +62,9 @@ export async function handleLiveRequest(
     const url = new URL(request.url);
     const response =
       request.method === 'GET'
-        ? await handleGet(client, url)
+        ? await handleGet(client, url, request.signal)
         : request.method === 'POST'
-          ? await handlePost(client, url, request)
+          ? await handlePost(client, url, request, request.signal)
           : jsonResponse({ error: 'Method not allowed.' }, 405, { Allow: 'GET, POST, OPTIONS' });
 
     return withHeaders(response, headers);

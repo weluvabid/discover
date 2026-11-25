@@ -14,6 +14,7 @@ import {
 } from '../../../features/discovery/engine/ranking';
 import { seedPersonas } from '../../../domain/personas/personas';
 import { jsonResponse } from '../http/json-response';
+import { awaitWithSignal, throwIfAborted } from '../http/abortable';
 import type { RoTunnelClient } from '../../providers/rotunnel/index';
 import { normalizeExperience } from '../../providers/rotunnel/index';
 import { candidatesForContext, searchExperiences } from '../../services/discovery-data';
@@ -98,8 +99,11 @@ function createSearchRankingConfiguration(
   };
 }
 
-
-export async function handleGet(client: RoTunnelClient, url: URL): Promise<Response> {
+export async function handleGet(
+  client: RoTunnelClient,
+  url: URL,
+  signal?: AbortSignal,
+): Promise<Response> {
   if (url.pathname === '/api/health') {
     return jsonResponse({ status: 'ok', provider: 'rotunnel' });
   }
@@ -115,6 +119,29 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
     });
   }
 
+  if (
+    ['/api/search', '/api/experiences'].includes(url.pathname) ||
+    /^\/api\/discover\/[a-z-]+$/.test(url.pathname)
+  ) {
+    const strategy = url.searchParams.get('strategy');
+    if (strategy && !isRankingStrategy(strategy)) {
+      return jsonResponse({ error: 'Unknown ranking strategy.' }, 400);
+    }
+    const signals = url.searchParams.get('signals');
+    if (signals) {
+      if (signals.length > 4_096) {
+        return jsonResponse({ error: 'Ranking signals are too large.' }, 400);
+      }
+      try {
+        if (!isRankingConfiguration(JSON.parse(signals))) {
+          return jsonResponse({ error: 'Invalid ranking signals.' }, 400);
+        }
+      } catch {
+        return jsonResponse({ error: 'Invalid ranking signals.' }, 400);
+      }
+    }
+  }
+
   const discoveryMatch = url.pathname.match(/^\/api\/discover\/([a-z-]+)$/);
   if (discoveryMatch?.[1]) {
     const contextValue = discoveryMatch[1];
@@ -126,14 +153,17 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
       return jsonResponse({ error: 'Invalid discovery result limit.' }, 400);
     }
     const personaId = url.searchParams.get('persona') ?? undefined;
-    const persona =
-      personaId && seedPersonas().some((item) => item.id === personaId) ? personaId : undefined;
+    if (personaId && !seedPersonas().some((item) => item.id === personaId)) {
+      return jsonResponse({ error: 'Unknown persona.' }, 400);
+    }
+    const persona = personaId;
     const requestedGenre = url.searchParams.get('genre');
     const genre = isExperienceGenre(requestedGenre) ? requestedGenre : undefined;
     if (requestedGenre && !genre) {
       return jsonResponse({ error: 'Unknown genre.' }, 400);
     }
-    const candidates = await candidatesForContext(client, contextValue);
+    const candidates = await awaitWithSignal(candidatesForContext(client, contextValue), signal);
+    throwIfAborted(signal);
     const personalized = applyPersona(candidates, persona);
     const options = { limit, ...(genre ? { genre } : {}) };
     const totalCandidates = retrieveCandidates(personalized, options).length;
@@ -157,7 +187,8 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
   }
 
   if (url.pathname === '/api/genres') {
-    const catalogue = await genreCatalogueFor(client);
+    const catalogue = await awaitWithSignal(genreCatalogueFor(client), signal);
+    throwIfAborted(signal);
 
     return jsonResponse(
       { data: genreCatalogueCounts(catalogue) },
@@ -190,9 +221,12 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
     }
     const sort = requestedSort;
     const personaId = url.searchParams.get('persona') ?? undefined;
-    const persona =
-      personaId && seedPersonas().some((item) => item.id === personaId) ? personaId : undefined;
-    const experiences = await searchExperiences(client, query);
+    if (personaId && !seedPersonas().some((item) => item.id === personaId)) {
+      return jsonResponse({ error: 'Unknown persona.' }, 400);
+    }
+    const persona = personaId;
+    const experiences = await awaitWithSignal(searchExperiences(client, query), signal);
+    throwIfAborted(signal);
     const filtered =
       genre && genre !== 'All'
         ? experiences.filter(
@@ -251,9 +285,19 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
       return jsonResponse({ error: 'Use either query search or genre browsing, not both.' }, 400);
     }
 
+    const requestedPersona = url.searchParams.get('persona');
+    if (requestedPersona && !seedPersonas().some((item) => item.id === requestedPersona)) {
+      return jsonResponse({ error: 'Unknown persona.' }, 400);
+    }
+
     if (genre) {
-      const page = await genreCataloguePage(client, genre, offset, limit);
-      const experiences = await enrichCandidates(client, page.candidates, page.details);
+      const page = await awaitWithSignal(genreCataloguePage(client, genre, offset, limit), signal);
+      throwIfAborted(signal);
+      const experiences = await awaitWithSignal(
+        enrichCandidates(client, page.candidates, page.details),
+        signal,
+      );
+      throwIfAborted(signal);
       const personalized = applyPersona(experiences, url.searchParams.get('persona') ?? undefined);
       const rankedData = rankForContext(
         personalized,
@@ -277,8 +321,8 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
     }
 
     const experiences = query
-      ? await searchExperiences(client, query)
-      : await candidatesForContext(client, 'trending');
+      ? await awaitWithSignal(searchExperiences(client, query), signal)
+      : await awaitWithSignal(candidatesForContext(client, 'trending'), signal);
 
     return jsonResponse({
       data: experiences.slice(offset, offset + limit),
@@ -293,11 +337,15 @@ export async function handleGet(client: RoTunnelClient, url: URL): Promise<Respo
 
   if (detailMatch?.[1]) {
     const id = detailMatch[1];
-    const [detailsResult, votesResult, iconsResult] = await Promise.allSettled([
-      detailsForIds(client, [id]),
-      votesForIds(client, [id]),
-      iconsForIds(client, [id]),
-    ]);
+    const [detailsResult, votesResult, iconsResult] = await awaitWithSignal(
+      Promise.allSettled([
+        detailsForIds(client, [id]),
+        votesForIds(client, [id]),
+        iconsForIds(client, [id]),
+      ]),
+      signal,
+    );
+    throwIfAborted(signal);
 
     if (detailsResult.status === 'rejected') throw detailsResult.reason;
 

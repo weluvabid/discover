@@ -39,7 +39,6 @@ const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/search': 'search',
   '/trending': 'trending',
   '/hidden-gems': 'hidden-gems',
-  '/collections': 'collections',
   '/library': 'library',
 };
 const VIEW_TO_PATH: Record<DiscoveryView, string> = {
@@ -47,7 +46,6 @@ const VIEW_TO_PATH: Record<DiscoveryView, string> = {
   search: '/search',
   trending: '/trending',
   'hidden-gems': '/hidden-gems',
-  collections: '/collections',
   library: '/library',
 };
 
@@ -101,7 +99,6 @@ export function useDiscoverPage(initialLocation = '/') {
   const [searchLoading, setSearchLoading] = useState(false);
   const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
   const [savedExperiencesLoading, setSavedExperiencesLoading] = useState(true);
-  const [collectionCatalog, setCollectionCatalog] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryVersion, setRetryVersion] = useState(0);
@@ -146,7 +143,12 @@ export function useDiscoverPage(initialLocation = '/') {
   }, [pathname]);
 
   useEffect(() => {
-    if (isGenreRoute || activeView === 'search') return;
+    if (
+      isGenreRoute ||
+      (activeView !== 'explore' && activeView !== 'trending' && activeView !== 'hidden-gems')
+    ) {
+      return;
+    }
     const controller = new AbortController();
     let active = true;
 
@@ -157,8 +159,15 @@ export function useDiscoverPage(initialLocation = '/') {
         setLoading(true);
         setError(null);
 
+        const contexts: RankingContext[] =
+          activeView === 'trending'
+            ? ['trending']
+            : activeView === 'hidden-gems'
+              ? ['hidden-gems']
+              : DISCOVERY_CONTEXTS;
+
         return Promise.all(
-          DISCOVERY_CONTEXTS.map((context) =>
+          contexts.map((context) =>
             fetchDiscovery(
               context,
               rankingConfiguration,
@@ -175,14 +184,25 @@ export function useDiscoverPage(initialLocation = '/') {
 
         const next = Object.fromEntries(
           responses.map((response) => [response.context, response.results]),
-        ) as Record<RankingContext, RankedExperience[]>;
-        const featuredId = next.featured[0]?.experience.id;
+        ) as Partial<Record<RankingContext, RankedExperience[]>>;
 
-        next.recommended = next.recommended
-          .filter((item) => item.experience.id !== featuredId)
-          .slice(0, 6)
-          .map((item, index) => ({ ...item, position: index + 1 }));
-        setRankedSections(next);
+        if (activeView === 'explore') {
+          const featuredId = next.featured?.[0]?.experience.id;
+          const recommended = (next.recommended ?? []).filter(
+            (item) => item.experience.id !== featuredId,
+          );
+          next.recommended = recommended
+            .slice(0, 6)
+            .map((item, index) => ({ ...item, position: index + 1 }));
+        }
+
+        setRankedSections((current) => {
+          const updated = { ...current };
+          for (const response of responses) {
+            updated[response.context] = next[response.context] ?? response.results;
+          }
+          return updated;
+        });
       })
       .catch((cause: unknown) => {
         if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
@@ -346,28 +366,6 @@ export function useDiscoverPage(initialLocation = '/') {
     };
   }, [bookmarks, retryVersion]);
 
-  useEffect(() => {
-    if (activeView !== 'collections') return;
-
-    const controller = new AbortController();
-    let active = true;
-
-    fetchCatalog(500, controller.signal)
-      .then((result) => {
-        if (active) setCollectionCatalog(result.data);
-      })
-      .catch((cause: unknown) => {
-        if (!active || (cause instanceof DOMException && cause.name === 'AbortError')) return;
-
-        setError(cause instanceof Error ? cause.message : 'Unable to load collections.');
-      });
-
-    return () => {
-      active = false;
-      controller.abort();
-    };
-  }, [activeView, retryVersion]);
-
   const rankedRecommendations = useMemo(
     () => rankedSections.recommended.map((item) => item.experience),
     [rankedSections],
@@ -479,7 +477,6 @@ export function useDiscoverPage(initialLocation = '/') {
     rankedSections,
     savedExperiences,
     savedExperiencesLoading,
-    collectionCatalog,
     hasCustomRanking,
     navigate,
     closeControls,

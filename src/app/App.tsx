@@ -148,7 +148,6 @@ export default function App({ initialLocation = '/' }: AppProps) {
               bookmarks={page.bookmarks}
               savedExperiences={page.savedExperiences}
               savedExperiencesLoading={page.savedExperiencesLoading}
-              collectionExperiences={page.collectionCatalog}
               recommendations={page.rankedRecommendations}
               rankedSections={page.rankedSections}
               genre={page.genre}

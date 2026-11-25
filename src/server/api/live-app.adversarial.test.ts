@@ -97,6 +97,31 @@ describe('live Discover API', () => {
     expect(body.rankedData[0]?.explanation.signals.find((signal) => signal.id === 'relevance')?.normalizedScore).toBe(100);
   });
 
+  it('rejects unknown persona and ranking controls instead of silently defaulting', async () => {
+    const client = makeClient([]);
+    const invalidPersona = await handleLiveRequest(
+      new Request('https://discover.example/api/discover/recommended?persona=not-a-persona'),
+      client,
+    );
+    const invalidStrategy = await handleLiveRequest(
+      new Request('https://discover.example/api/search?q=test&strategy=not-a-strategy'),
+      client,
+    );
+    const invalidGenre = await handleLiveRequest(
+      new Request('https://discover.example/api/discover/recommended', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ genre: 'not-a-genre' }),
+      }),
+      client,
+    );
+
+    expect(invalidPersona.status).toBe(400);
+    expect(invalidStrategy.status).toBe(400);
+    expect(invalidGenre.status).toBe(400);
+    expect(client.getSortContent).not.toHaveBeenCalled();
+  });
+
   it('rejects invalid JSON and oversized request bodies', async () => {
     const client = makeClient([]);
     const malformed = await handleLiveRequest(

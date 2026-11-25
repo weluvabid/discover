@@ -32,7 +32,7 @@ The application is organized around feature ownership rather than a single globa
 - `features/search/` owns pure search and filtering functions.
 - `features/discovery/engine/` contains the framework-independent ranking model and algorithms.
 - `features/discovery/hooks/` owns discovery-page state and orchestration.
-- `data/mocks/experiences.ts` contains catalog records; `data/mocks/catalog.ts` contains derived catalog collections and lookup helpers.
+- `data/mocks/experiences.ts` contains catalog records; `data/mocks/catalog.ts` contains catalog lookup helpers.
 - Component-owned styles live beside their component areas. `styles/index.css` preserves the cascade order and imports the small global foundation plus those feature styles.
 
 ## Quality checks
@@ -47,7 +47,7 @@ This runs TypeScript, ESLint, Prettier, Vitest, and the production build.
 
 Explore is powered by one shared, explainable ranking engine with five separate contexts: Featured, Trending, Recommended, Hidden Gems, and Recently Launched. Context eligibility is evaluated before ranking; user preferences affect ordering within eligible candidate pools. Ranked results expose weighted signal contributions and any diversity reranking adjustment through the **Why this result?** popover.
 
-Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/collections`, `/library`, and `/search`. Genre and play-style filters are reflected in the URL and constrain every Explore context. Twelve catalog play styles can be selected to tailor affinity and relevance scores; the ranking explanation shows how the selected profile contributes. Search uses Roblox Omni Search for candidate acquisition, then applies deterministic query relevance and the shared ranking engine; relevance remains the dominant signal, while persona and configured quality/popularity/freshness preferences provide secondary ordering. Explicit player, rating, vote and date sorts remain available. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
+Astro filesystem routes provide `/`, `/trending`, `/hidden-gems`, `/library`, and `/search`. Genre and play-style filters are reflected in the URL and constrain every Explore context. Twelve catalog play styles can be selected to tailor affinity and relevance scores; the ranking explanation shows how the selected profile contributes. Search uses Roblox Omni Search for candidate acquisition, then applies deterministic query relevance and the shared ranking engine; relevance remains the dominant signal, while persona and configured quality/popularity/freshness preferences provide secondary ordering. Explicit player, rating, vote and date sorts remain available. See [the ranking architecture](docs/architecture/discovery-ranking.md) for eligibility rules, scoring, explainability, and the mock-data boundary.
 
 ## Frontend platform
 

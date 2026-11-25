@@ -88,7 +88,7 @@ export interface Experience {
   };
 }
 
-export type DiscoveryView = 'explore' | 'search' | 'trending' | 'hidden-gems' | 'collections' | 'library';
+export type DiscoveryView = 'explore' | 'search' | 'trending' | 'hidden-gems' | 'library';
 
 export interface DiscoveryPersona {
   id: string;
