@@ -126,19 +126,33 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     const controller = new AbortController();
 
-    setPersonasLoading(true);
+    // Defer the loading transition into the async task rather than setting
+    // state synchronously in the effect body.
+    void Promise.resolve()
+      .then(() => {
+        if (controller.signal.aborted) return;
 
-    fetchGenreCounts(controller.signal)
-      .then((result) => setGenreCounts(result.data))
-      .catch(() => undefined);
-    fetchPersonas(controller.signal)
-      .then((result) => setPersonas(result.data))
+        setPersonasLoading(true);
+
+        fetchGenreCounts(controller.signal)
+          .then((result) => setGenreCounts(result.data))
+          .catch(() => undefined);
+
+        return fetchPersonas(controller.signal)
+          .then((result) => setPersonas(result.data))
+          .catch((cause: unknown) => {
+            if (cause instanceof DOMException && cause.name === 'AbortError') return;
+
+            setError(cause instanceof Error ? cause.message : 'Unable to load play styles.');
+          })
+          .finally(() => setPersonasLoading(false));
+      })
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
 
         setError(cause instanceof Error ? cause.message : 'Unable to load play styles.');
-      })
-      .finally(() => setPersonasLoading(false));
+        setPersonasLoading(false);
+      });
 
     return () => controller.abort();
   }, [retryVersion]);
@@ -176,13 +190,14 @@ export function useDiscoverPage(initialLocation = '/') {
     const controller = new AbortController();
     let active = true;
 
-    // Show the existing skeletons immediately while a new ranking is loading.
-    setLoading(true);
-    setError(null);
-
+    // Keep effect setup free of synchronous state updates. The loading state
+    // changes in the queued task before any network request is started.
     Promise.resolve()
       .then(() => {
         if (!active) return undefined;
+
+        setLoading(true);
+        setError(null);
 
         const contexts: readonly RankingContext[] =
           activeView === 'trending'
@@ -466,8 +481,19 @@ export function useDiscoverPage(initialLocation = '/') {
     let active = true;
 
     if (bookmarks.length === 0) {
-      setSavedExperiences([]);
-      setSavedExperiencesLoading(false);
+      void Promise.resolve()
+        .then(() => {
+          if (!active) return;
+
+          setSavedExperiences([]);
+          setSavedExperiencesLoading(false);
+        })
+        .catch((cause: unknown) => {
+          if (cause instanceof DOMException && cause.name === 'AbortError') return;
+
+          setError(cause instanceof Error ? cause.message : 'Unable to load saved experiences.');
+          setSavedExperiencesLoading(false);
+        });
 
       return () => {
         active = false;
@@ -475,13 +501,16 @@ export function useDiscoverPage(initialLocation = '/') {
       };
     }
 
-    // Flip to loading in the effect itself. Deferring this to a microtask lets
-    // the previous empty/saved state flash for a frame after bookmark changes.
-    setSavedExperiencesLoading(true);
+    void Promise.resolve()
+      .then(() => {
+        if (!active) return;
 
-    Promise.all(
-      bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
-    )
+        setSavedExperiencesLoading(true);
+
+        return Promise.all(
+          bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
+        );
+      })
       .then((items) => {
         if (active && items) {
           setSavedExperiences(items.filter((item): item is Experience => item !== null));

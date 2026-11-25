@@ -32,9 +32,13 @@ export function PersonaCommandSelector({
   onSelect,
 }: PersonaCommandSelectorProps) {
   const [open, setOpen] = useState(false);
+  const [activeCommandValue, setActiveCommandValue] = useState('');
 
   useEffect(() => {
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+      setActiveCommandValue('');
+      setOpen(true);
+    };
 
     window.addEventListener('discover:open-persona-selector', handleOpen);
 
@@ -49,6 +53,15 @@ export function PersonaCommandSelector({
   const orderedPersonas = selectedPersona
     ? [selectedPersona, ...personas.filter((persona) => persona.id !== selectedPersonaId)]
     : personas;
+  const firstCommandValue = selectedPersona
+    ? `${orderedPersonas[0].label} ${orderedPersonas[0].description} ${orderedPersonas[0].id}`
+    : 'all play styles';
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) setActiveCommandValue('');
+
+    setOpen(nextOpen);
+  };
 
   const selectPersona = (personaId: string) => {
     onSelect(personaId);
@@ -60,7 +73,8 @@ export function PersonaCommandSelector({
       value="all play styles"
       onSelect={() => selectPersona('')}
       showCheck={false}
-      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 bg-transparent! px-4 py-3 last:border-b-0 data-selected:bg-muted! data-selected:text-foreground in-data-[slot=dialog-content]:rounded-none!"    >
+      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 px-4 py-3 last:border-b-0 aria-selected:bg-accent aria-selected:text-accent-foreground in-data-[slot=dialog-content]:rounded-none!"
+    >
       <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary">
         <Sparkles size={17} aria-hidden="true" />
       </span>
@@ -94,7 +108,7 @@ export function PersonaCommandSelector({
               aria-haspopup="dialog"
               aria-keyshortcuts="P"
               aria-expanded={open}
-              onClick={() => setOpen(true)}
+              onClick={() => handleOpenChange(true)}
             />
           }
         >
@@ -114,13 +128,28 @@ export function PersonaCommandSelector({
 
       <CommandDialog
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         title="Choose a play style"
         description="Search and select a persona to personalize discovery."
         className="max-w-md"
       >
-        <Command className="rounded-4xl">
-          <CommandInput placeholder="Search play styles..." />
+        <Command
+          value={activeCommandValue}
+          onValueChange={setActiveCommandValue}
+          className="rounded-4xl"
+        >
+          <CommandInput
+            placeholder="Search play styles..."
+            onKeyDownCapture={(event) => {
+              if (event.key !== 'ArrowDown' || activeCommandValue) return;
+
+              // Select the first option before cmdk handles the key, then prevent
+              // cmdk from advancing to the second option in the same event.
+              event.preventDefault();
+              event.stopPropagation();
+              setActiveCommandValue(firstCommandValue);
+            }}
+          />
           <CommandList>
             <CommandEmpty>No play styles found.</CommandEmpty>
             <CommandGroup heading="Play styles">
@@ -134,7 +163,8 @@ export function PersonaCommandSelector({
                       value={`${persona.label} ${persona.description} ${persona.id}`}
                       onSelect={() => selectPersona(persona.id)}
                       showCheck={false}
-                      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 bg-transparent! px-4 py-3 last:border-b-0 data-selected:bg-muted! data-selected:text-foreground in-data-[slot=dialog-content]:rounded-none!"                    >
+                      className="persona-command-item min-h-[76px] rounded-none! border-b border-border/50 px-4 py-3 last:border-b-0 aria-selected:bg-accent aria-selected:text-accent-foreground in-data-[slot=dialog-content]:rounded-none!"
+                    >
                       <Avatar className="size-9 shrink-0 border-0 after:hidden">
                         <AvatarImage src={getPersonaAvatarUrl(persona.id)} alt="" />
                         <AvatarFallback>{persona.label.slice(0, 1)}</AvatarFallback>
