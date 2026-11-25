@@ -93,6 +93,7 @@ export default function App({ initialLocation = '/' }: AppProps) {
     <SidebarProvider className="min-h-svh w-full [--sidebar-width:11rem]">
       <Sidebar
         activeView={page.activeView}
+        isExploreRoute={page.isExploreRoute}
         selectedGenre={page.genre}
         genreCounts={page.genreCounts}
         isAllCatalogueRoute={page.isAllCatalogueRoute}

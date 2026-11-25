@@ -25,6 +25,7 @@ const navigationItems = [
 
 interface SidebarProps {
   activeView: DiscoveryView;
+  isExploreRoute: boolean;
   selectedGenre: ExperienceGenre | 'All';
   onSelectGenre: (genre: ExperienceGenre | 'All') => void;
   genreCounts: Record<string, number>;
@@ -42,12 +43,15 @@ function getNavigationPath(view: DiscoveryView) {
 
 export function Sidebar({
   activeView,
+  isExploreRoute,
   selectedGenre,
   onSelectGenre,
   genreCounts,
   isAllCatalogueRoute,
 }: SidebarProps) {
   const { isMobile, setOpenMobile, state } = useSidebar();
+  const isNavigationItemActive = (view: DiscoveryView) =>
+    view === 'explore' ? isExploreRoute : activeView === view;
 
   return (
     <ReUISidebar
@@ -71,11 +75,7 @@ export function Sidebar({
                       <a
                         href={getNavigationPath(id)}
                         aria-label={label}
-                        aria-current={
-                          activeView === id && (id !== 'explore' || (selectedGenre === 'All' && !isAllCatalogueRoute))
-                            ? 'page'
-                            : undefined
-                        }
+                        aria-current={isNavigationItemActive(id) ? 'page' : undefined}
                         onClick={(event) => {
                           if (
                             event.button !== 0 ||
@@ -97,7 +97,7 @@ export function Sidebar({
                         <span>{label}</span>
                       </a>
                     }
-                    isActive={activeView === id && (id !== 'explore' || (selectedGenre === 'All' && !isAllCatalogueRoute))}
+                    isActive={isNavigationItemActive(id)}
                     tooltip={label}
                   />
                 </SidebarMenuItem>
@@ -115,12 +115,16 @@ export function Sidebar({
               ).map(({ value, label }) => (
                 <SidebarMenuItem key={value}>
                   <SidebarMenuButton
-                    isActive={selectedGenre === value}
+                    isActive={selectedGenre === value && (value !== 'All' || isAllCatalogueRoute)}
                     tooltip={label}
                     render={
                       <a
                         href={getGenrePath(value)}
-                        aria-current={selectedGenre === value && (value !== 'All' || isAllCatalogueRoute) ? 'page' : undefined}
+                        aria-current={
+                          selectedGenre === value && (value !== 'All' || isAllCatalogueRoute)
+                            ? 'page'
+                            : undefined
+                        }
                         onClick={(event) => {
                           if (
                             event.button !== 0 ||

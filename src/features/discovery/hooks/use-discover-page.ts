@@ -40,6 +40,7 @@ const EMPTY_RANKED_SECTIONS: Record<RankingContext, RankedExperience[]> = {
 
 const PATH_TO_VIEW: Record<string, DiscoveryView> = {
   '/': 'explore',
+  '/all': 'all',
   '/search': 'search',
   '/trending': 'trending',
   '/hidden-gems': 'hidden-gems',
@@ -47,6 +48,7 @@ const PATH_TO_VIEW: Record<string, DiscoveryView> = {
 };
 const VIEW_TO_PATH: Record<DiscoveryView, string> = {
   explore: '/',
+  all: '/all',
   search: '/search',
   trending: '/trending',
   'hidden-gems': '/hidden-gems',
@@ -62,6 +64,7 @@ export function useDiscoverPage(initialLocation = '/') {
     [browserLocation],
   );
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
+  const isExploreRoute = pathname === '/';
   const isGenreRoute = pathname.startsWith('/genre/');
   const isAllCatalogueRoute = pathname === '/all';
   const [controlsOpen, setControlsOpen] = useState(
@@ -600,6 +603,7 @@ export function useDiscoverPage(initialLocation = '/') {
 
   return {
     activeView,
+    isExploreRoute,
     controlsOpen,
     setControlsOpen,
     rankingConfiguration,
