@@ -86,15 +86,15 @@ describe('RoTunnel transport', () => {
   it('caps concurrent upstream requests at eight', async () => {
     let active = 0;
     let maximumActive = 0;
-    const resolvers: Array<(response: Response) => void> = [];
+    const resolvers: Array<() => void> = [];
     const fetchMock = vi.fn(
       () =>
         new Promise<Response>((resolve) => {
           active += 1;
           maximumActive = Math.max(maximumActive, active);
-          resolvers.push((response) => {
+          resolvers.push(() => {
             active -= 1;
-            resolve(response);
+            resolve(Response.json({ ok: true }));
           });
         }),
     );
@@ -102,25 +102,20 @@ describe('RoTunnel transport', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const requests = Array.from({ length: 12 }, (_, index) =>
-      fetchJson<{ index: number }>(new URL(`https://example.test/${index}`)),
+      fetchJson<{ ok: boolean }>(new URL(`https://example.test/${index}`)),
     );
 
-    await Promise.resolve();
-    await Promise.resolve();
-
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(8));
     expect(maximumActive).toBe(8);
 
-    while (resolvers.length > 0 || active > 0) {
-      const batch = resolvers.splice(0);
+    resolvers.splice(0).forEach((resolve) => resolve());
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(12));
 
-      for (const resolve of batch) resolve(Response.json({ index: 1 }));
-
-      await Promise.resolve();
-      await Promise.resolve();
-    }
+    resolvers.splice(0).forEach((resolve) => resolve());
 
     await expect(Promise.all(requests)).resolves.toHaveLength(12);
     expect(maximumActive).toBeLessThanOrEqual(8);
+    expect(active).toBe(0);
   });
 
   it('does not retry non-retryable client errors', async () => {
@@ -152,7 +147,7 @@ describe('RoTunnel transport', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('propagates caller cancellation without retrying', async () => {
+  it('does not start a request when the caller is already aborted', async () => {
     const controller = new AbortController();
     const fetchMock = vi.fn().mockRejectedValue(new DOMException('Aborted', 'AbortError'));
 
@@ -162,6 +157,6 @@ describe('RoTunnel transport', () => {
     await expect(
       fetchJson(new URL('https://example.test/data'), controller.signal),
     ).rejects.toMatchObject({ name: 'AbortError' });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

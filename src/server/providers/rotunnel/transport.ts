@@ -74,7 +74,7 @@ function drainWaiters(): void {
 
     if (!waiter) return;
 
-    waiter.signal?.removeEventListener('abort', waiter.onAbort!);
+    if (waiter.onAbort) waiter.signal?.removeEventListener('abort', waiter.onAbort);
 
     if (waiter.signal?.aborted) {
       waiter.reject(waiter.signal.reason);

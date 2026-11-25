@@ -26,6 +26,9 @@ import {
   type ExperienceGenre,
 } from '@/types/experience';
 
+const EMPTY_EXPERIENCES: Experience[] = [];
+const EMPTY_GENRE_RANKING = new Map<string, RankedExperience>();
+
 const EMPTY_RANKED_SECTIONS: Record<RankingContext, RankedExperience[]> = {
   featured: [],
   trending: [],
@@ -51,9 +54,12 @@ const VIEW_TO_PATH: Record<DiscoveryView, string> = {
 
 export function useDiscoverPage(initialLocation = '/') {
   const browserLocation = useBrowserLocation(initialLocation);
-  const [rawPathname, search = ''] = browserLocation.split('?');
+  const [rawPathname] = browserLocation.split('?');
   const pathname = rawPathname.length > 1 ? rawPathname.replace(/\/+$/, '') : rawPathname;
-  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
+  const searchParams = useMemo(
+    () => new URLSearchParams(browserLocation.split('?')[1] ?? ''),
+    [browserLocation],
+  );
   const activeView = PATH_TO_VIEW[pathname] ?? 'explore';
   const isGenreRoute = pathname.startsWith('/genre/');
   const [controlsOpen, setControlsOpen] = useState(
@@ -110,7 +116,10 @@ export function useDiscoverPage(initialLocation = '/') {
   useEffect(() => {
     const controller = new AbortController();
 
-    setError(null);
+    Promise.resolve().then(() => {
+      if (controller.signal.aborted) return;
+      setError(null);
+    });
     fetchGenreCounts(controller.signal)
       .then((result) => setGenreCounts(result.data))
       .catch(() => undefined);
@@ -164,7 +173,7 @@ export function useDiscoverPage(initialLocation = '/') {
         setLoading(true);
         setError(null);
 
-        const contexts: RankingContext[] =
+        const contexts: readonly RankingContext[] =
           activeView === 'trending'
             ? ['trending']
             : activeView === 'hidden-gems'
@@ -236,21 +245,27 @@ export function useDiscoverPage(initialLocation = '/') {
   ]);
 
   useEffect(() => {
-    if (!isGenreRoute || genre === 'All') {
-      setGenreExperiences([]);
-      setGenreRankingById(new Map());
-
-      return;
-    }
+    if (!isGenreRoute || genre === 'All') return;
 
     const controller = new AbortController();
     let active = true;
 
-    setLoading(true);
-    setError(null);
-
-    fetchCatalog(100, controller.signal, genre, 0, rankingConfiguration, persona || undefined)
+    Promise.resolve()
+      .then(() => {
+        if (!active) return undefined;
+        setLoading(true);
+        setError(null);
+        return fetchCatalog(
+          100,
+          controller.signal,
+          genre,
+          0,
+          rankingConfiguration,
+          persona || undefined,
+        );
+      })
       .then((result) => {
+        if (!result) return;
         if (active) {
           setGenreExperiences(result.data);
           setGenreRankingById(
@@ -339,7 +354,6 @@ export function useDiscoverPage(initialLocation = '/') {
     let active = true;
 
     if (bookmarks.length === 0) {
-      setSavedExperiencesLoading(true);
       Promise.resolve()
         .then(() => {
           if (active) {
@@ -359,10 +373,18 @@ export function useDiscoverPage(initialLocation = '/') {
       };
     }
 
-    setSavedExperiencesLoading(true);
-    Promise.all(bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)))
+    Promise.resolve()
+      .then(() => {
+        if (!active) return undefined;
+        setSavedExperiencesLoading(true);
+        return Promise.all(
+          bookmarks.map((id) => fetchExperience(id, controller.signal).catch(() => null)),
+        );
+      })
       .then((items) => {
-        if (active) setSavedExperiences(items.filter((item): item is Experience => item !== null));
+        if (active && items) {
+          setSavedExperiences(items.filter((item): item is Experience => item !== null));
+        }
       })
       .finally(() => {
         if (active) setSavedExperiencesLoading(false);
@@ -473,7 +495,7 @@ export function useDiscoverPage(initialLocation = '/') {
     setRetryVersion((current) => current + 1);
   }, []);
 
-  const closeControls = useCallback(() => setControlsOpen(false), []);
+  const closeControls = useCallback(() => setControlsOpen(false), [setControlsOpen]);
 
   return {
     activeView,
@@ -486,8 +508,8 @@ export function useDiscoverPage(initialLocation = '/') {
     selectGenre,
     personas,
     genreCounts,
-    genreExperiences,
-    genreRankingById,
+    genreExperiences: isGenreRoute && genre !== 'All' ? genreExperiences : EMPTY_EXPERIENCES,
+    genreRankingById: isGenreRoute && genre !== 'All' ? genreRankingById : EMPTY_GENRE_RANKING,
     searchRankingById,
     isGenreRoute,
     persona,

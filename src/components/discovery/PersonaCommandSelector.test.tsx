@@ -54,12 +54,14 @@ describe('PersonaCommandSelector', () => {
     expect(screen.queryByRole('dialog', { name: 'Choose a play style' })).not.toBeInTheDocument();
   });
 
-  it('explains the completed ranking fixes inside the palette', () => {
+  it('shows the all-play-styles option and device-persistence explanation', () => {
     render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
 
-    expect(screen.getByText(/diversity now follows its slider/)).toBeInTheDocument();
-    expect(screen.getByText(/relevance no longer rewards longer descriptions/)).toBeInTheDocument();
+    expect(screen.getByText('All play styles')).toBeInTheDocument();
+    expect(
+      screen.getByText('Your selected play style is saved on this device and used across discovery.'),
+    ).toBeInTheDocument();
   });
 });

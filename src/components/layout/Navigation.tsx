@@ -1,4 +1,4 @@
-import { Bookmark, Compass, Gem, Github, TrendingUp } from 'lucide-react';
+import { Bookmark, Compass, Gem, GithubIcon, TrendingUp } from 'lucide-react';
 import { GENRE_FILTER_OPTIONS, type DiscoveryView, type ExperienceGenre } from '@/types/experience';
 import { navigateTo } from '@/hooks/use-browser-location';
 import { Brand } from './Brand';
@@ -85,14 +85,14 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
 
                           if (isMobile) setOpenMobile(false);
                         }}
-                      />
+                      >
+                        <Icon aria-hidden="true" />
+                        <span>{label}</span>
+                      </a>
                     }
                     isActive={activeView === id && (id !== 'explore' || selectedGenre === 'All')}
                     tooltip={label}
-                  >
-                    <Icon aria-hidden="true" />
-                    <span>{label}</span>
-                  </SidebarMenuButton>
+                  />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -132,16 +132,16 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
 
                           if (isMobile) setOpenMobile(false);
                         }}
-                      />
+                      >
+                        <span className="min-w-0 flex-1 truncate">{label}</span>
+                        {typeof genreCounts[value] === 'number' && (
+                          <span className="ml-auto text-xs tabular-nums text-muted-foreground">
+                            {genreCounts[value].toLocaleString('en')}
+                          </span>
+                        )}
+                      </a>
                     }
-                  >
-                    <span className="min-w-0 flex-1 truncate">{label}</span>
-                    {typeof genreCounts[value] === 'number' && (
-                      <span className="ml-auto text-xs tabular-nums text-muted-foreground">
-                        {genreCounts[value].toLocaleString('en')}
-                      </span>
-                    )}
-                  </SidebarMenuButton>
+                  />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -161,13 +161,13 @@ export function Sidebar({ activeView, selectedGenre, onSelectGenre, genreCounts 
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="View Discover on GitHub (opens in a new tab)"
-                      />
+                      >
+                        <GithubIcon aria-hidden="true" />
+                        <span>View on GitHub</span>
+                      </a>
                     }
                     tooltip="View on GitHub"
-                  >
-                    <Github aria-hidden="true" />
-                    <span>View on GitHub</span>
-                  </SidebarMenuButton>
+                  />
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>

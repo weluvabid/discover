@@ -108,7 +108,7 @@ export function PersonaCommandSelector({
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        title="Choose a play style · P"
+        title="Choose a play style"
         description="Search and select a persona to personalize discovery."
         className="max-w-md"
       >

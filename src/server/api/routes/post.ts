@@ -24,6 +24,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function isPresent(value: unknown): boolean {
+  return value !== undefined && value !== null;
+}
+
 export async function handlePost(
   client: RoTunnelClient,
   url: URL,
@@ -64,7 +68,7 @@ export async function handlePost(
     }
 
     input = parsed;
-  } catch (error) {
+  } catch {
     if (signal.aborted) throw signal.reason;
 
     return jsonResponse({ error: 'Invalid JSON request body.' }, 400);
@@ -81,14 +85,14 @@ export async function handlePost(
     return jsonResponse({ error: 'limit must be an integer from 1 to 100.' }, 400);
   }
 
-  if (input.genre != null && !isExperienceGenre(input.genre)) {
+  if (isPresent(input.genre) && !isExperienceGenre(input.genre)) {
     return jsonResponse({ error: 'Unknown genre.' }, 400);
   }
 
   const genre = isExperienceGenre(input.genre) ? input.genre : undefined;
 
   if (
-    input.persona != null &&
+    isPresent(input.persona) &&
     (typeof input.persona !== 'string' || !seedPersonas().some((item) => item.id === input.persona))
   ) {
     return jsonResponse({ error: 'Unknown persona.' }, 400);
@@ -99,7 +103,7 @@ export async function handlePost(
       ? seedPersonas().find((item) => item.id === input.persona)
       : undefined;
 
-  if (input.strategy != null && !isRankingStrategy(input.strategy)) {
+  if (isPresent(input.strategy) && !isRankingStrategy(input.strategy)) {
     return jsonResponse({ error: 'Unknown ranking strategy.' }, 400);
   }
 
@@ -108,7 +112,7 @@ export async function handlePost(
     : DEFAULT_RANKING_CONFIGURATION.strategy;
   const requestedSignals = input.signals;
 
-  if (requestedSignals != null && !isRankingConfiguration(requestedSignals)) {
+  if (isPresent(requestedSignals) && !isRankingConfiguration(requestedSignals)) {
     return jsonResponse({ error: 'Invalid ranking signals.' }, 400);
   }
 

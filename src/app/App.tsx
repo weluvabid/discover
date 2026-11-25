@@ -23,7 +23,13 @@ interface AppProps {
 export default function App({ initialLocation = '/' }: AppProps) {
   const page = useDiscoverPage(initialLocation);
   const controlsWereOpen = useRef(false);
-  const { bookmarks, toggleBookmark: toggleBookmarkAction } = page;
+  const {
+    bookmarks,
+    toggleBookmark: toggleBookmarkAction,
+    setControlsOpen,
+    personas,
+    setPersona,
+  } = page;
 
   const toggleBookmark = useCallback(
     (id: string) => {
@@ -36,18 +42,18 @@ export default function App({ initialLocation = '/' }: AppProps) {
   );
 
   const openDiscoveryControls = useCallback(
-    () => page.setControlsOpen(true),
-    [page.setControlsOpen],
+    () => setControlsOpen(true),
+    [setControlsOpen],
   );
 
   const selectPersona = useCallback(
     (personaId: string) => {
-      page.setPersona(personaId);
-      const selected = page.personas.find((item) => item.id === personaId);
+      setPersona(personaId);
+      const selected = personas.find((item) => item.id === personaId);
 
       toast.success(selected ? `${selected.label} play style selected` : 'Showing all play styles');
     },
-    [page.personas, page.setPersona],
+    [personas, setPersona],
   );
 
   const launchExperience = useCallback((experience: Experience) => {
