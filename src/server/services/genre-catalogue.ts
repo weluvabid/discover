@@ -1,9 +1,11 @@
 import { CACHE_TTL_MS, DISCOVERY_LIMITS } from '../../config/discovery';
 import { EXPERIENCE_GENRES, type ExperienceGenre } from '../../types/experience';
+import { PERSONA_SEARCH_QUERIES, type PersonaId } from '../../domain/personas/personas';
 import { normalizeExperience, RoTunnelError } from '../providers/rotunnel/index';
 import type { NativeCandidate, NativeSort, RoTunnelClient } from '../providers/rotunnel/index';
 import type { JsonObject } from '../providers/rotunnel/types';
 import { TtlCache } from '../cache/ttl-cache';
+import { clearOmniSearchCache, omniSearchCandidates } from './omni-search-cache';
 
 const cache = new TtlCache(8);
 const feedCache = new TtlCache(DISCOVERY_LIMITS.cacheEntries);
@@ -119,10 +121,22 @@ export interface GenreCatalogue {
   };
 }
 
-async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogue> {
-  const queries = EXPERIENCE_GENRES.flatMap((genre) =>
-    CATEGORY_SEARCH_QUERIES[genre].map((query) => ({ genre, query })),
+async function loadGenreCatalogue(
+  client: RoTunnelClient,
+  personaId?: PersonaId,
+): Promise<GenreCatalogue> {
+  const categoryQueries = EXPERIENCE_GENRES.flatMap((genre) =>
+    CATEGORY_SEARCH_QUERIES[genre].map((query) => ({ genre, query, kind: 'category' as const })),
   );
+  const personaQueries = personaId
+    ? PERSONA_SEARCH_QUERIES[personaId].map((query) => ({
+        query,
+        kind: 'persona' as const,
+      }))
+    : [];
+  // Persona intent gets first claim on the Omni Search budget; broad category
+  // searches fill remaining capacity afterwards.
+  const queries = [...personaQueries, ...categoryQueries];
   const sharedSessionId = globalThis.crypto.randomUUID();
   const [sortsResult, searchResults] = await Promise.all([
     client.getSorts().then(
@@ -130,11 +144,7 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
       (error: unknown) => ({ error }),
     ),
     mapWithConcurrency(queries, MAX_SEARCH_CONCURRENCY, ({ query }) =>
-      feedCache.getOrLoad(
-        `rotunnel:genre-search:${query.toLowerCase()}`,
-        CACHE_TTL_MS.searchResults,
-        () => client.search(query, undefined, sharedSessionId, CATEGORY_SEARCH_MAX_PAGES),
-      ),
+      omniSearchCandidates(client, query, sharedSessionId, CATEGORY_SEARCH_MAX_PAGES),
     ),
   ]);
   const sorts = 'sorts' in sortsResult ? sortsResult.sorts : [];
@@ -175,7 +185,9 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
 
   for (const [index, result] of searchResults.entries()) {
     if (result.status !== 'fulfilled') {
-      failedSearches.push(queries[index]?.query ?? 'unknown');
+      failedSearches.push(
+        `${queries[index]?.kind ?? 'category'}:${queries[index]?.query ?? 'unknown'}`,
+      );
       continue;
     }
 
@@ -185,7 +197,7 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
 
       unique.set(candidate.universeId, {
         ...candidate,
-        sourceSortId: `omni-search:${queries[index]?.query ?? 'unknown'}`,
+        sourceSortId: `omni-search:${queries[index]?.kind ?? 'category'}:${queries[index]?.query ?? 'unknown'}`,
       });
     }
   }
@@ -269,11 +281,19 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
 export function clearGenreCatalogueCache(): void {
   cache.clear();
   feedCache.clear();
+  clearOmniSearchCache();
 }
 
-export function genreCatalogueFor(client: RoTunnelClient): Promise<GenreCatalogue> {
-  return cache.getOrLoad('rotunnel:genre-catalogue:v3', CACHE_TTL_MS.genreCatalogue, () =>
-    loadGenreCatalogue(client),
+export function genreCatalogueFor(
+  client: RoTunnelClient,
+  personaId?: string,
+): Promise<GenreCatalogue> {
+  const validPersona =
+    personaId && personaId in PERSONA_SEARCH_QUERIES ? (personaId as PersonaId) : undefined;
+  const catalogueKey = `rotunnel:genre-catalogue:v4:${validPersona ?? 'default'}`;
+
+  return cache.getOrLoad(catalogueKey, CACHE_TTL_MS.genreCatalogue, () =>
+    loadGenreCatalogue(client, validPersona),
   );
 }
 
@@ -282,8 +302,9 @@ export async function genreCataloguePage(
   genre: ExperienceGenre | 'All',
   offset: number,
   limit: number,
+  personaId?: string,
 ): Promise<{ candidates: NativeCandidate[]; total: number; details: Map<string, JsonObject> }> {
-  const catalogue = await genreCatalogueFor(client);
+  const catalogue = await genreCatalogueFor(client, personaId);
   const candidates =
     genre === 'All'
       ? [...EXPERIENCE_GENRES.flatMap((item) => catalogue.byGenre[item])]

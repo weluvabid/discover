@@ -77,6 +77,26 @@ export const PERSONAS = [
 
 export type PersonaId = (typeof PERSONAS)[number][0];
 
+/**
+ * Short, intent-focused RoTunnel Omni Search queries for each play style.
+ * Keep these query profiles stable: individual query responses are shared in
+ * the provider cache, while composed catalogues are cached per persona.
+ */
+export const PERSONA_SEARCH_QUERIES: Readonly<Record<PersonaId, readonly string[]>> = {
+  competitive: ['Ranked PvP Games', 'Competitive Arena Games'],
+  social: ['Social Hangout Games', 'Roleplay Multiplayer Games'],
+  builder: ['Building Sandbox Games', 'Tycoon Simulator Games'],
+  'thrill-seeker': ['Horror Survival Games', 'Scary Escape Games'],
+  completionist: ['RPG Quest Progression Games', 'Collection Adventure Games'],
+  casual: ['Casual Minigames', 'Easy Obby Puzzle Games'],
+  'story-first': ['Story Driven Adventure Games', 'Narrative Mystery Games'],
+  speedrunner: ['Speedrun Obby Games', 'Time Trial Racing Games'],
+  tactician: ['Strategy Tower Defense Games', 'Tactical Multiplayer Games'],
+  adventurer: ['Open World Exploration Games', 'Adventure Survival Games'],
+  'party-player': ['Party Games', 'Multiplayer Minigames'],
+  collector: ['Pet Collection Trading Games', 'Creature Collecting Games'],
+};
+
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const RELATED_GENRES: Record<ExperienceGenre, ExperienceGenre[]> = {

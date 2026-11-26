@@ -182,7 +182,10 @@ export async function handleGet(
       return jsonResponse({ error: 'Unknown genre.' }, 400);
     }
 
-    const candidates = await awaitWithSignal(candidatesForContext(client, contextValue), signal);
+    const candidates = await awaitWithSignal(
+      candidatesForContext(client, contextValue, personaId),
+      signal,
+    );
 
     throwIfAborted(signal);
     const personalized = applyPersona(candidates, persona);
@@ -321,7 +324,10 @@ export async function handleGet(
     }
 
     if (genre) {
-      const page = await awaitWithSignal(genreCataloguePage(client, genre, offset, limit), signal);
+      const page = await awaitWithSignal(
+        genreCataloguePage(client, genre, offset, limit, requestedPersona ?? undefined),
+        signal,
+      );
 
       throwIfAborted(signal);
       const experiences = await awaitWithSignal(

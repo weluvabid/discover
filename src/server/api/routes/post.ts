@@ -131,7 +131,10 @@ export async function handlePost(
       : DEFAULT_RANKING_CONFIGURATION.signals,
   };
 
-  const candidates = await awaitWithSignal(candidatesForContext(client, context), signal);
+  const candidates = await awaitWithSignal(
+    candidatesForContext(client, context, persona?.id),
+    signal,
+  );
 
   throwIfAborted(signal);
   const personalized = applyPersona(candidates, persona?.id);

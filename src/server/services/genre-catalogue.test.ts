@@ -151,6 +151,38 @@ describe('genre catalogue', () => {
     expect([...catalogue.byGenre['Action RPG']].length).toBeGreaterThan(0);
   });
 
+  it('acquires a persona-specific candidate pool while reusing cached query responses', async () => {
+    const client = {
+      getSorts: vi.fn().mockResolvedValue([
+        { id: 'trending', name: 'Top Trending', description: '' },
+      ]),
+      getDetails: vi.fn().mockResolvedValue(new Map()),
+      getSortContent: vi.fn().mockResolvedValue([
+        candidate('native-1', 'Trending Experience', 'A popular game.', 'trending'),
+      ]),
+      search: vi.fn(async (query: string) => [
+        candidate(`search-${query}`, `${query} Experience`, `A game about ${query}.`, 'omni-search'),
+      ]),
+    } as unknown as RoTunnelClient;
+
+    const party = await genreCatalogueFor(client, 'party-player');
+    const collector = await genreCatalogueFor(client, 'collector');
+    const partyAgain = await genreCatalogueFor(client, 'party-player');
+    const requestedQueries = vi.mocked(client.search).mock.calls.map(([query]) => query);
+
+    expect(requestedQueries).toContain('Party Games');
+    expect(requestedQueries).toContain('Multiplayer Minigames');
+    expect(requestedQueries).toContain('Pet Collection Trading Games');
+    expect(requestedQueries).toContain('Creature Collecting Games');
+    expect(party).not.toBe(collector);
+    expect(partyAgain).toBe(party);
+    // Shared category searches are fetched once; each persona adds only its
+    // own two cached Omni Search queries.
+    expect(client.search).toHaveBeenCalledTimes(11);
+    expect(party.diagnostics.searchQueries).toBe(9);
+    expect(collector.diagnostics.searchQueries).toBe(9);
+  });
+
   it('continues when one native feed fails and enriches only the requested page', async () => {
     const client = {
       getSorts: vi.fn().mockResolvedValue([
