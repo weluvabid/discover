@@ -77,6 +77,35 @@ describe('discovery ranking', () => {
     ).toMatchObject({ enabled: true, normalizedScore: 100 });
   });
 
+  it('orders the diversity-selected set by the final displayed score', () => {
+    const fixture = experiences[0];
+
+    if (!fixture) throw new Error('Expected a ranking fixture.');
+
+    const candidates = Array.from({ length: 12 }, (_, index) => ({
+      ...fixture,
+      id: `diversity-order-${index}`,
+      title: `Diversity order ${index}`,
+      tags: index < 8 ? ['shared-gameplay-tag'] : [`unique-tag-${index}`],
+    }));
+    const ranked = rankForContext(candidates, DEFAULT_RANKING_CONFIGURATION, 'recommended', {
+      limit: candidates.length,
+      now: FIXED_NOW,
+    });
+
+    expect(ranked.map((item) => item.score)).toEqual(
+      [...ranked.map((item) => item.score)].sort((left, right) => right - left),
+    );
+    expect(ranked.map((item) => item.position)).toEqual(
+      ranked.map((_, index) => index + 1),
+    );
+    expect(
+      ranked.every(
+        (item) => item.score === item.explanation.finalScore,
+      ),
+    ).toBe(true);
+  });
+
   it('returns deterministic rankings for identical input', () => {
     const first = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);
     const second = rankExperiences(experiences, DEFAULT_RANKING_CONFIGURATION, FIXED_NOW);

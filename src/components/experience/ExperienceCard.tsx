@@ -30,11 +30,19 @@ export function ExperienceCard({
   const weeklyChange = experience.metrics.weeklyChange;
   const formattedWeeklyChange =
     weeklyChange === undefined ? null : formatSignedPercent(weeklyChange);
+  const personaMatchLabel =
+    experience.matchScore === undefined
+      ? null
+      : experience.matchScore >= 80
+        ? 'STRONG MATCH'
+        : experience.matchScore >= 50
+          ? 'RELATED MATCH'
+          : 'LOW MATCH';
   const overlayLabel =
     variant === 'trending' && formattedWeeklyChange !== null
       ? formattedWeeklyChange
-      : variant === 'recommended' && experience.matchScore !== undefined
-        ? `${experience.matchScore}% MATCH`
+      : variant === 'recommended'
+        ? personaMatchLabel
         : variant === 'recent'
           ? 'NEW'
           : null;

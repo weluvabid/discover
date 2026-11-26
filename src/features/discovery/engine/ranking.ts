@@ -837,7 +837,13 @@ function rerankForDiversity(
     });
   }
 
-  return selected.map((item, index) => ({ ...item, position: index + 1 }));
+  // Greedy selection chooses a diverse set, but its per-step adjusted scores can
+  // increase later in the sequence as candidates receive different penalties.
+  // Present that selected set in descending final-score order so card order,
+  // displayed scores, and ranking explanations agree.
+  return selected
+    .sort(compareRanked)
+    .map((item, index) => ({ ...item, position: index + 1 }));
 }
 
 export function retrieveCandidates(
