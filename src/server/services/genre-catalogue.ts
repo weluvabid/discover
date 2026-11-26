@@ -8,6 +8,50 @@ import { TtlCache } from '../cache/ttl-cache';
 const cache = new TtlCache(8);
 const feedCache = new TtlCache(DISCOVERY_LIMITS.cacheEntries);
 const MAX_CATALOGUE_CANDIDATES = 600;
+const MAX_NATIVE_FEED_CANDIDATES = 300;
+const CATEGORY_SEARCH_QUERIES: Readonly<Record<ExperienceGenre, readonly string[]>> = {
+  'Action RPG': ['RPG'],
+  Exploration: ['Adventure'],
+  'Co-op': ['Survival'],
+  Racing: ['Racing'],
+  Horror: ['Horror'],
+  Simulation: ['Simulator'],
+  Puzzle: ['Puzzle'],
+};
+
+const MAX_SEARCH_CONCURRENCY = 4;
+const CATEGORY_SEARCH_MAX_PAGES = 2;
+
+async function mapWithConcurrency<T, R>(
+  values: readonly T[],
+  concurrency: number,
+  mapper: (value: T) => Promise<R>,
+): Promise<PromiseSettledResult<R>[]> {
+  const results: PromiseSettledResult<R>[] = new Array(values.length);
+  let nextIndex = 0;
+
+  const workers = Array.from(
+    { length: Math.min(concurrency, values.length) },
+    async () => {
+      while (nextIndex < values.length) {
+        const index = nextIndex++;
+        const value = values[index];
+
+        if (value === undefined) continue;
+
+        try {
+          results[index] = { status: 'fulfilled', value: await mapper(value) };
+        } catch (reason) {
+          results[index] = { status: 'rejected', reason };
+        }
+      }
+    },
+  );
+
+  await Promise.all(workers);
+
+  return results;
+}
 
 const SORT_GROUPS: readonly RegExp[] = [
   /top[\s._-]*trending|trending/i,
@@ -66,6 +110,8 @@ export interface GenreCatalogue {
   diagnostics: {
     feedCandidateCounts: Record<string, number>;
     failedFeeds: string[];
+    failedSearches: string[];
+    searchQueries: number;
     uniqueCandidates: number;
     lowConfidence: number;
     unknown: number;
@@ -74,16 +120,24 @@ export interface GenreCatalogue {
 }
 
 async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogue> {
-  const sorts = selectGenreCatalogueSorts(await client.getSorts());
-
-  if (sorts.length === 0) {
-    throw new RoTunnelError(
-      'RoTunnel returned no native feeds for the genre catalogue.',
-      502,
-      '/explore-api/v1/get-sorts',
-    );
-  }
-
+  const queries = EXPERIENCE_GENRES.flatMap((genre) =>
+    CATEGORY_SEARCH_QUERIES[genre].map((query) => ({ genre, query })),
+  );
+  const sharedSessionId = globalThis.crypto.randomUUID();
+  const [sortsResult, searchResults] = await Promise.all([
+    client.getSorts().then(
+      (sorts) => ({ sorts: selectGenreCatalogueSorts(sorts) }),
+      (error: unknown) => ({ error }),
+    ),
+    mapWithConcurrency(queries, MAX_SEARCH_CONCURRENCY, ({ query }) =>
+      feedCache.getOrLoad(
+        `rotunnel:genre-search:${query.toLowerCase()}`,
+        CACHE_TTL_MS.searchResults,
+        () => client.search(query, undefined, sharedSessionId, CATEGORY_SEARCH_MAX_PAGES),
+      ),
+    ),
+  ]);
+  const sorts = 'sorts' in sortsResult ? sortsResult.sorts : [];
   const feedResults = await Promise.allSettled(
     sorts.map(async (sort) => ({
       sort,
@@ -96,8 +150,10 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
   );
   const unique = new Map<string, NativeCandidate>();
   const feedCandidateCounts: Record<string, number> = {};
-  const failedFeeds: string[] = [];
+  const failedFeeds: string[] = 'error' in sortsResult ? ['sort-catalogue'] : [];
 
+  // Reserve half the catalogue budget for targeted Omni Search candidates so
+  // broad native feeds cannot crowd out category-specific acquisition.
   for (const [index, result] of feedResults.entries()) {
     if (result.status !== 'fulfilled') {
       failedFeeds.push(sorts[index]?.id ?? 'unknown');
@@ -109,18 +165,42 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
     for (const candidate of result.value.candidates) {
       if (unique.has(candidate.universeId)) continue;
 
-      if (unique.size >= MAX_CATALOGUE_CANDIDATES) break;
+      if (unique.size >= MAX_NATIVE_FEED_CANDIDATES) break;
 
       unique.set(candidate.universeId, candidate);
     }
   }
 
+  const failedSearches: string[] = [];
+
+  for (const [index, result] of searchResults.entries()) {
+    if (result.status !== 'fulfilled') {
+      failedSearches.push(queries[index]?.query ?? 'unknown');
+      continue;
+    }
+
+    for (const candidate of result.value) {
+      if (unique.has(candidate.universeId)) continue;
+      if (unique.size >= MAX_CATALOGUE_CANDIDATES) break;
+
+      unique.set(candidate.universeId, {
+        ...candidate,
+        sourceSortId: `omni-search:${queries[index]?.query ?? 'unknown'}`,
+      });
+    }
+  }
+
   if (unique.size === 0) {
-    const firstFailure = feedResults.find(
+    const firstFeedFailure = feedResults.find(
+      (result): result is PromiseRejectedResult => result.status === 'rejected',
+    );
+    const firstSearchFailure = searchResults.find(
       (result): result is PromiseRejectedResult => result.status === 'rejected',
     );
 
-    if (firstFailure) throw firstFailure.reason;
+    if ('error' in sortsResult) throw sortsResult.error;
+    if (firstFeedFailure) throw firstFeedFailure.reason;
+    if (firstSearchFailure) throw firstSearchFailure.reason;
   }
 
   const byGenre = Object.fromEntries(
@@ -176,6 +256,8 @@ async function loadGenreCatalogue(client: RoTunnelClient): Promise<GenreCatalogu
     diagnostics: {
       feedCandidateCounts,
       failedFeeds,
+      failedSearches,
+      searchQueries: queries.length,
       uniqueCandidates: unique.size,
       lowConfidence,
       unknown,
@@ -190,7 +272,7 @@ export function clearGenreCatalogueCache(): void {
 }
 
 export function genreCatalogueFor(client: RoTunnelClient): Promise<GenreCatalogue> {
-  return cache.getOrLoad('rotunnel:genre-catalogue:v2', CACHE_TTL_MS.genreCatalogue, () =>
+  return cache.getOrLoad('rotunnel:genre-catalogue:v3', CACHE_TTL_MS.genreCatalogue, () =>
     loadGenreCatalogue(client),
   );
 }

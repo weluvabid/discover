@@ -80,6 +80,22 @@ describe('PersonaCommandSelector', () => {
     expect(activeOption).toHaveClass('aria-selected:text-accent-foreground');
   });
 
+  it('does not leave the search input focused while scrolling persona options on touch', () => {
+    render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
+
+    const input = screen.getByPlaceholderText('Search play styles...');
+    const list = screen.getByRole('listbox');
+
+    input.focus();
+    expect(input).toHaveFocus();
+
+    fireEvent.touchMove(list);
+
+    expect(input).not.toHaveFocus();
+  });
+
   it('shows the all-play-styles option and device-persistence explanation', () => {
     render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
 

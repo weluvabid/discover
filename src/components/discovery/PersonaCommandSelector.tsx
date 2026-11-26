@@ -151,7 +151,23 @@ export function PersonaCommandSelector({
               setActiveCommandValue(firstCommandValue);
             }}
           />
-          <CommandList>
+          <CommandList
+            className="touch-pan-y overscroll-contain"
+            onTouchStartCapture={() => {
+              const input = document.querySelector<HTMLInputElement>(
+                '[data-slot="command-input"]',
+              );
+
+              if (input && document.activeElement === input) input.blur();
+            }}
+            onTouchMoveCapture={() => {
+              const input = document.querySelector<HTMLInputElement>(
+                '[data-slot="command-input"]',
+              );
+
+              if (input && document.activeElement === input) input.blur();
+            }}
+          >
             <CommandEmpty>No play styles found.</CommandEmpty>
             <CommandGroup heading="Play styles">
               {!selectedPersona && allPlayStylesItem}

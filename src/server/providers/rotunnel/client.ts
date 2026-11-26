@@ -70,19 +70,26 @@ export class RoTunnelClient {
     return extractCandidates(await fetchJson<unknown>(url, signal), sortId);
   }
 
-  async search(query: string, signal?: AbortSignal): Promise<NativeCandidate[]> {
+  async search(
+    query: string,
+    signal?: AbortSignal,
+    sharedSessionId?: string,
+    maxPages = 3,
+  ): Promise<NativeCandidate[]> {
     const url = new URL('/search-api/omni-search', API_ORIGIN);
-    const session = sessionId();
+    const session = sharedSessionId ?? sessionId();
     const candidates = new Map<string, NativeCandidate>();
     let pageToken: string | undefined;
 
-    // Search exposes a continuation token. Bound pagination to three pages so
+    // Search exposes a continuation token. Keep pagination explicitly bounded so
     // one query cannot consume unbounded request time or upstream quota.
-    for (let page = 0; page < 3; page += 1) {
+    const pageLimit = Number.isSafeInteger(maxPages) ? Math.min(3, Math.max(1, maxPages)) : 3;
+
+    for (let page = 0; page < pageLimit; page += 1) {
       const params = new URLSearchParams({
-        SearchQuery: query,
-        SessionId: session,
-        pageType: 'all',
+        searchQuery: query,
+        sessionId: session,
+        pageType: 'games',
       });
 
       if (pageToken) params.set('pageToken', pageToken);

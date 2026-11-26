@@ -121,6 +121,36 @@ describe('genre catalogue', () => {
     expect(catalogue.diagnostics.failedFeeds).toEqual([]);
   });
 
+  it('combines category-targeted Omni Search results with native feeds', async () => {
+    const client = {
+      getSorts: vi.fn().mockResolvedValue([
+        { id: 'trending', name: 'Top Trending', description: '' },
+        { id: 'popular', name: 'Most Popular', description: '' },
+      ]),
+      getDetails: vi.fn().mockResolvedValue(new Map()),
+      getSortContent: vi.fn(async (sortId: string) => [
+        candidate('native-1', 'Trending Horror', 'A horror experience.', sortId),
+      ]),
+      search: vi.fn(async (query: string) => [
+        candidate(`search-${query}`, `${query} Experience`, `A game about ${query}.`, 'omni-search'),
+      ]),
+    } as unknown as RoTunnelClient;
+
+    const catalogue = await genreCatalogueFor(client);
+
+    expect(client.search).toHaveBeenCalled();
+    expect(client.search).toHaveBeenCalledWith('RPG', undefined, expect.any(String), 2);
+    expect(client.search).toHaveBeenCalledWith('Racing', undefined, expect.any(String), 2);
+    const sessions = new Set(
+      vi.mocked(client.search).mock.calls.map(([, , sessionId]) => sessionId),
+    );
+    expect(sessions.size).toBe(1);
+    expect(catalogue.diagnostics.searchQueries).toBe(7);
+    expect(catalogue.diagnostics.failedSearches).toEqual([]);
+    expect(catalogue.diagnostics.uniqueCandidates).toBeGreaterThan(2);
+    expect([...catalogue.byGenre['Action RPG']].length).toBeGreaterThan(0);
+  });
+
   it('continues when one native feed fails and enriches only the requested page', async () => {
     const client = {
       getSorts: vi.fn().mockResolvedValue([

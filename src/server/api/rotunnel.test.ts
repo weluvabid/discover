@@ -112,6 +112,30 @@ describe('RoTunnel provider contract', () => {
     expect(secondUrl.searchParams.get('pageToken')).toBe('next-page');
   });
 
+  it('uses the games-only Omni Search contract with lowercase query parameters', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      Response.json({
+        searchResults: [
+          { contentGroupType: 'Game', contents: [{ contentId: '123', name: 'RPG World' }] },
+        ],
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await new RoTunnelClient().search('RPG', undefined, 'shared-session', 1);
+
+    const requestUrl = new URL(fetchMock.mock.calls[0]?.[0] as URL);
+
+    expect(requestUrl.pathname).toBe('/search-api/omni-search');
+    expect(requestUrl.searchParams.get('searchQuery')).toBe('RPG');
+    expect(requestUrl.searchParams.get('sessionId')).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    );
+    expect(requestUrl.searchParams.get('pageType')).toBe('games');
+    expect(requestUrl.searchParams.has('SearchQuery')).toBe(false);
+    expect(requestUrl.searchParams.has('SessionId')).toBe(false);
+  });
+
   it('does not classify card-opening experiences as racing through substring matches', () => {
     const candidate: NativeCandidate = {
       universeId: 'card-opening',
