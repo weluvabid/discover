@@ -841,9 +841,7 @@ function rerankForDiversity(
   // increase later in the sequence as candidates receive different penalties.
   // Present that selected set in descending final-score order so card order,
   // displayed scores, and ranking explanations agree.
-  return selected
-    .sort(compareRanked)
-    .map((item, index) => ({ ...item, position: index + 1 }));
+  return selected.sort(compareRanked).map((item, index) => ({ ...item, position: index + 1 }));
 }
 
 export function retrieveCandidates(

@@ -1,7 +1,7 @@
 import { CACHE_TTL_MS, DISCOVERY_LIMITS } from '../../config/discovery';
 import { EXPERIENCE_GENRES, type ExperienceGenre } from '../../types/experience';
 import { PERSONA_SEARCH_QUERIES, type PersonaId } from '../../domain/personas/personas';
-import { normalizeExperience, RoTunnelError } from '../providers/rotunnel/index';
+import { normalizeExperience } from '../providers/rotunnel/index';
 import type { NativeCandidate, NativeSort, RoTunnelClient } from '../providers/rotunnel/index';
 import type { JsonObject } from '../providers/rotunnel/types';
 import { TtlCache } from '../cache/ttl-cache';
@@ -32,23 +32,20 @@ async function mapWithConcurrency<T, R>(
   const results: PromiseSettledResult<R>[] = new Array(values.length);
   let nextIndex = 0;
 
-  const workers = Array.from(
-    { length: Math.min(concurrency, values.length) },
-    async () => {
-      while (nextIndex < values.length) {
-        const index = nextIndex++;
-        const value = values[index];
+  const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
+    while (nextIndex < values.length) {
+      const index = nextIndex++;
+      const value = values[index];
 
-        if (value === undefined) continue;
+      if (value === undefined) continue;
 
-        try {
-          results[index] = { status: 'fulfilled', value: await mapper(value) };
-        } catch (reason) {
-          results[index] = { status: 'rejected', reason };
-        }
+      try {
+        results[index] = { status: 'fulfilled', value: await mapper(value) };
+      } catch (reason) {
+        results[index] = { status: 'rejected', reason };
       }
-    },
-  );
+    }
+  });
 
   await Promise.all(workers);
 
@@ -193,6 +190,7 @@ async function loadGenreCatalogue(
 
     for (const candidate of result.value) {
       if (unique.has(candidate.universeId)) continue;
+
       if (unique.size >= MAX_CATALOGUE_CANDIDATES) break;
 
       unique.set(candidate.universeId, {
@@ -211,7 +209,9 @@ async function loadGenreCatalogue(
     );
 
     if ('error' in sortsResult) throw sortsResult.error;
+
     if (firstFeedFailure) throw firstFeedFailure.reason;
+
     if (firstSearchFailure) throw firstSearchFailure.reason;
   }
 

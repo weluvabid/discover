@@ -96,14 +96,8 @@ describe('discovery ranking', () => {
     expect(ranked.map((item) => item.score)).toEqual(
       [...ranked.map((item) => item.score)].sort((left, right) => right - left),
     );
-    expect(ranked.map((item) => item.position)).toEqual(
-      ranked.map((_, index) => index + 1),
-    );
-    expect(
-      ranked.every(
-        (item) => item.score === item.explanation.finalScore,
-      ),
-    ).toBe(true);
+    expect(ranked.map((item) => item.position)).toEqual(ranked.map((_, index) => index + 1));
+    expect(ranked.every((item) => item.score === item.explanation.finalScore)).toBe(true);
   });
 
   it('returns deterministic rankings for identical input', () => {

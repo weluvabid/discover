@@ -120,9 +120,12 @@ describe('RoTunnel provider contract', () => {
         ],
       }),
     );
+
     vi.stubGlobal('fetch', fetchMock);
 
-    await new RoTunnelClient().search('RPG', undefined, 'shared-session', 1);
+    const sessionId = '123e4567-e89b-12d3-a456-426614174000';
+
+    await new RoTunnelClient().search('RPG', undefined, sessionId, 1);
 
     const requestUrl = new URL(fetchMock.mock.calls[0]?.[0] as URL);
 

@@ -132,7 +132,12 @@ describe('genre catalogue', () => {
         candidate('native-1', 'Trending Horror', 'A horror experience.', sortId),
       ]),
       search: vi.fn(async (query: string) => [
-        candidate(`search-${query}`, `${query} Experience`, `A game about ${query}.`, 'omni-search'),
+        candidate(
+          `search-${query}`,
+          `${query} Experience`,
+          `A game about ${query}.`,
+          'omni-search',
+        ),
       ]),
     } as unknown as RoTunnelClient;
 
@@ -144,6 +149,7 @@ describe('genre catalogue', () => {
     const sessions = new Set(
       vi.mocked(client.search).mock.calls.map(([, , sessionId]) => sessionId),
     );
+
     expect(sessions.size).toBe(1);
     expect(catalogue.diagnostics.searchQueries).toBe(7);
     expect(catalogue.diagnostics.failedSearches).toEqual([]);
@@ -153,15 +159,22 @@ describe('genre catalogue', () => {
 
   it('acquires a persona-specific candidate pool while reusing cached query responses', async () => {
     const client = {
-      getSorts: vi.fn().mockResolvedValue([
-        { id: 'trending', name: 'Top Trending', description: '' },
-      ]),
+      getSorts: vi
+        .fn()
+        .mockResolvedValue([{ id: 'trending', name: 'Top Trending', description: '' }]),
       getDetails: vi.fn().mockResolvedValue(new Map()),
-      getSortContent: vi.fn().mockResolvedValue([
-        candidate('native-1', 'Trending Experience', 'A popular game.', 'trending'),
-      ]),
+      getSortContent: vi
+        .fn()
+        .mockResolvedValue([
+          candidate('native-1', 'Trending Experience', 'A popular game.', 'trending'),
+        ]),
       search: vi.fn(async (query: string) => [
-        candidate(`search-${query}`, `${query} Experience`, `A game about ${query}.`, 'omni-search'),
+        candidate(
+          `search-${query}`,
+          `${query} Experience`,
+          `A game about ${query}.`,
+          'omni-search',
+        ),
       ]),
     } as unknown as RoTunnelClient;
 
