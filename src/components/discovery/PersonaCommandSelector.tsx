@@ -136,7 +136,7 @@ export function PersonaCommandSelector({
         <Command
           value={activeCommandValue}
           onValueChange={setActiveCommandValue}
-          className="rounded-4xl"
+          className="min-h-0 flex-1 rounded-4xl"
         >
           <CommandInput
             className="!text-base md:text-sm"
@@ -152,7 +152,7 @@ export function PersonaCommandSelector({
             }}
           />
           <CommandList
-            className="touch-pan-y overscroll-contain"
+            className="min-h-0 max-h-none flex-1 touch-pan-y overscroll-contain"
             onTouchStartCapture={() => {
               const input = document.querySelector<HTMLInputElement>('[data-slot="command-input"]');
 
@@ -202,7 +202,10 @@ export function PersonaCommandSelector({
             </CommandGroup>
           </CommandList>
           <CommandSeparator />
-          <div className="flex items-start gap-2 border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+          <div
+            data-slot="persona-command-footer"
+            className="flex shrink-0 items-start gap-2 border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground"
+          >
             <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-500" aria-hidden="true" />
             <p>Your selected play style is saved on this device and used across discovery.</p>
           </div>

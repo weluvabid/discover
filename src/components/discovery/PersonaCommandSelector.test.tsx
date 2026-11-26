@@ -96,6 +96,22 @@ describe('PersonaCommandSelector', () => {
     expect(input).not.toHaveFocus();
   });
 
+  it('keeps the persona list scrollable while the footer remains in the bounded dialog', () => {
+    render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Choose a play style' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Choose a play style' });
+    const command = document.querySelector('[data-slot="command"]');
+    const list = screen.getByRole('listbox');
+    const footer = document.querySelector('[data-slot="persona-command-footer"]');
+
+    expect(dialog).toHaveClass('h-[min(42rem,calc(100dvh-2rem))]');
+    expect(command).toHaveClass('min-h-0', 'flex-1');
+    expect(list).toHaveClass('min-h-0', 'flex-1', 'max-h-none');
+    expect(footer).toHaveClass('shrink-0');
+  });
+
   it('shows the all-play-styles option and device-persistence explanation', () => {
     render(<PersonaCommandSelector personas={personas} selectedPersonaId="" onSelect={vi.fn()} />);
 
